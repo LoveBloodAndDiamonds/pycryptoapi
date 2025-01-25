@@ -85,26 +85,16 @@ class AbstractClient(BaseClient, ABC):
     """Абстрактный класс для создания клиентов для работы с API криптобирж."""
 
     @abstractmethod
-    async def tickers(self, *args, **kwargs) -> Any:
-        """Возвращает JSON, в котором содержится информация о доступных тикерах."""
-        pass
-
-    @abstractmethod
-    async def futures_tickers(self, *args, **kwargs) -> Any:
-        """Возвращает JSON, в котором содержится информация о доступных тикерах."""
-        pass
-
-    @abstractmethod
-    async def ticker24h(self, *args, **kwargs) -> Any:
+    async def ticker(self, *args, **kwargs) -> Any:
         """Возвращает JSON, в котором содержится информация о изменении цены и объеме монет за 24ч."""
         pass
 
     @abstractmethod
-    async def futures_ticker24h(self, *args, **kwargs) -> None:
+    async def futures_ticker(self, *args, **kwargs) -> Any:
         """Возвращает JSON, в котором содержится информация о изменении цены и объеме монет за 24ч."""
         pass
 
-    @abstractmethod
-    async def funding_rate(self, *args, **kwargs) -> None:
-        """Возвращает JSON, в котором содержится информация о ставке финансирования."""
-        pass
+    # @abstractmethod
+    # async def funding_rate(self, *args, **kwargs) -> None:
+    #     """Возвращает JSON, в котором содержится информация о ставке финансирования."""
+    #     pass
