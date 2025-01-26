@@ -62,15 +62,15 @@ class MexcAdapter(AbstractAdapter):
                     continue
 
                 ticker_data[symbol] = Ticker24hItem(
-                    p=float(item["priceChangePercent"]) * 100,  # Конвертируем в проценты
-                    v=float(item["quoteVolume"])  # Объём торгов в валюте котировки
+                    p=round(float(item["priceChangePercent"]) * 100, 2),  # Конвертируем в проценты
+                    v=int(float(item["quoteVolume"]))  # Объём торгов в валюте котировки
                 )
             return ticker_data
         else:
             return {
                 item["symbol"]: Ticker24hItem(
-                    p=float(item["priceChangePercent"]) * 100,  # Конвертируем в проценты
-                    v=float(item["quoteVolume"])  # Объём торгов в валюте котировки
+                    p=round(float(item["priceChangePercent"]) * 100, 2),  # Конвертируем в проценты
+                    v=int(float(item["quoteVolume"]))  # Объём торгов в валюте котировки
                 ) for item in raw_data
             }
 

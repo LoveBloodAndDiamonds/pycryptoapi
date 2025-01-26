@@ -57,8 +57,8 @@ class OkxAdapter(AbstractAdapter):
                 p_change = ((last_price - open_price) / open_price) * 100
 
                 ticker_data[symbol] = Ticker24hItem(
-                    p=p_change,  # Процентное изменение
-                    v=float(item["volCcy24h"])  # Объём торгов в валюте котировки
+                    p=round(p_change, 2),  # Процентное изменение
+                    v=int(float(item["volCcy24h"]))  # Объём торгов в валюте котировки
                 )
             return ticker_data
         else:
@@ -72,8 +72,8 @@ class OkxAdapter(AbstractAdapter):
                 p_change = ((last_price - open_price) / open_price) * 100
 
                 ticker_data[symbol] = Ticker24hItem(
-                    p=p_change,  # Процентное изменение
-                    v=float(item["volCcy24h"])  # Объём торгов в валюте котировки
+                    p=round(p_change, 2),  # Процентное изменение
+                    v=int(float(item["volCcy24h"]))  # Объём торгов в валюте котировки
                 )
             return ticker_data
 
