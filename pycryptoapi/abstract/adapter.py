@@ -1,7 +1,7 @@
 __all__ = ["AbstractAdapter", ]
 
 from abc import ABC, abstractmethod
-from typing import List, Any, Dict
+from typing import List, Any, Dict, overload, Union
 
 from ..types import Ticker24hItem
 
@@ -59,5 +59,16 @@ class AbstractAdapter(ABC):
         :param raw_data: Сырые данные статистики фьючерсов.
         :param only_usdt: Если True, возвращает только статистику тикеров, оканчивающихся на "USDT".
         :return: Словарь с фьючерсными тикерами и их 24-часовой статистикой.
+        """
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def funding_rate(raw_data: Any, **kwargs) -> Dict[str, float]:
+        """
+        Преобразует сырые данные ставки финансирования для фьючерсных тикеров в унифицированный вид.
+
+        :param raw_data: Сырые данные ставки финансирования фьючерсов.
+        :return: Словарь с фьючерсными тикерами и значением их ставки финансирования.
         """
         pass

@@ -107,3 +107,22 @@ class MexcAdapter(AbstractAdapter):
                     v=float(item["volume24"])
                 )
             return ticker_data
+
+    @staticmethod
+    def funding_rate(raw_data: Dict[str, Any], only_usdt: bool = True) -> Dict[str, float]:
+        """
+        Преобразует сырые данные ставки финансирования для фьючерсных тикеров в унифицированный вид.
+
+        :param raw_data: Сырые данные ставки финансирования фьючерсов (список словарей)
+        :param only_usdt: Если True, возвращаются данные только для тикеров, оканчивающихся на 'USDT'.
+        :return: Cловарь с фьючерсными тикерами и их ставкой финансирования.
+        """
+        if only_usdt:
+            tickers_info = {}
+            for item in raw_data["data"]:
+                symbol = item["symbol"]
+                if symbol.endswith("_USDT"):
+                    tickers_info[symbol] = float(item["fundingRate"]) * 100
+            return tickers_info
+        else:
+            return {item["symbol"]: float(item["fundingRate"]) * 100 for item in raw_data["data"]}

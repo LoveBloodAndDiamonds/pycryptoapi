@@ -7,7 +7,7 @@ from ..types import Ticker24hItem
 class BinanceAdapter(AbstractAdapter):
 
     @staticmethod
-    def tickers(raw_data: Any, only_usdt: bool = True) -> List[str]:
+    def tickers(raw_data: List[Dict[str, str]], only_usdt: bool = True) -> List[str]:
         """
         Преобразует сырые данные тикеров в список символов.
 
@@ -26,7 +26,7 @@ class BinanceAdapter(AbstractAdapter):
             return [item["symbol"] for item in raw_data]
 
     @staticmethod
-    def futures_tickers(raw_data: Any, only_usdt: bool = True) -> List[str]:
+    def futures_tickers(raw_data: List[Dict[str, str]], only_usdt: bool = True) -> List[str]:
         """
         Преобразует сырые данные фьючерсных тикеров в список символов.
 
@@ -37,7 +37,7 @@ class BinanceAdapter(AbstractAdapter):
         return BinanceAdapter.tickers(raw_data, only_usdt)
 
     @staticmethod
-    def ticker_24h(raw_data: Any, only_usdt: bool = True) -> Dict[str, Ticker24hItem]:
+    def ticker_24h(raw_data: List[Dict[str, str]], only_usdt: bool = True) -> Dict[str, Ticker24hItem]:
         """
         Преобразует сырые данные 24-часовой статистики для тикеров в унифицированный вид.
 
@@ -64,7 +64,7 @@ class BinanceAdapter(AbstractAdapter):
             }
 
     @staticmethod
-    def futures_ticker_24h(raw_data: Any, only_usdt: bool = True) -> Dict[str, Ticker24hItem]:
+    def futures_ticker_24h(raw_data: List[Dict[str, str]], only_usdt: bool = True) -> Dict[str, Ticker24hItem]:
         """
         Преобразует сырые данные 24-часовой статистики для фьючерсных тикеров в унифицированный вид.
 
@@ -73,3 +73,22 @@ class BinanceAdapter(AbstractAdapter):
         :return: Словарь с фьючерсными тикерами и их статистикой за 24 часа.
         """
         return BinanceAdapter.ticker_24h(raw_data, only_usdt)
+
+    @staticmethod
+    def funding_rate(raw_data: List[Dict[str, str]], only_usdt: bool = True) -> Dict[str, float]:
+        """
+        Преобразует сырые данные ставки финансирования для фьючерсных тикеров в унифицированный вид.
+
+        :param raw_data: Сырые данные ставки финансирования фьючерсов (список словарей)
+        :param only_usdt: Если True, возвращаются данные только для тикеров, оканчивающихся на 'USDT'.
+        :return: Cловарь с фьючерсными тикерами и их ставкой финансирования.
+        """
+        if only_usdt:
+            tickers_data = {}
+            for item in raw_data:
+                symbol = item["symbol"]
+                if symbol.endswith("USDT"):
+                    tickers_data[symbol] = float(item["lastFundingRate"]) * 100
+            return tickers_data
+        else:
+            return {item["symbol"]: float(item["lastFundingRate"]) for item in raw_data}

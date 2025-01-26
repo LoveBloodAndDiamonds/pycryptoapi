@@ -27,3 +27,15 @@ class OkxClient(AbstractClient):
         url = f"{self._BASE_URL}/api/v5/market/tickers"
         params = {"instType": "SWAP"}
         return await self._make_request(method="GET", url=url, params=params)
+
+    async def funding_rate(self, symbol: str) -> Any:
+        """
+        Получает текущую ставку финансирования для указанного символа.
+
+        :param symbol: Торговая пара, например 'BTC-USDT-SWAP'.
+        :return: JSON-ответ с текущей ставкой финансирования.
+        :raises Exception: Если запрос не выполнен успешно.
+        """
+        url = f"{self._BASE_URL}/api/v5/public/funding-rate"
+        params = {"instId": symbol}
+        return await self._make_request(method="GET", url=url, params=params)

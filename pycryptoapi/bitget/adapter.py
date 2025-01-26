@@ -1,4 +1,4 @@
-from typing import Any, List, Dict
+from typing import Any, List, Dict, Union, overload
 
 from ..abstract import AbstractAdapter
 from ..types import Ticker24hItem
@@ -75,3 +75,23 @@ class BitgetAdapter(AbstractAdapter):
         :return: Словарь с фьючерсными тикерами и их 24-часовой статистикой.
         """
         return BitgetAdapter.ticker_24h(raw_data=raw_data, only_usdt=only_usdt)
+
+    @staticmethod
+    def funding_rate(raw_data: Union[List[Dict], Dict], **kwargs) -> Dict[str, float]:
+        """
+        Преобразует сырые данные ставки финансирования для фьючерсных тикеров в унифицированный вид.
+
+        :param raw_data: Сырые данные ставки финансирования фьючерсов.
+        :return: Словарь с фьючерсными тикерами и значением их ставки финансирования.
+        """
+        if isinstance(raw_data, list):
+            tickers_info = {}
+            for item in raw_data:
+                data = item["data"][0]
+                tickers_info[data["symbol"]] = float(data["fundingRate"]) * 100
+            return tickers_info
+        elif isinstance(raw_data, dict):
+            data = raw_data["data"][0]
+            return {data["symbol"]: float(data["fundingRate"]) * 100}
+        else:
+            raise TypeError(f"Wrong raw_data type: {type(raw_data)}, excepted List[Dict] or Dict")

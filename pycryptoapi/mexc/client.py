@@ -1,6 +1,6 @@
 __all__ = ["MexcClient"]
 
-from typing import Any, Optional
+from typing import Any, Optional, Dict
 
 from ..abstract import AbstractClient
 
@@ -32,3 +32,14 @@ class MexcClient(AbstractClient):
         url = f"{self._BASE_FUTURES_URL}/api/v1/contract/ticker"
         params = {"symbol": symbol} if symbol else {}
         return await self._make_request(method="GET", url=url, params=params)
+
+    async def funding_rate(self) -> Dict[str, Any]:
+        """
+        Получает текущую ставку финансирования для всех символов.
+
+        :return: JSON-ответ с текущей ставкой финансирования.
+        :raises Exception: Если запрос не выполнен успешно.
+        """
+        url = f"{self._BASE_FUTURES_URL}/api/v1/contract/funding_rate"
+        return await self._make_request(method="GET", url=url)
+

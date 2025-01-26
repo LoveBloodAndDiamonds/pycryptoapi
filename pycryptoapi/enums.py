@@ -1,3 +1,9 @@
+__all__ = [
+    "MarketType",
+    "Exchange",
+    "StorageKeys",
+]
+
 from enum import StrEnum
 
 
@@ -28,3 +34,10 @@ class Exchange(StrEnum):
     # BINANCE_US: str = "BINANCE_US"
     # POLONIEX: str = "POLONIEX"
     # BITSTAMP: str = "BITSTAMP"
+
+
+class StorageKeys(StrEnum):
+    """Строковые ключи для хранения данных в Redis."""
+    CMC_RATING: str = "CMC_RATING"
+    TICKERS_24H: str = "TICKERS_24H"
+    FUNDING_RATE: str = "FUNDING_RATE"

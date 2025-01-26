@@ -33,3 +33,19 @@ class BitgetClient(AbstractClient):
         if symbol:
             params["symbol"] = symbol
         return await self._make_request(method="GET", url=url, params=params)
+
+    async def funding_rate(self, symbol: str, product_type: str = "USDT-FUTURES") -> Any:
+        """
+        Получает текущую ставку финансирования для указанного символа.
+
+        :param symbol: Торговая пара, например 'BTCUSDT'.
+        :param product_type: Тип продукта (по умолчанию: 'USDT-FUTURES' для USDT-Margined Futures).
+        :return: JSON-ответ с текущей ставкой финансирования.
+        :raises Exception: Если запрос не выполнен успешно.
+        """
+        url = f"{self._BASE_URL}/api/v2/mix/market/current-fund-rate"
+        params = {
+            "symbol": symbol,
+            "productType": product_type,
+        }
+        return await self._make_request(method="GET", url=url, params=params)

@@ -1,17 +1,18 @@
 __all__ = ["BybitClient"]
 
-from typing import Any, Optional
+from typing import Any, Optional, Dict
 
 from ..abstract import AbstractClient
 
 
 class BybitClient(AbstractClient):
-    # _BASE_URL: str = "https://api.bybit.kz"  # Kazakhstan
+    _BASE_URL: str = "https://api.bybit.kz"  # Kazakhstan
     # _BASE_URL: str = "https://api.bybit.nl"  # Netherland
     # _BASE_URL: str = "https://api.bybit-tr.com"  # Turkey
-    _BASE_URL: str = "https://api.byhkbit.com"  # Hong Kong
+    # _BASE_URL: str = "https://api.byhkbit.com"  # Hong Kong
+    # _BASE_URL: str = "https://api-testnet.bybit.com"  # Testnet
 
-    async def ticker(self, symbol: Optional[str] = None) -> Any:
+    async def ticker(self, symbol: Optional[str] = None) -> Dict[str, Dict[str, Any]]:
         """
         Получает 24-часовую статистику изменения цены и объема для спотового рынка.
 
@@ -25,7 +26,7 @@ class BybitClient(AbstractClient):
             params["symbol"] = symbol
         return await self._make_request(method="GET", url=url, params=params)
 
-    async def futures_ticker(self, symbol: Optional[str] = None) -> Any:
+    async def futures_ticker(self, symbol: Optional[str] = None) -> Dict[str, Dict[str, Any]]:
         """
         Получает 24-часовую статистику изменения цены и объема для фьючерсного рынка.
 
@@ -38,3 +39,13 @@ class BybitClient(AbstractClient):
         if symbol:
             params["symbol"] = symbol
         return await self._make_request(method="GET", url=url, params=params)
+
+    async def funding_rate(self, symbol: Optional[str] = None) -> Dict[str, Dict[str, Any]]:
+        """
+        Получает данные, которые содержат информацию о текущей ставке финансирования.
+
+        :param symbol: Торговая пара, например 'BTCUSDT'. Опциольнально.
+        :return: JSON-ответ с данными ставок финансирования.
+        :raises Exception: Если запрос не выполнен успешно.
+        """
+        return await self.futures_ticker(symbol=symbol)
