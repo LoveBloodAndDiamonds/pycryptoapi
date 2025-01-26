@@ -53,15 +53,15 @@ class BitgetAdapter(AbstractAdapter):
                 symbol = item["symbol"]
                 if symbol.endswith("USDT"):
                     ticker_data[symbol] = Ticker24hItem(
-                        p=float(item["change24h"]) * 100,  # Конвертируем в проценты
-                        v=float(item["usdtVolume"])  # Объем торгов в валюте котировки
+                        p=round(float(item["change24h"]) * 100, 2),  # Конвертируем в проценты
+                        v=int(float(item["usdtVolume"]))  # Объем торгов в валюте котировки
                     )
             return ticker_data
         else:
             return {
                 item["symbol"]: Ticker24hItem(
-                    p=float(item["change24h"]) * 100,  # Конвертируем в проценты
-                    v=float(item["quoteVolume"])  # Объем торгов в валюте котировки
+                    p=round(float(item["change24h"]) * 100, 2),  # Конвертируем в проценты
+                    v=int(float(item["quoteVolume"]))  # Объем торгов в валюте котировки
                 ) for item in raw_data["data"]
             }
 

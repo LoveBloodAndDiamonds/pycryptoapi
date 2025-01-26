@@ -51,15 +51,15 @@ class BinanceAdapter(AbstractAdapter):
                 symbol = item["symbol"]
                 if symbol.endswith("USDT"):
                     tickers_data[symbol] = Ticker24hItem(
-                        p=float(item["priceChangePercent"]),
-                        v=float(item["quoteVolume"]),
+                        p=round(float(item["priceChangePercent"]), 2),
+                        v=int(float(item["quoteVolume"])),
                     )
             return tickers_data
         else:
             return {
                 item["symbol"]: Ticker24hItem(
-                    p=float(item["priceChangePercent"]),
-                    v=float(item["quoteVolume"]),
+                    p=round(float(item["priceChangePercent"]), 2),
+                    v=int(float(item["quoteVolume"])),
                 ) for item in raw_data
             }
 

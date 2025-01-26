@@ -54,15 +54,15 @@ class BybitAdapter(AbstractAdapter):
                 symbol = item["symbol"]
                 if symbol.endswith("USDT"):
                     ticker_data[symbol] = Ticker24hItem(
-                        p=float(item["price24hPcnt"]) * 100,  # Изменение цены в процентах за 24ч
-                        v=float(item["volume24h"])  # Объем за 24ч
+                        p=round(float(item["price24hPcnt"]) * 100, 2),  # Изменение цены в процентах за 24ч
+                        v=int(float(item["volume24h"]))  # Объем за 24ч
                     )
             return ticker_data
         else:
             return {
                 item["symbol"]: Ticker24hItem(
-                    p=float(item["price24hPcnt"]) * 100,  # Изменение цены в процентах за 24ч
-                    v=float(item["volume24h"])  # Объем за 24ч
+                    p=round(float(item["price24hPcnt"]) * 100, 2),  # Изменение цены в процентах за 24ч
+                    v=int(float(item["volume24h"]))  # Объем за 24ч
                 ) for item in raw_data["result"]
             }
 

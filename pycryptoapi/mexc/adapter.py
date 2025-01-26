@@ -92,8 +92,8 @@ class MexcAdapter(AbstractAdapter):
                 avg_price = (float(item["high24Price"]) + float(item["lower24Price"])) / 2
                 price_change = ((float(item["lastPrice"]) - avg_price) / avg_price) * 100 if avg_price != 0 else 0
                 ticker_data[symbol] = Ticker24hItem(
-                    p=price_change,  # Процентное изменение
-                    v=float(item["volume24"])
+                    p=round(price_change, 2),  # Процентное изменение
+                    v=int(float(item["volume24"]))
                 )
             return ticker_data
         else:
@@ -103,8 +103,8 @@ class MexcAdapter(AbstractAdapter):
                 avg_price = (float(item["high24Price"]) + float(item["lower24Price"])) / 2
                 price_change = ((float(item["lastPrice"]) - avg_price) / avg_price) * 100 if avg_price != 0 else 0
                 ticker_data[symbol] = Ticker24hItem(
-                    p=price_change,  # Процентное изменение
-                    v=float(item["volume24"])
+                    p=round(price_change, 2),  # Процентное изменение
+                    v=int(float(item["volume24"]))
                 )
             return ticker_data
 
