@@ -1,5 +1,6 @@
 __all__ = ["RedisStorage", ]
 
+from datetime import datetime
 from typing import Dict, Any, Optional
 
 import loguru
@@ -37,11 +38,18 @@ class RedisStorage:
             self._logger.error(f"Failed to decode value for key '{key}' in Redis: {e}")
             return default
 
-    async def _set(self, key: str, value: Any) -> None:
-        """Вспомогательный метод для установки значения в Redis."""
+    async def _set(self, key: str, value: Any, mark_time: bool = True) -> None:
+        """Вспомогательный метод для установки значения в Redis с добавлением временной метки."""
         try:
+            # Устанавливаем основной ключ
             await self._redis.set(key, orjson.dumps(value))
             self._logger.info(f"Key '{key}' updated in Redis.")
+
+            if mark_time:
+                # Добавляем ключ для временной метки
+                update_time = datetime.now().isoformat()
+                await self._redis.set(f"TIME:{key}", update_time)
+                self._logger.info(f"Time for '{key}' set to {update_time} in Redis.")
         except Exception as e:
             self._logger.error(f"Failed to set value for key '{key}' in Redis: {e}")
             raise
