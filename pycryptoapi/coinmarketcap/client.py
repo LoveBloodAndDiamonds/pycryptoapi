@@ -24,7 +24,7 @@ class CmcClient(BaseClient):
 
         self._api_key: str = api_key
 
-    async def cryptocurrency_id_map(
+    async def cryptocurrency_map(
             self,
             sort: Literal["id", "cmc_rank"] = "cmc_rank",
             symbol: Optional[str] = None,
