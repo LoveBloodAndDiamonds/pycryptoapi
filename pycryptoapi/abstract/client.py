@@ -65,7 +65,6 @@ class BaseClient(ABC, ClientMixin):
             ) as response:
                 response.raise_for_status()
                 result = await response.json()
-                self._logger.debug(f"Response: {result}")
                 return result
         except aiohttp.ClientError as e:
             self._logger.error(f"Request error ({type(e)}): {e}")
