@@ -11,7 +11,7 @@ try:
 except ImportError:
     raise ImportError(
         "RedisStorage requires the `redis` package. Install it with:\n"
-        "pip install pycryptoapi[redis]"
+        "```pip install redis``` or ```poetry add redis```"
     )
 
 from pycryptoapi.enums import StorageKeys, Exchange, MarketType
