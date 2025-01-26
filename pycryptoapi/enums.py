@@ -41,3 +41,4 @@ class StorageKeys(StrEnum):
     CMC_RATING: str = "CMC_RATING"
     TICKERS_24H: str = "TICKERS_24H"
     FUNDING_RATE: str = "FUNDING_RATE"
+    TIME_MARK: str = "TIME_MARK"

@@ -48,8 +48,8 @@ class RedisStorage:
             if mark_time:
                 # Добавляем ключ для временной метки
                 update_time = datetime.now().isoformat()
-                await self._redis.set(f"TIME:{key}", update_time)
-                self._logger.info(f"Time for '{key}' set to {update_time} in Redis.")
+                await self._redis.set(f"{StorageKeys.TIME_MARK}:{key}", update_time)
+                self._logger.info(f"Time for '{StorageKeys.TIME_MARK}:{key}' set to {update_time} in Redis.")
         except Exception as e:
             self._logger.error(f"Failed to set value for key '{key}' in Redis: {e}")
             raise
