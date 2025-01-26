@@ -11,10 +11,13 @@ dependencies = [
     "loguru (>=0.7.3,<0.8.0)",
     "aiohttp (>=3.11.11,<4.0.0)",
     "websockets (>=14.2,<15.0)",
-    "orjson (>=3.10.15,<4.0.0)"
+    "orjson (>=3.10.15,<4.0.0)",
 ]
 
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.extras]
+redis = ["redis >= 5.0.0"]
