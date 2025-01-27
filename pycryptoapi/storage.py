@@ -73,10 +73,10 @@ class RedisStorage:
         """Получить Ticker24h из Redis."""
         return await self._get(self._keygen(StorageKeys.TICKERS_24H, ex, m_type))
 
-    async def set_funding_rate(self, data: Any, ex: Exchange) -> None:
+    async def set_funding_rate(self, data: Dict[str, float], ex: Exchange) -> None:
         """Установить FundingRate в Redis."""
         await self._set(self._keygen(StorageKeys.FUNDING_RATE, ex), data)
 
-    async def get_funding_rate(self, ex: Exchange) -> Any:
+    async def get_funding_rate(self, ex: Exchange) -> Dict[str, float]:
         """Получить FundingRate из Redis."""
         return await self._get(self._keygen(StorageKeys.FUNDING_RATE, ex))
