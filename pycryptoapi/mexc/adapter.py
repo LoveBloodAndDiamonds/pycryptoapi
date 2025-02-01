@@ -1,7 +1,8 @@
 from typing import Any, List, Dict
 
 from ..abstract import AbstractAdapter
-from ..types import Ticker24hItem
+from ..exceptions import AdapterException
+from ..types import Ticker24hItem, UnifiedKline
 
 
 class MexcAdapter(AbstractAdapter):
@@ -126,3 +127,55 @@ class MexcAdapter(AbstractAdapter):
             return tickers_info
         else:
             return {item["symbol"]: float(item["fundingRate"]) * 100 for item in raw_data["data"]}
+
+    @staticmethod
+    def kline_message(raw_msg: Any) -> UnifiedKline | List[UnifiedKline]:
+        """
+        Преобразует сырое сообщение с вебсокета MEXC (спот или фьючерсы) в унифицированный формат свечи (Kline).
+
+        :param raw_msg: Сырое сообщение с вебсокета.
+        :return: Унифицированный объект Kline или список объектов Kline.
+        :raises AdapterException: Если сообщение имеет неверную структуру или данные невозможно преобразовать.
+        """
+        try:
+            # Обработка спота
+            if "d" in raw_msg and "k" in raw_msg["d"]:
+                data = raw_msg["d"]["k"]
+                symbol = raw_msg["s"]
+                timeframe = data["i"]
+                return UnifiedKline(
+                    s=symbol,
+                    t=int(data["t"]),
+                    o=float(data["o"]),
+                    h=float(data["h"]),
+                    l=float(data["l"]),
+                    c=float(data["c"]),
+                    v=float(data["v"]),
+                    T=int(data["T"]),
+                    x=None,
+                    i=timeframe
+                )
+
+            # Обработка фьючерсов
+            elif "symbol" in raw_msg and "data" in raw_msg:
+                data = raw_msg["data"]
+                symbol = data["symbol"].replace("_", "")
+                timeframe = data["interval"]
+                return UnifiedKline(
+                    s=symbol,
+                    t=int(data["t"]),
+                    o=float(data["o"]),
+                    h=float(data["h"]),
+                    l=float(data["l"]),
+                    c=float(data["c"]),
+                    v=float(data["a"]),
+                    T=None,  # Добавляем 60 сек, так как таймфрейм 1 мин
+                    x=None,
+                    i=timeframe
+                )
+
+            raise AdapterException("Unsupported message format or missing data.")
+        except KeyError as e:
+            raise AdapterException(f"Missing key in MEXC kline message: {e}")
+        except (TypeError, ValueError) as e:
+            raise AdapterException(f"Invalid data format in MEXC kline message: {e}")

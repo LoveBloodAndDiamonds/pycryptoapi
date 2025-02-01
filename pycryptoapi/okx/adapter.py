@@ -1,7 +1,8 @@
 from typing import Any, List, Dict, Union
 
 from ..abstract import AbstractAdapter
-from ..types import Ticker24hItem
+from ..exceptions import AdapterException
+from ..types import Ticker24hItem, UnifiedKline
 
 
 class OkxAdapter(AbstractAdapter):
@@ -137,3 +138,37 @@ class OkxAdapter(AbstractAdapter):
             return {data["instId"]: float(data["fundingRate"]) * 100}
         else:
             raise TypeError(f"Wrong raw_data type: {type(raw_data)}, excepted List[Dict] or Dict")
+
+    @staticmethod
+    def kline_message(raw_msg: Any) -> List[UnifiedKline]:
+        """
+        Преобразует сырое сообщение с вебсокета OKX в унифицированный формат свечи (Kline).
+
+        :param raw_msg: Сырое сообщение с вебсокета.
+        :return: Список унифицированных объектов Kline.
+        :raises AdapterException: Если сообщение имеет неверную структуру или данные невозможно преобразовать.
+        """
+        try:
+            symbol = raw_msg["arg"]["instId"].replace("-", "")  # Убираем дефисы из символа
+            timeframe = raw_msg["arg"]["channel"].replace("candle", "")  # Извлекаем таймфрейм
+            klines = []
+
+            for data in raw_msg["data"]:
+                klines.append(UnifiedKline(
+                    s=symbol,
+                    t=int(data[0]),
+                    o=float(data[1]),
+                    h=float(data[2]),
+                    l=float(data[3]),
+                    c=float(data[4]),
+                    v=float(data[7]),  # Используем "quote volume" (USDT)  # todo OKX futures returns SWAP-CONTRACTS
+                    i=timeframe,
+                    T=None,  # Добавляем 60 сек, так как таймфрейм 1 мин
+                    x=None,  # OKX всегда отправляет закрытые свечи
+                ))
+
+            return klines
+        except KeyError as e:
+            raise AdapterException(f"Missing key in OKX kline message: {e}")
+        except (TypeError, ValueError) as e:
+            raise AdapterException(f"Invalid data format in OKX kline message: {e}")

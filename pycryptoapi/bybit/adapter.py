@@ -1,7 +1,8 @@
 from typing import Any, List, Dict
 
 from ..abstract import AbstractAdapter
-from ..types import Ticker24hItem
+from ..types import Ticker24hItem, UnifiedKline
+from ..exceptions import AdapterException
 
 
 class BybitAdapter(AbstractAdapter):
@@ -96,3 +97,30 @@ class BybitAdapter(AbstractAdapter):
         else:
             return {item["symbol"]: float(item["fundingRate"]) * 100 for item in raw_data["result"]["list"]}
 
+    @staticmethod
+    def kline_message(raw_msg: Any) -> UnifiedKline:
+        """
+        Преобразует сырое сообщение с вебсокета Bybit в унифицированный формат свечи (Kline).
+
+        :param raw_msg: Сырое сообщение с вебсокета.
+        :return: Унифицированный объект Kline.
+        :raises AdapterException: Если сообщение имеет неверную структуру или данные невозможно преобразовать.
+        """
+        try:
+            data = raw_msg["data"][0]
+            return UnifiedKline(
+                s=raw_msg["topic"].split(".")[-1],
+                t=data["start"],
+                o=float(data["open"]),
+                h=float(data["high"]),
+                l=float(data["low"]),
+                c=float(data["close"]),
+                v=float(data["turnover"]),  # Используем оборот (turnover) в USDT
+                T=data["end"],
+                x=data["confirm"],  # Флаг закрытия свечи
+                i=data["interval"]  # Таймфрейм в минутах
+            )
+        except KeyError as e:
+            raise AdapterException(f"Missing key in Bybit kline message: {e}")
+        except (TypeError, ValueError) as e:
+            raise AdapterException(f"Invalid data format in Bybit kline message: {e}")

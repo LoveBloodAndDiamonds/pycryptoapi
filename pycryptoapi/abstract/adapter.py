@@ -1,9 +1,9 @@
 __all__ = ["AbstractAdapter", ]
 
 from abc import ABC, abstractmethod
-from typing import List, Any, Dict, overload, Union
+from typing import List, Any, Dict, Optional
 
-from ..types import Ticker24hItem
+from ..types import Ticker24hItem, UnifiedKline
 
 
 class AbstractAdapter(ABC):
@@ -70,5 +70,16 @@ class AbstractAdapter(ABC):
 
         :param raw_data: Сырые данные ставки финансирования фьючерсов.
         :return: Словарь с фьючерсными тикерами и значением их ставки финансирования.
+        """
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def kline_message(raw_msg: Any) -> UnifiedKline | List[UnifiedKline]:
+        """
+        Преобразует сырое сообщение с вебсокета в унифицированный вид.
+        :param raw_msg: Сырое сообщение с вебсокета.
+        :return: Унифицированный обьект Kline, или None, если сообщение невалидно.
+        :raises: AdapterException если возникла ошибка при унификации данных.
         """
         pass

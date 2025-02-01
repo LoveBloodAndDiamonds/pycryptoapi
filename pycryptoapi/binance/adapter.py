@@ -1,7 +1,8 @@
-from typing import Any, List, Dict
+from typing import Any, List, Dict, Optional
 
 from ..abstract import AbstractAdapter
-from ..types import Ticker24hItem
+from ..types import Ticker24hItem, UnifiedKline
+from ..exceptions import AdapterException
 
 
 class BinanceAdapter(AbstractAdapter):
@@ -92,3 +93,31 @@ class BinanceAdapter(AbstractAdapter):
             return tickers_data
         else:
             return {item["symbol"]: float(item["lastFundingRate"]) for item in raw_data}
+
+    @staticmethod
+    def kline_message(raw_msg: Any) -> UnifiedKline:
+        """
+        Преобразует сырое сообщение с вебсокета Binance в унифицированный формат свечи (Kline).
+
+        :param raw_msg: Сырое сообщение с вебсокета.
+        :return: Унифицированный объект Kline.
+        :raises AdapterException: Если сообщение имеет неверную структуру или данные невозможно преобразовать.
+        """
+        try:
+            kline = raw_msg["k"]
+            return UnifiedKline(
+                s=kline["s"],
+                t=kline["t"],
+                o=float(kline["o"]),
+                h=float(kline["h"]),
+                l=float(kline["l"]),
+                c=float(kline["c"]),
+                v=float(kline["q"]),  # Используем quote volume (в USDT)
+                T=kline["T"],
+                x=kline.get("x"),  # Берём через .get(), чтобы не выбрасывало KeyError
+                i=kline.get("i")
+            )
+        except KeyError as e:
+            raise AdapterException(f"Missing key in Binance kline message: {e}")
+        except (TypeError, ValueError) as e:
+            raise AdapterException(f"Invalid data format in Binance kline message: {e}")

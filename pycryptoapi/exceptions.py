@@ -15,3 +15,7 @@ class WrongTimeframe(WebsocketException):
 class WrongTickers(WebsocketException):
     def __init__(self, message="Incorrect tickers provided"):
         super().__init__(message)
+
+
+class AdapterException(Exception):
+    pass
