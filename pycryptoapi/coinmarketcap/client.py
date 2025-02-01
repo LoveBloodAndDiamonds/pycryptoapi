@@ -9,7 +9,7 @@ from loguru._logger import Logger  # noqa
 from ..abstract import BaseClient
 
 
-class CmcClient(BaseClient):
+class CoinmarketcapClient(BaseClient):
     """Клиент для работы с Coinmarketcap.com"""
 
     _BASE_URL: str = "https://pro-api.coinmarketcap.com"

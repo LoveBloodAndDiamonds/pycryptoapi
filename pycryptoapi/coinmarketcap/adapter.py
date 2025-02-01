@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
 
-class CmcAdapter:
+class CoinmarketcapAdapter:
     """
     Адаптер для преобразования сырых данных Coinmarketcap в унифицированный вид.
     """

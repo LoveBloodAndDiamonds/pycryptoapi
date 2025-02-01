@@ -1,4 +1,4 @@
-__all__ = ["CmcClient", "CmcAdapter", ]
+__all__ = ["CoinmarketcapClient", "CoinmarketcapAdapter", ]
 
-from .adapter import CmcAdapter
-from .client import CmcClient
+from .adapter import CoinmarketcapAdapter
+from .client import CoinmarketcapClient
