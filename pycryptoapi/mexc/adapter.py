@@ -2,7 +2,7 @@ from typing import Any, List, Dict
 
 from ..abstract import AbstractAdapter
 from ..exceptions import AdapterException
-from ..types import TickerDailyItem, UnifiedKline
+from ..types import TickerDailyItem, KlineDict
 
 
 class MexcAdapter(AbstractAdapter):
@@ -129,7 +129,7 @@ class MexcAdapter(AbstractAdapter):
             return {item["symbol"]: float(item["fundingRate"]) * 100 for item in raw_data["data"]}
 
     @staticmethod
-    def kline_message(raw_msg: Any) -> UnifiedKline | List[UnifiedKline]:
+    def kline_message(raw_msg: Any) -> KlineDict | List[KlineDict]:
         """
         Преобразует сырое сообщение с вебсокета MEXC (спот или фьючерсы) в унифицированный формат свечи (Kline).
 
@@ -143,7 +143,7 @@ class MexcAdapter(AbstractAdapter):
                 data = raw_msg["d"]["k"]
                 symbol = raw_msg["s"]
                 timeframe = data["i"]
-                return UnifiedKline(
+                return KlineDict(
                     s=symbol,
                     t=int(data["t"]),
                     o=float(data["o"]),
@@ -161,7 +161,7 @@ class MexcAdapter(AbstractAdapter):
                 data = raw_msg["data"]
                 symbol = data["symbol"].replace("_", "")
                 timeframe = data["interval"]
-                return UnifiedKline(
+                return KlineDict(
                     s=symbol,
                     t=int(data["t"]),
                     o=float(data["o"]),

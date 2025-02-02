@@ -1,8 +1,8 @@
 from typing import Any, List, Dict
 
 from ..abstract import AbstractAdapter
-from ..types import TickerDailyItem, UnifiedKline
 from ..exceptions import AdapterException
+from ..types import TickerDailyItem, KlineDict
 
 
 class BybitAdapter(AbstractAdapter):
@@ -98,7 +98,7 @@ class BybitAdapter(AbstractAdapter):
             return {item["symbol"]: float(item["fundingRate"]) * 100 for item in raw_data["result"]["list"]}
 
     @staticmethod
-    def kline_message(raw_msg: Any) -> UnifiedKline:
+    def kline_message(raw_msg: Any) -> KlineDict:
         """
         Преобразует сырое сообщение с вебсокета Bybit в унифицированный формат свечи (Kline).
 
@@ -108,7 +108,7 @@ class BybitAdapter(AbstractAdapter):
         """
         try:
             data = raw_msg["data"][0]
-            return UnifiedKline(
+            return KlineDict(
                 s=raw_msg["topic"].split(".")[-1],
                 t=data["start"],
                 o=float(data["open"]),

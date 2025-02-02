@@ -1,9 +1,9 @@
 __all__ = ["AbstractAdapter", ]
 
 from abc import ABC, abstractmethod
-from typing import List, Any, Dict, Optional
+from typing import List, Any, Dict
 
-from ..types import TickerDailyItem, UnifiedKline
+from ..types import TickerDailyItem, KlineDict, OpenInterestItem
 
 
 class AbstractAdapter(ABC):
@@ -75,13 +75,18 @@ class AbstractAdapter(ABC):
 
     @staticmethod
     @abstractmethod
-    def open_interest(raw_data: Any) -> Any:  # todo
-        # todo
+    def open_interest(raw_data: Any) -> Dict[str, OpenInterestItem]:
+        """
+        Преобразует сырые данные открытого интереса в унифицированный вид.
+
+        :param raw_data: Сырые данные открытого интереса по тикеру.
+        :return: Cловарь с фьючерсными тикерами и их ставкой финансирования.
+        """
         pass
 
     @staticmethod
     @abstractmethod
-    def kline_message(raw_msg: Any) -> UnifiedKline | List[UnifiedKline]:
+    def kline_message(raw_msg: Any) -> KlineDict | List[KlineDict]:
         """
         Преобразует сырое сообщение с вебсокета в унифицированный вид.
         :param raw_msg: Сырое сообщение с вебсокета.

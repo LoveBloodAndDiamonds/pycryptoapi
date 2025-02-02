@@ -1,6 +1,5 @@
 __all__ = ["BinanceClient"]
 
-from csv import DictReader
 from typing import Any, Optional, Dict, List
 
 from ..abstract import AbstractClient

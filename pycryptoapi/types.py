@@ -11,7 +11,7 @@ class OpenInterestItem(NamedTuple):
     v: float  # value
 
 
-class UnifiedKline(TypedDict):
+class KlineDict(TypedDict):
     s: str  # symbol
     t: int  # open time
     o: float  # open price

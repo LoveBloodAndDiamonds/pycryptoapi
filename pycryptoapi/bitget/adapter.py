@@ -1,8 +1,8 @@
-from typing import Any, List, Dict, Union, overload
+from typing import Any, List, Dict, Union
 
 from ..abstract import AbstractAdapter
 from ..exceptions import AdapterException
-from ..types import TickerDailyItem, UnifiedKline
+from ..types import TickerDailyItem, KlineDict
 
 
 class BitgetAdapter(AbstractAdapter):
@@ -98,7 +98,7 @@ class BitgetAdapter(AbstractAdapter):
             raise TypeError(f"Wrong raw_data type: {type(raw_data)}, excepted List[Dict] or Dict")
 
     @staticmethod
-    def kline_message(raw_msg: Any) -> List[UnifiedKline]:
+    def kline_message(raw_msg: Any) -> List[KlineDict]:
         """
         Преобразует сырое сообщение с вебсокета Bitget в унифицированный формат свечи (Kline).
 
@@ -112,7 +112,7 @@ class BitgetAdapter(AbstractAdapter):
             klines = []
 
             for data in raw_msg["data"]:
-                klines.append(UnifiedKline(
+                klines.append(KlineDict(
                     s=symbol,
                     t=int(data[0]),
                     o=float(data[1]),

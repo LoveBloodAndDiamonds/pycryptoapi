@@ -42,4 +42,3 @@ class MexcClient(AbstractClient):
         """
         url = f"{self._BASE_FUTURES_URL}/api/v1/contract/funding_rate"
         return await self._make_request(method="GET", url=url)
-

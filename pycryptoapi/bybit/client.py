@@ -7,6 +7,7 @@ from ..abstract import AbstractClient
 
 class BybitClient(AbstractClient):
     _BASE_URL: str = "https://api.bybit.kz"  # Kazakhstan
+
     # _BASE_URL: str = "https://api.bybit.nl"  # Netherland
     # _BASE_URL: str = "https://api.bybit-tr.com"  # Turkey
     # _BASE_URL: str = "https://api.byhkbit.com"  # Hong Kong

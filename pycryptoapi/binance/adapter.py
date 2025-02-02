@@ -1,8 +1,8 @@
-from typing import Any, List, Dict, Optional, overload, Union
+from typing import Any, List, Dict, Union
 
 from ..abstract import AbstractAdapter
-from ..types import TickerDailyItem, OpenInterestItem, UnifiedKline
 from ..exceptions import AdapterException
+from ..types import TickerDailyItem, OpenInterestItem, KlineDict
 
 
 class BinanceAdapter(AbstractAdapter):
@@ -112,7 +112,7 @@ class BinanceAdapter(AbstractAdapter):
             return result
 
     @staticmethod
-    def kline_message(raw_msg: Dict[str, Any]) -> UnifiedKline:
+    def kline_message(raw_msg: Dict[str, Any]) -> KlineDict:
         """
         Преобразует сырое сообщение с вебсокета Binance в унифицированный формат свечи (Kline).
 
@@ -122,7 +122,7 @@ class BinanceAdapter(AbstractAdapter):
         """
         try:
             kline = raw_msg["k"]
-            return UnifiedKline(
+            return KlineDict(
                 s=kline["s"],
                 t=kline["t"],
                 o=float(kline["o"]),
