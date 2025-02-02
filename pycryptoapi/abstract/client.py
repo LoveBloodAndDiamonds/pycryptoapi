@@ -63,15 +63,30 @@ class BaseClient(ABC, ClientMixin):
                     params=params,
                     headers=headers
             ) as response:
-                response.raise_for_status()
-                result = await response.json()
-                return result
+                return await self._handle_response(response=response)
         except aiohttp.ClientError as e:
             self._logger.error(f"Request error ({type(e)}): {e}")
             raise
         except Exception as e:
             self._logger.error(f"Unexpected error: {e}")
             raise
+
+    async def _handle_response(self, response: aiohttp.ClientResponse) -> Union[Dict[str, Any], List[Any]]:
+        """
+        Функция обрабатывает ответ от HTTP запроса.
+        :return:
+        """
+        response.raise_for_status()
+        result = await response.json()
+
+        # try to log result if it's not too large
+        try:
+            result_str: str = str(result)
+            self._logger.debug(f"Response: {result_str[:100]} {'...' if len(result_str) > 100 else ''}")
+        except Exception as e:
+            self._logger.error(f"Error while log response: {e}")
+
+        return result
 
     def __str__(self) -> str:
         return f"APIClient"
