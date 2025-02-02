@@ -94,6 +94,11 @@ class AbstractClient(BaseClient, ABC):
         pass
 
     @abstractmethod
-    async def funding_rate(self, *args, **kwargs) -> None:
+    async def funding_rate(self, *args, **kwargs) -> Any:
         """Возвращает JSON, в котором содержится информация о ставке финансирования."""
+        pass
+
+    @abstractmethod
+    async def open_interest(self, *args, **kwargs) -> Any:
+        """Возаращает JSON, в котором содержится информация об открытом интересе."""
         pass

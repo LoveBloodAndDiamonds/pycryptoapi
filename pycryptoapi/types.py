@@ -1,9 +1,14 @@
-from typing import TypedDict, Optional
+from typing import TypedDict, Optional, NamedTuple
 
 
 class Ticker24hItem(TypedDict):
     p: float  # price change percent
     v: float  # volume (USDT)
+
+
+class OpenInterestItem(NamedTuple):
+    t: int  # time
+    v: float  # value
 
 
 class UnifiedKline(TypedDict):

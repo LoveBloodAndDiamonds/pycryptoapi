@@ -75,6 +75,12 @@ class AbstractAdapter(ABC):
 
     @staticmethod
     @abstractmethod
+    def open_interest(raw_data: Any) -> Any:  # todo
+        # todo
+        pass
+
+    @staticmethod
+    @abstractmethod
     def kline_message(raw_msg: Any) -> UnifiedKline | List[UnifiedKline]:
         """
         Преобразует сырое сообщение с вебсокета в унифицированный вид.

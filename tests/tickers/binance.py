@@ -11,8 +11,8 @@ async def test_binance_tickers():
 
         # Преобразуем данные через адаптер
         tickers = BinanceAdapter.tickers(raw_data)
-        print("Processed tickers:", tickers)
-        print("Processed tickers:", len(tickers))
+        # print("Processed tickers:", tickers)
+        # print("Processed tickers:", len(tickers))
 
 
 async def test_binance_futures_tickers():
@@ -51,6 +51,6 @@ async def test_binance_futures_ticker_24h():
 
 # Запуск тестов
 asyncio.run(test_binance_tickers())
-asyncio.run(test_binance_futures_tickers())
-asyncio.run(test_binance_ticker_24h())
-asyncio.run(test_binance_futures_ticker_24h())
+# asyncio.run(test_binance_futures_tickers())
+# asyncio.run(test_binance_ticker_24h())
+# asyncio.run(test_binance_futures_ticker_24h())
