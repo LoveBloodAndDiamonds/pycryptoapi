@@ -1,7 +1,7 @@
 from typing import TypedDict, Optional, NamedTuple
 
 
-class Ticker24hItem(TypedDict):
+class TickerDailyItem(TypedDict):
     p: float  # price change percent
     v: float  # volume (USDT)
 

@@ -3,7 +3,7 @@ __all__ = ["AbstractAdapter", ]
 from abc import ABC, abstractmethod
 from typing import List, Any, Dict, Optional
 
-from ..types import Ticker24hItem, UnifiedKline
+from ..types import TickerDailyItem, UnifiedKline
 
 
 class AbstractAdapter(ABC):
@@ -40,7 +40,7 @@ class AbstractAdapter(ABC):
 
     @staticmethod
     @abstractmethod
-    def ticker_24h(raw_data: Any, only_usdt: bool = True) -> Dict[str, Ticker24hItem]:
+    def ticker_24h(raw_data: Any, only_usdt: bool = True) -> Dict[str, TickerDailyItem]:
         """
         Преобразует сырые данные 24-часовой статистики для тикеров в унифицированный вид.
 
@@ -52,7 +52,7 @@ class AbstractAdapter(ABC):
 
     @staticmethod
     @abstractmethod
-    def futures_ticker_24h(raw_data: Any, only_usdt: bool = True) -> Dict[str, Ticker24hItem]:
+    def futures_ticker_24h(raw_data: Any, only_usdt: bool = True) -> Dict[str, TickerDailyItem]:
         """
         Преобразует сырые данные 24-часовой статистики для фьючерсных тикеров в унифицированный вид.
 

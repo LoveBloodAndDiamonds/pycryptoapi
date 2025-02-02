@@ -2,7 +2,7 @@ from typing import Any, List, Dict
 
 from ..abstract import AbstractAdapter
 from ..exceptions import AdapterException
-from ..types import Ticker24hItem, UnifiedKline
+from ..types import TickerDailyItem, UnifiedKline
 
 
 class MexcAdapter(AbstractAdapter):
@@ -47,7 +47,7 @@ class MexcAdapter(AbstractAdapter):
         return [item["symbol"] for item in raw_data]
 
     @staticmethod
-    def ticker_24h(raw_data: Any, only_usdt: bool = True) -> Dict[str, Ticker24hItem]:
+    def ticker_24h(raw_data: Any, only_usdt: bool = True) -> Dict[str, TickerDailyItem]:
         """
         Преобразует сырые данные 24-часовой статистики для тикеров MEXC в унифицированный вид.
 
@@ -62,21 +62,21 @@ class MexcAdapter(AbstractAdapter):
                 if not symbol.endswith("USDT"):
                     continue
 
-                ticker_data[symbol] = Ticker24hItem(
+                ticker_data[symbol] = TickerDailyItem(
                     p=round(float(item["priceChangePercent"]) * 100, 2),  # Конвертируем в проценты
                     v=int(float(item["quoteVolume"]))  # Объём торгов в валюте котировки
                 )
             return ticker_data
         else:
             return {
-                item["symbol"]: Ticker24hItem(
+                item["symbol"]: TickerDailyItem(
                     p=round(float(item["priceChangePercent"]) * 100, 2),  # Конвертируем в проценты
                     v=int(float(item["quoteVolume"]))  # Объём торгов в валюте котировки
                 ) for item in raw_data
             }
 
     @staticmethod
-    def futures_ticker_24h(raw_data: Any, only_usdt: bool = True) -> Dict[str, Ticker24hItem]:
+    def futures_ticker_24h(raw_data: Any, only_usdt: bool = True) -> Dict[str, TickerDailyItem]:
         """
         Преобразует сырые данные 24-часовой статистики для фьючерсных тикеров MEXC в унифицированный вид.
 
@@ -92,7 +92,7 @@ class MexcAdapter(AbstractAdapter):
                     continue
                 avg_price = (float(item["high24Price"]) + float(item["lower24Price"])) / 2
                 price_change = ((float(item["lastPrice"]) - avg_price) / avg_price) * 100 if avg_price != 0 else 0
-                ticker_data[symbol] = Ticker24hItem(
+                ticker_data[symbol] = TickerDailyItem(
                     p=round(price_change, 2),  # Процентное изменение
                     v=int(float(item["volume24"]))
                 )
@@ -103,7 +103,7 @@ class MexcAdapter(AbstractAdapter):
                 symbol = item["symbol"]
                 avg_price = (float(item["high24Price"]) + float(item["lower24Price"])) / 2
                 price_change = ((float(item["lastPrice"]) - avg_price) / avg_price) * 100 if avg_price != 0 else 0
-                ticker_data[symbol] = Ticker24hItem(
+                ticker_data[symbol] = TickerDailyItem(
                     p=round(price_change, 2),  # Процентное изменение
                     v=int(float(item["volume24"]))
                 )

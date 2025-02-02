@@ -1,7 +1,7 @@
 from typing import Any, List, Dict
 
 from ..abstract import AbstractAdapter
-from ..types import Ticker24hItem, UnifiedKline
+from ..types import TickerDailyItem, UnifiedKline
 from ..exceptions import AdapterException
 
 
@@ -41,7 +41,7 @@ class BybitAdapter(AbstractAdapter):
         return BybitAdapter.tickers(raw_data, only_usdt)
 
     @staticmethod
-    def ticker_24h(raw_data: Any, only_usdt: bool = True) -> Dict[str, Ticker24hItem]:
+    def ticker_24h(raw_data: Any, only_usdt: bool = True) -> Dict[str, TickerDailyItem]:
         """
         Преобразует сырые данные 24-часовой статистики для тикеров Bybit в унифицированный вид.
 
@@ -54,21 +54,21 @@ class BybitAdapter(AbstractAdapter):
             for item in raw_data.get("result", {}).get("list"):
                 symbol = item["symbol"]
                 if symbol.endswith("USDT"):
-                    ticker_data[symbol] = Ticker24hItem(
+                    ticker_data[symbol] = TickerDailyItem(
                         p=round(float(item["price24hPcnt"]) * 100, 2),  # Изменение цены в процентах за 24ч
                         v=int(float(item["volume24h"]))  # Объем за 24ч
                     )
             return ticker_data
         else:
             return {
-                item["symbol"]: Ticker24hItem(
+                item["symbol"]: TickerDailyItem(
                     p=round(float(item["price24hPcnt"]) * 100, 2),  # Изменение цены в процентах за 24ч
                     v=int(float(item["volume24h"]))  # Объем за 24ч
                 ) for item in raw_data["result"]
             }
 
     @staticmethod
-    def futures_ticker_24h(raw_data: Any, only_usdt: bool = True) -> Dict[str, Ticker24hItem]:
+    def futures_ticker_24h(raw_data: Any, only_usdt: bool = True) -> Dict[str, TickerDailyItem]:
         """
         Преобразует сырые данные 24-часовой статистики для фьючерсных тикеров Bybit в унифицированный вид.
 

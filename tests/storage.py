@@ -16,7 +16,7 @@ except ImportError:
     )
 
 from pycryptoapi.enums import StorageKeys, Exchange, MarketType
-from pycryptoapi.types import Ticker24hItem
+from pycryptoapi.types import TickerDailyItem
 
 
 class RedisStorage:
@@ -65,11 +65,11 @@ class RedisStorage:
         """Получить CMC рейтинг из Redis."""
         return await self._get(StorageKeys.CMC_RATING)
 
-    async def set_tickers_24h(self, data: Dict[str, Ticker24hItem], ex: Exchange, m_type: MarketType) -> None:
+    async def set_tickers_24h(self, data: Dict[str, TickerDailyItem], ex: Exchange, m_type: MarketType) -> None:
         """Установить Ticker24h в Redis."""
         await self._set(self._keygen(StorageKeys.TICKERS_24H, ex, m_type), data)
 
-    async def get_tickers_24h(self, ex: Exchange, m_type: MarketType) -> Optional[Dict[str, Ticker24hItem]]:
+    async def get_tickers_24h(self, ex: Exchange, m_type: MarketType) -> Optional[Dict[str, TickerDailyItem]]:
         """Получить Ticker24h из Redis."""
         return await self._get(self._keygen(StorageKeys.TICKERS_24H, ex, m_type))
 

@@ -7,6 +7,7 @@ from pycryptoapi.enums import MarketType
 
 async def callback(msg):
     try:
+        print(msg)
         k = BinanceAdapter.kline_message(raw_msg=msg)
         print(k)
     except AdapterException as e:

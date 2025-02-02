@@ -1,7 +1,7 @@
-from typing import Any, List, Dict, Optional
+from typing import Any, List, Dict, Optional, overload, Union
 
 from ..abstract import AbstractAdapter
-from ..types import Ticker24hItem, UnifiedKline
+from ..types import TickerDailyItem, OpenInterestItem, UnifiedKline
 from ..exceptions import AdapterException
 
 
@@ -38,7 +38,7 @@ class BinanceAdapter(AbstractAdapter):
         return BinanceAdapter.tickers(raw_data, only_usdt)
 
     @staticmethod
-    def ticker_24h(raw_data: List[Dict[str, str]], only_usdt: bool = True) -> Dict[str, Ticker24hItem]:
+    def ticker_24h(raw_data: List[Dict[str, str]], only_usdt: bool = True) -> Dict[str, TickerDailyItem]:
         """
         Преобразует сырые данные 24-часовой статистики для тикеров в унифицированный вид.
 
@@ -51,21 +51,21 @@ class BinanceAdapter(AbstractAdapter):
             for item in raw_data:
                 symbol = item["symbol"]
                 if symbol.endswith("USDT"):
-                    tickers_data[symbol] = Ticker24hItem(
+                    tickers_data[symbol] = TickerDailyItem(
                         p=round(float(item["priceChangePercent"]), 2),
                         v=int(float(item["quoteVolume"])),
                     )
             return tickers_data
         else:
             return {
-                item["symbol"]: Ticker24hItem(
+                item["symbol"]: TickerDailyItem(
                     p=round(float(item["priceChangePercent"]), 2),
                     v=int(float(item["quoteVolume"])),
                 ) for item in raw_data
             }
 
     @staticmethod
-    def futures_ticker_24h(raw_data: List[Dict[str, str]], only_usdt: bool = True) -> Dict[str, Ticker24hItem]:
+    def futures_ticker_24h(raw_data: List[Dict[str, str]], only_usdt: bool = True) -> Dict[str, TickerDailyItem]:
         """
         Преобразует сырые данные 24-часовой статистики для фьючерсных тикеров в унифицированный вид.
 
@@ -95,7 +95,24 @@ class BinanceAdapter(AbstractAdapter):
             return {item["symbol"]: float(item["lastFundingRate"]) for item in raw_data}
 
     @staticmethod
-    def kline_message(raw_msg: Any) -> UnifiedKline:
+    def open_interest(raw_data: Union[Dict[str, str], List[Dict[str, str]]]) -> Dict[str, OpenInterestItem]:
+        """
+        Преобразует сырые данные открытого интереса в унифицированный вид.
+
+        :param raw_data: Сырые данные открытого интереса по тикеру. Можно передать список данных.
+        :return: Cловарь с фьючерсными тикерами и их ставкой финансирования.
+        """
+        # {'openInterest': '84548.990', 'symbol': 'BTCUSDT', 'time': 1738480839502}
+        if isinstance(raw_data, dict):
+            return {raw_data["symbol"]: OpenInterestItem(int(raw_data["time"]), float(raw_data["openInterest"]))}
+        elif isinstance(raw_data, list):
+            result = {}
+            for item in raw_data:
+                result[item["symbol"]] = OpenInterestItem(int(item["time"]), float(item["openInterest"]))
+            return result
+
+    @staticmethod
+    def kline_message(raw_msg: Dict[str, Any]) -> UnifiedKline:
         """
         Преобразует сырое сообщение с вебсокета Binance в унифицированный формат свечи (Kline).
 

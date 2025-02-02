@@ -2,7 +2,7 @@ from typing import Any, List, Dict, Union
 
 from ..abstract import AbstractAdapter
 from ..exceptions import AdapterException
-from ..types import Ticker24hItem, UnifiedKline
+from ..types import TickerDailyItem, UnifiedKline
 
 
 class OkxAdapter(AbstractAdapter):
@@ -37,7 +37,7 @@ class OkxAdapter(AbstractAdapter):
         return [item["instId"] for item in raw_data["data"]]
 
     @staticmethod
-    def ticker_24h(raw_data: Any, only_usdt: bool = True) -> Dict[str, Ticker24hItem]:
+    def ticker_24h(raw_data: Any, only_usdt: bool = True) -> Dict[str, TickerDailyItem]:
         """
         Преобразует сырые данные 24-часовой статистики для тикеров OKX в унифицированный вид.
 
@@ -57,7 +57,7 @@ class OkxAdapter(AbstractAdapter):
                 last_price = float(item["last"])
                 p_change = ((last_price - open_price) / open_price) * 100
 
-                ticker_data[symbol] = Ticker24hItem(
+                ticker_data[symbol] = TickerDailyItem(
                     p=round(p_change, 2),  # Процентное изменение
                     v=int(float(item["volCcy24h"]))  # Объём торгов в валюте котировки
                 )
@@ -72,14 +72,14 @@ class OkxAdapter(AbstractAdapter):
                 last_price = float(item["last"])
                 p_change = ((last_price - open_price) / open_price) * 100
 
-                ticker_data[symbol] = Ticker24hItem(
+                ticker_data[symbol] = TickerDailyItem(
                     p=round(p_change, 2),  # Процентное изменение
                     v=int(float(item["volCcy24h"]))  # Объём торгов в валюте котировки
                 )
             return ticker_data
 
     @staticmethod
-    def futures_ticker_24h(raw_data: Any, only_usdt: bool = True) -> Dict[str, Ticker24hItem]:
+    def futures_ticker_24h(raw_data: Any, only_usdt: bool = True) -> Dict[str, TickerDailyItem]:
         """
         Преобразует сырые данные 24-часовой статистики для фьючерсных тикеров OKX в унифицированный вид.
 
@@ -99,7 +99,7 @@ class OkxAdapter(AbstractAdapter):
                 last_price = float(item["last"])
                 p_change = ((last_price - open_price) / open_price) * 100
 
-                ticker_data[symbol] = Ticker24hItem(
+                ticker_data[symbol] = TickerDailyItem(
                     p=round(p_change, 2),  # Процентное изменение
                     v=int(float(item["volCcy24h"]))  # Объём торгов в валюте котировки
                 )
@@ -113,7 +113,7 @@ class OkxAdapter(AbstractAdapter):
                 last_price = float(item["last"])
                 p_change = ((last_price - open_price) / open_price) * 100
 
-                ticker_data[symbol] = Ticker24hItem(
+                ticker_data[symbol] = TickerDailyItem(
                     p=round(p_change, 2),  # Процентное изменение
                     v=int(float(item["volCcy24h"]))  # Объём торгов в валюте котировки
                 )
