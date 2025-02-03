@@ -2,7 +2,7 @@ from typing import Any, List, Dict
 
 from ..abstract import AbstractAdapter
 from ..exceptions import AdapterException
-from ..types import TickerDailyItem, KlineDict
+from ..types import TickerDailyItem, KlineDict, OpenInterestItem
 
 
 class BybitAdapter(AbstractAdapter):
@@ -124,3 +124,7 @@ class BybitAdapter(AbstractAdapter):
             raise AdapterException(f"Missing key in Bybit kline message: {e}")
         except (TypeError, ValueError) as e:
             raise AdapterException(f"Invalid data format in Bybit kline message: {e}")
+
+    @staticmethod
+    def open_interest(raw_data: Any) -> Dict[str, OpenInterestItem]:
+        raise NotImplementedError("Will implemented soon...")

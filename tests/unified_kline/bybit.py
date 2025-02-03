@@ -18,7 +18,7 @@ async def main():
     socket = BybitSocketManager.klines_socket(
         market_type=MarketType.SPOT,
         timeframe="1",
-        tickers=["BTCUSDT"],
+        tickers=["BTCUSDT", "ETHUSDT"],
         callback=callback
     )
 
