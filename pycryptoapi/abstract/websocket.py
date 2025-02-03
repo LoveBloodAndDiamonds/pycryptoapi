@@ -211,10 +211,10 @@ class AbstractWebsocket(ABC):
             self._curr_ping_task.cancel()
 
     def __str__(self) -> str:
-        return f"[Websocket {self._market_type} {self._topic} {len(self._tickers) if self._tickers else '' or '*'}Xtickers]"
+        return f"[Ws {self._market_type} {self._topic} {len(self._tickers) if self._tickers else '*'}Xtickers]"
 
     def __repr__(self) -> str:
-        return f"<Websocket {self._market_type} {self._topic}>"
+        return f"<Ws {self._market_type} {self._topic}>"
 
 
 class AbstractSocketManager(ABC):
