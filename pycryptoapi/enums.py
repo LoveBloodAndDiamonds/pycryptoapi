@@ -4,12 +4,18 @@ __all__ = [
 ]
 
 from enum import StrEnum
+from typing import Tuple
 
 
 class MarketType(StrEnum):
     """Перечисление типов криптовалютных рынков."""
     FUTURES: str = "FUTURES"
     SPOT: str = "SPOT"
+
+    def __add__(self, exchange: "Exchange") -> Tuple["Exchange", "MarketType"]:
+        if not isinstance(exchange, Exchange):
+            raise TypeError(f"Cannot add MarketType to {type(exchange)}")
+        return exchange, self
 
 
 class Exchange(StrEnum):
