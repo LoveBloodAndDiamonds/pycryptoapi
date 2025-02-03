@@ -39,3 +39,8 @@ class Exchange(StrEnum):
     # BINANCE_US: str = "BINANCE_US"
     # POLONIEX: str = "POLONIEX"
     # BITSTAMP: str = "BITSTAMP"
+
+    def __add__(self, market_type: "MarketType") -> Tuple["Exchange", "MarketType"]:
+        if not isinstance(market_type, MarketType):
+            raise TypeError(f"Cannot add MarketType to {type(self)}")
+        return self, market_type
