@@ -3,6 +3,7 @@ __all__ = ["AbstractClient", "BaseClient", ]
 import logging
 from abc import ABC, abstractmethod
 from typing import List, Any, Dict, Optional, Union, Literal
+import asyncio
 
 import aiohttp
 import loguru
@@ -30,16 +31,20 @@ class BaseClient(ABC, ClientMixin):
             self,
             session: aiohttp.ClientSession,
             logger: logging.Logger | Logger = loguru.logger,
+            max_retries: Optional[int] = 3,
+            retry_delay: Optional[int | float] = 0.1
     ) -> None:
         self._session: aiohttp.ClientSession = session
         self._logger: logging.Logger | Logger = logger
+        self._max_retries: int = max(max_retries, 1)
+        self._retry_delay: int | float = max(retry_delay, 0)
 
     async def _make_request(
             self,
             method: Literal["GET", "POST", "PUT", "DELETE"],
             url: str,
             params: Optional[Dict[str, Any]] = None,
-            headers: Optional[Dict[str, Any]] = None
+            headers: Optional[Dict[str, Any]] = None,
     ) -> Union[Dict[str, Any], List[Any]]:
         """
         Выполняет HTTP-запрос к API биржи.
@@ -56,20 +61,31 @@ class BaseClient(ABC, ClientMixin):
         """
         self._logger.debug(f"Request: {method} {url} | Params: {params} | Headers: {headers}")
 
-        try:
-            async with self._session.request(
-                    method=method,
-                    url=url,
-                    params=params,
-                    headers=headers
-            ) as response:
-                return await self._handle_response(response=response)
-        except aiohttp.ClientError as e:
-            self._logger.error(f"Request error ({type(e)}): {e}")
-            raise
-        except Exception as e:
-            self._logger.error(f"Unexpected error: {e}")
-            raise
+        for attempt in range(1, self._max_retries + 1):
+            try:
+                async with self._session.request(
+                        method=method,
+                        url=url,
+                        params=params,
+                        headers=headers
+                ) as response:
+                    return await self._handle_response(response=response)
+
+            except aiohttp.ServerTimeoutError as e:
+                self._logger.warning(f"Attempt {attempt}/{self._max_retries} failed: ServerTimeoutError -> {e}")
+                if attempt < self._max_retries:
+                    await asyncio.sleep(self._retry_delay)
+                else:
+                    self._logger.error("Max retries reached. Giving up.")
+                    raise
+
+            except aiohttp.ClientError as e:
+                self._logger.error(f"Request error ({type(e)}): {e}")
+                raise  # Ошибки клиента нет смысла повторять
+
+            except Exception as e:
+                self._logger.error(f"Unexpected error: {e}")
+                raise  # Все остальные ошибки пробрасываем сразу
 
     async def _handle_response(self, response: aiohttp.ClientResponse) -> Union[Dict[str, Any], List[Any]]:
         """

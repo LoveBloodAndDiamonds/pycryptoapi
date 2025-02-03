@@ -131,8 +131,8 @@ class BinanceAdapter(AbstractAdapter):
                 c=float(kline["c"]),
                 v=float(kline["q"]),  # Используем quote volume (в USDT)
                 T=kline["T"],
-                x=kline.get("x"),  # Берём через .get(), чтобы не выбрасывало KeyError
-                i=kline.get("i")
+                x=kline["x"],  # Берём через .get(), чтобы не выбрасывало KeyError
+                i=kline["i"]
             )
         except KeyError as e:
             raise AdapterException(f"Missing key in Binance kline message: {e}")
