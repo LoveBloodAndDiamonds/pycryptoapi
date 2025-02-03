@@ -43,7 +43,7 @@ class AbstractWebsocket(ABC):
             timeframe: Optional[str] = None,
             logger: Union[logging.Logger, Logger] = loguru.logger,
             ping_interval: int = 30,
-            reconnect_interval: int = 60,
+            reconnect_interval: int = 30,
             **ws_kwargs  # websocket kwargs
     ) -> None:
         self._topic: str = topic
