@@ -46,11 +46,13 @@ class BinanceSocketManager(AbstractSocketManager):
     @classmethod
     def liquidations_socket(
             cls,
-            callback: Callable[..., Awaitable]
+            callback: Callable[..., Awaitable],
+            **kwargs
     ) -> BinanceWebsocket:
         return BinanceWebsocket(
             topic="!forceOrder@arr",
-            callback=callback
+            callback=callback,
+            **kwargs
         )
 
     @classmethod
@@ -64,12 +66,14 @@ class BinanceSocketManager(AbstractSocketManager):
                 "1d", "3d", "1w", "1M"
             ],
             callback: Callable[..., Awaitable],
+            **kwargs
     ) -> BinanceWebsocket:
         return BinanceWebsocket(
             topic="@kline" + "_" + timeframe,
             tickers=tickers,
             market_type=market_type,
-            callback=callback
+            callback=callback,
+            **kwargs
         )
 
     @classmethod
@@ -77,23 +81,27 @@ class BinanceSocketManager(AbstractSocketManager):
             cls,
             market_type: MarketType,
             callback: Callable[..., Awaitable],
-            tickers: List[str]
+            tickers: List[str],
+            **kwargs
     ) -> BinanceWebsocket:
         return BinanceWebsocket(
             topic="@aggTrade",
             tickers=tickers,
             market_type=market_type,
-            callback=callback
+            callback=callback,
+            **kwargs
         )
 
     @classmethod
     def tickers_socket(
             cls,
             market_type: MarketType,
-            callback: Callable[..., Awaitable]
+            callback: Callable[..., Awaitable],
+            **kwargs
     ) -> BinanceWebsocket:
         return BinanceWebsocket(
             topic="!ticker@arr",
             market_type=market_type,
-            callback=callback
+            callback=callback,
+            **kwargs
         )

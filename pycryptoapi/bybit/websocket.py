@@ -40,13 +40,15 @@ class BybitSocketManager(AbstractSocketManager):
             cls,
             market_type: MarketType,
             tickers: List[str],
-            callback: Callable[..., Awaitable]
+            callback: Callable[..., Awaitable],
+            **kwargs
     ) -> BybitWebsocket:
         return BybitWebsocket(
             topic="publicTrade",
             tickers=tickers,
             market_type=market_type,
-            callback=callback
+            callback=callback,
+            **kwargs
         )
 
     @classmethod
@@ -59,13 +61,15 @@ class BybitSocketManager(AbstractSocketManager):
                 "60", "120", "240", "360", "720",
                 "D", "W", "M"
             ],
-            callback: Callable[..., Awaitable]
+            callback: Callable[..., Awaitable],
+            **kwargs
     ) -> BybitWebsocket:
         return BybitWebsocket(
             topic="kline" + "." + timeframe,
             tickers=tickers,
             market_type=market_type,
-            callback=callback
+            callback=callback,
+            **kwargs
         )
 
     @classmethod
@@ -73,24 +77,28 @@ class BybitSocketManager(AbstractSocketManager):
             cls,
             market_type: MarketType,
             tickers: List[str],
-            callback: Callable[..., Awaitable]
+            callback: Callable[..., Awaitable],
+            **kwargs
     ) -> BybitWebsocket:
         return BybitWebsocket(
             topic="tickers",
             tickers=tickers,
             market_type=market_type,
-            callback=callback
+            callback=callback,
+            **kwargs
         )
 
     @classmethod
     def liquidations_socket(
             cls,
             tickers: List[str],
-            callback: Callable[..., Awaitable]
+            callback: Callable[..., Awaitable],
+            **kwargs
     ) -> BybitWebsocket:
         return BybitWebsocket(
             topic="liquidation",
             tickers=tickers,
             market_type=MarketType.FUTURES,
-            callback=callback
+            callback=callback,
+            **kwargs
         )
