@@ -121,7 +121,10 @@ class BinanceAdapter(AbstractAdapter):
         :raises AdapterException: Если сообщение имеет неверную структуру или данные невозможно преобразовать.
         """
         try:
-            kline = raw_msg["k"]
+            try:
+                kline = raw_msg["data"]["k"]
+            except KeyError:
+                kline = raw_msg["k"]
             return KlineDict(
                 s=kline["s"],
                 t=kline["t"],

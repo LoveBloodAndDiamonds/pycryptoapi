@@ -18,7 +18,7 @@ async def main():
     socket = BinanceSocketManager.klines_socket(
         market_type=MarketType.SPOT,
         timeframe="1m",
-        tickers=["BTCUSDT"],
+        tickers=["BTCUSDT", "ETHUSDT"],
         callback=callback
     )
 
