@@ -71,8 +71,8 @@ class BaseClient(ABC, ClientMixin):
                 ) as response:
                     return await self._handle_response(response=response)
 
-            except aiohttp.ServerTimeoutError as e:
-                self._logger.warning(f"Attempt {attempt}/{self._max_retries} failed: ServerTimeoutError -> {e}")
+            except (aiohttp.ServerTimeoutError, aiohttp.ConnectionTimeoutError) as e:
+                self._logger.warning(f"Attempt {attempt}/{self._max_retries} failed: {type(e)} -> {e}")
                 if attempt < self._max_retries:
                     await asyncio.sleep(self._retry_delay)
                 else:
