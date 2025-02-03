@@ -1,6 +1,6 @@
 __all__ = ["BitgetClient"]
 
-from typing import Any, Optional
+from typing import Any, Optional, Dict
 
 from ..abstract import AbstractClient
 
@@ -49,3 +49,6 @@ class BitgetClient(AbstractClient):
             "productType": product_type,
         }
         return await self._make_request(method="GET", url=url, params=params)
+
+    async def open_interest(self, symbol: str) -> Dict[str, str]:
+        raise NotImplementedError("Will implemented soon...")

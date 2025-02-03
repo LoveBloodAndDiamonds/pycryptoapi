@@ -1,6 +1,6 @@
 __all__ = ["OkxClient"]
 
-from typing import Any
+from typing import Any, Dict
 
 from ..abstract import AbstractClient
 
@@ -39,3 +39,6 @@ class OkxClient(AbstractClient):
         url = f"{self._BASE_URL}/api/v5/public/funding-rate"
         params = {"instId": symbol}
         return await self._make_request(method="GET", url=url, params=params)
+
+    async def open_interest(self, symbol: str) -> Dict[str, str]:
+        raise NotImplementedError("Will implemented soon...")

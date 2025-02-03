@@ -42,3 +42,6 @@ class MexcClient(AbstractClient):
         """
         url = f"{self._BASE_FUTURES_URL}/api/v1/contract/funding_rate"
         return await self._make_request(method="GET", url=url)
+
+    async def open_interest(self, symbol: str) -> Dict[str, str]:
+        raise NotImplementedError("Will implemented soon...")

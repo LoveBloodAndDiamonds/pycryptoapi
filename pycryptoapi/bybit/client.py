@@ -50,3 +50,6 @@ class BybitClient(AbstractClient):
         :raises Exception: Если запрос не выполнен успешно.
         """
         return await self.futures_ticker(symbol=symbol)
+
+    async def open_interest(self, symbol: str) -> Dict[str, str]:
+        raise NotImplementedError("Will implemented soon...")
