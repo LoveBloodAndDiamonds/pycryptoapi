@@ -4,7 +4,7 @@ import json
 from typing import Optional, List, Callable, Awaitable, Literal
 
 from ..abstract import AbstractWebsocket, AbstractSocketManager
-from ..exceptions import WrongTickers
+from ..exc import WrongTickers
 
 
 class OkxWebsocket(AbstractWebsocket):

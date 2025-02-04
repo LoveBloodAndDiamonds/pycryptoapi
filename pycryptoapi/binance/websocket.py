@@ -4,7 +4,7 @@ from typing import Optional, Callable, Awaitable, List, Literal
 
 from ..abstract import AbstractWebsocket, AbstractSocketManager
 from ..enums import MarketType
-from ..exceptions import WrongMarketType
+from ..exc import WrongMarketType
 
 
 class BinanceWebsocket(AbstractWebsocket):

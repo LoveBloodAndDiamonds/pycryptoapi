@@ -5,7 +5,7 @@ from typing import Optional, Union, List, Literal, Callable, Awaitable, Self, Di
 
 from ..abstract import AbstractWebsocket, AbstractSocketManager
 from ..enums import MarketType
-from ..exceptions import WrongMarketType, WrongTimeframe
+from ..exc import WrongMarketType, WrongTimeframe
 
 
 class MexcWebsocket(AbstractWebsocket):

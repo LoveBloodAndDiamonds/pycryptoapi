@@ -1,7 +1,7 @@
 from typing import Any, List, Dict
 
 from ..abstract import AbstractAdapter
-from ..exceptions import AdapterException
+from ..exc import AdapterException
 from ..types import TickerDailyItem, KlineDict, OpenInterestItem
 
 
