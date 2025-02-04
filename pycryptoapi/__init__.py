@@ -5,7 +5,8 @@ __all__ = [
     "BybitAdapter", "BybitClient", "BybitSocketManager", "BybitWebsocket",
     "MexcAdapter", "MexcClient", "MexcSocketManager", "MexcWebsocket",
     "OkxAdapter", "OkxClient", "OkxSocketManager", "OkxWebsocket",
-    "ADAPTERS_MAPPER", "CLIENTS_MAPPER", "SOCKETS_MAPPER"
+    "ADAPTERS_MAPPER", "CLIENTS_MAPPER", "SOCKETS_MAPPER",
+    "CoinmarketcapAdapter", "CoinmarketcapClient",
 ]
 
 from .abstract import *
