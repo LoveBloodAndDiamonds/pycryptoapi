@@ -44,6 +44,8 @@ class AbstractWebsocket(ABC):
             logger: Union[logging.Logger, Logger] = loguru.logger,
             ping_interval: int = 30,
             reconnect_interval: int = 30,
+            num_workers: int = 3,  # Количество воркеров
+            max_queue_size: int = 100,  # Макс. размер очереди
             **ws_kwargs  # websocket kwargs
     ) -> None:
         self._topic: str = topic
@@ -54,6 +56,11 @@ class AbstractWebsocket(ABC):
         self._ping_interval: int = ping_interval
         self._reconnect_interval: int = reconnect_interval
         self._logger: logging.Logger | Logger = logger
+
+        # Очередь и список рабочих
+        self._queue = asyncio.Queue(maxsize=max_queue_size)
+        self._num_workers: int = num_workers
+        self._workers = []
 
         # Задача для отправки ping-сообщений
         self._curr_ping_task: Optional[asyncio.Task] = None
@@ -138,7 +145,7 @@ class AbstractWebsocket(ABC):
             try:
                 message = await conn.recv()
                 self._logger.trace(f"{self} Received message: {message}")
-                await self._callback(orjson.loads(message))
+                await self._queue.put(orjson.loads(message))
             except orjson.JSONDecodeError:
                 if message not in ["ping", "pong"]:
                     self._logger.error(f"{self} orjson.JSONDecodeError whilte handling message: {message}")
@@ -185,6 +192,17 @@ class AbstractWebsocket(ABC):
         except Exception as e:
             self._logger.error(f"{self} Failed to send subscribe message: {e}")
 
+    async def _worker(self):
+        """Обрабатывает сообщения из очереди"""
+        while self._is_active:
+            try:
+                data = await self._queue.get()  # Получаем сообщение
+                await self._callback(data)  # Передаем в callback
+            except Exception as e:
+                self._logger.error(f"{self} Error({type(e)}) while processing message: {e}")
+            finally:
+                self._queue.task_done()
+
     async def start(self):
         """
         Запускает процесс подключения и обработки сообщений.
@@ -193,6 +211,9 @@ class AbstractWebsocket(ABC):
             raise RuntimeError(f"Can not be runned more than once")
         else:
             self._is_active: bool = True
+
+        # Запускаем воркеры
+        self._workers = [asyncio.create_task(self._worker()) for _ in range(self._num_workers)]
 
         while self._is_active:
             try:
@@ -207,6 +228,17 @@ class AbstractWebsocket(ABC):
         Останавливает WebSocket.
         """
         self._is_active = False
+
+        # Дождаться обработки очереди
+        await self._queue.join()
+
+        # Отменить все задачи воркеров
+        for worker in self._workers:
+            worker.cancel()
+
+        # Дождаться завершения воркеров
+        await asyncio.gather(*self._workers, return_exceptions=True)
+
         if self._curr_ping_task:
             self._curr_ping_task.cancel()
 

@@ -1,9 +1,8 @@
 import asyncio
 
 from pycryptoapi.binance import BinanceSocketManager, BinanceAdapter
-from pycryptoapi.exceptions import AdapterException
 from pycryptoapi.enums import MarketType
-from pycryptoapi.types import KlineDict
+from pycryptoapi.exceptions import AdapterException
 
 
 async def callback(msg):
@@ -12,11 +11,6 @@ async def callback(msg):
         k = BinanceAdapter.kline_message(raw_msg=msg)
         print(k)
 
-        k = KlineDict(
-
-        )
-
-        print(k[""])
     except AdapterException as e:
         print(f"Can not adapt message ({e}): {msg}")
 
