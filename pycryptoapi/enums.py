@@ -25,22 +25,23 @@ class Exchange(StrEnum):
     BITGET: str = "BITGET"
     OKX: str = "OKX"
     MEXC: str = "MEXC"
-    # BITMEX: str = "BITMEX"
-    # BINGX: str = "BINGX"
-    # COINBASE: str = "COINBASE"
-    # GATEIO: str = "GATEIO"
-    # KUCOIN: str = "KUCOIN"
-    # DERIBIT: str = "DERIBIT"
-    # HUOBI: str = "HUOBI"
-    # WHITEBIT: str = "WHITEBIT"
-    # KRAKEN: str = "KRAKEN"
-    # BITFINEX: str = "BITFINEX"
-    # DYDX: str = "DYDX"
-    # BINANCE_US: str = "BINANCE_US"
-    # POLONIEX: str = "POLONIEX"
-    # BITSTAMP: str = "BITSTAMP"
 
     def __add__(self, market_type: "MarketType") -> Tuple["Exchange", "MarketType"]:
         if not isinstance(market_type, MarketType):
             raise TypeError(f"Cannot add MarketType to {type(self)}")
         return self, market_type
+
+# BITMEX: str = "BITMEX"
+# BINGX: str = "BINGX"
+# COINBASE: str = "COINBASE"
+# GATEIO: str = "GATEIO"
+# KUCOIN: str = "KUCOIN"
+# DERIBIT: str = "DERIBIT"
+# HUOBI: str = "HUOBI"
+# WHITEBIT: str = "WHITEBIT"
+# KRAKEN: str = "KRAKEN"
+# BITFINEX: str = "BITFINEX"
+# DYDX: str = "DYDX"
+# BINANCE_US: str = "BINANCE_US"
+# POLONIEX: str = "POLONIEX"
+# BITSTAMP: str = "BITSTAMP"
