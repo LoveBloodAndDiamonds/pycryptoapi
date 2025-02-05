@@ -8,6 +8,7 @@ from ..abstract import AbstractClient
 class OkxClient(AbstractClient):
     _BASE_URL: str = "https://www.okx.com"
 
+    # Rate Limit: 20 requests per 2 seconds
     async def ticker(self) -> Any:
         """
         Получает 24-часовую статистику изменения цены и объема для спотового рынка.
@@ -18,6 +19,7 @@ class OkxClient(AbstractClient):
         params = {"instType": "SPOT"}
         return await self._make_request(method="GET", url=url, params=params)
 
+    # Rate Limit: 20 requests per 2 seconds
     async def futures_ticker(self) -> Any:
         """
         Получает 24-часовую статистику изменения цены и объема для фьючерсного рынка.
@@ -28,6 +30,7 @@ class OkxClient(AbstractClient):
         params = {"instType": "SWAP"}
         return await self._make_request(method="GET", url=url, params=params)
 
+    # Rate Limit: 20 requests per 2 seconds
     async def funding_rate(self, symbol: str) -> Any:
         """
         Получает текущую ставку финансирования для указанного символа.

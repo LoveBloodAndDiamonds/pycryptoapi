@@ -2,7 +2,7 @@ from typing import Any, List, Dict, Union
 
 from ..abstract import AbstractAdapter
 from ..exc import AdapterException
-from ..types import TickerDailyItem, KlineDict
+from ..types import TickerDailyItem, KlineDict, OpenInterestItem
 
 
 class BitgetAdapter(AbstractAdapter):
@@ -96,6 +96,49 @@ class BitgetAdapter(AbstractAdapter):
             return {data["symbol"]: float(data["fundingRate"]) * 100}
         else:
             raise TypeError(f"Wrong raw_data type: {type(raw_data)}, excepted List[Dict] or Dict")
+
+    @staticmethod
+    def open_interest(raw_data: Union[Dict[str, Any], List[Dict[str, Any]]]) -> Dict[str, OpenInterestItem]:
+        """
+        Преобразует сырой ответ с запроса в унифированный формат.
+
+        :param raw_data: Сырые данные открытого интереса по тикеру. Можно передать список данных.
+        :return: Cловарь с фьючерсными тикерами и их открытым интересом.
+        """
+        '''
+            {
+        "code": "00000",
+        "msg": "success",
+        "requestTime": 1695796780343,
+        "data": {
+            "openInterestList": [
+                {
+                    "symbol": "BTCUSDT",
+                    "size": "34278.06"
+                }
+            ],
+            "ts": "1695796781616"
+        }
+        }'''
+        if isinstance(raw_data, dict):
+            data = raw_data["data"]["openInterestList"][0]
+            return {
+                data["symbol"]: OpenInterestItem(
+                    t=int(raw_data["data"]["ts"]),
+                    v=float(data["size"])
+                )
+            }
+        elif isinstance(raw_data, list):
+            result: dict[str, OpenInterestItem] = {}
+            for item in raw_data:
+                data = item["data"]["openInterestList"][0]
+                result[data["symbol"]] = OpenInterestItem(
+                    t=int(item["data"]["ts"]),
+                    v=float(data["size"])
+                )
+            return result
+        else:
+            raise ValueError(f"Wrong raw_data type: {type(raw_data)}, excepted: list or dict")
 
     @staticmethod
     def kline_message(raw_msg: Any) -> List[KlineDict]:

@@ -13,8 +13,12 @@ async def test_bitget_funding_rate():
 
         # Пример вызова функции funding_rate
         r = []
+        s = None
         for t in ["BTCUSDT", "ETHUSDT", "SKLUSDT"]:
-            r.append(await client.open_interest(symbol=t))
+            resp = await client.open_interest(symbol=t)
+            r.append(resp)
+            s = resp
+
 
         # Печать результата с использованием prettyprint
         pprint(r)
@@ -23,6 +27,9 @@ async def test_bitget_funding_rate():
 
         pprint(a)
 
+        b = BitgetAdapter.open_interest(s)
+
+        print(b)
 
 # Запуск теста
 if __name__ == "__main__":

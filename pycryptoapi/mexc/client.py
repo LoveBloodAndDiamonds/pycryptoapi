@@ -9,6 +9,7 @@ class MexcClient(AbstractClient):
     _BASE_SPOT_URL: str = "https://api.mexc.com"
     _BASE_FUTURES_URL: str = "https://contract.mexc.com"
 
+    # Rate limit: 1w w/ symbol or 40w w/o symbol
     async def ticker(self, symbol: Optional[str] = None) -> Any:
         """
         Получает 24-часовую статистику изменения цены и объема для спотового рынка.
@@ -21,6 +22,7 @@ class MexcClient(AbstractClient):
         params = {"symbol": symbol} if symbol else {}
         return await self._make_request(method="GET", url=url, params=params)
 
+    # Rate limit:20 times/2 seconds
     async def futures_ticker(self, symbol: Optional[str] = None) -> Any:
         """
         Получает 24-часовую статистику изменения цены и объема для фьючерсного рынка.

@@ -100,7 +100,7 @@ class BinanceAdapter(AbstractAdapter):
         Преобразует сырые данные открытого интереса в унифицированный вид.
 
         :param raw_data: Сырые данные открытого интереса по тикеру. Можно передать список данных.
-        :return: Cловарь с фьючерсными тикерами и их ставкой финансирования.
+        :return: Cловарь с фьючерсными тикерами и их открытым интересом.
         """
         # {'openInterest': '84548.990', 'symbol': 'BTCUSDT', 'time': 1738480839502}
         if isinstance(raw_data, dict):
@@ -112,6 +112,8 @@ class BinanceAdapter(AbstractAdapter):
             for item in raw_data:
                 result[item["symbol"]] = OpenInterestItem(t=int(item["time"]), v=float(item["openInterest"]))
             return result
+        else:
+            raise ValueError(f"Wrong raw_data type: {type(raw_data)}, excepted: list or dict")
 
     @staticmethod
     def kline_message(raw_msg: Dict[str, Any]) -> KlineDict:
