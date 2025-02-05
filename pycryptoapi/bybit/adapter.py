@@ -126,5 +126,17 @@ class BybitAdapter(AbstractAdapter):
             raise AdapterException(f"Invalid data format in Bybit kline message: {e}")
 
     @staticmethod
-    def open_interest(raw_data: Any) -> Dict[str, OpenInterestItem]:
-        raise NotImplementedError("Will implemented soon...")
+    def open_interest(raw_data: Dict[str, Any]) -> Dict[str, OpenInterestItem]:
+        # Обработка данных от Bybit
+        try:
+            result: dict[str, OpenInterestItem] = {}
+            for item in raw_data["result"]["list"]:
+                result[item["symbol"]] = OpenInterestItem(
+                    t=int(item["nextFundingTime"]),  # Используем nextFundingTime как время
+                    v=float(item["openInterest"])  # Открытый интерес
+                )
+            return result
+        except KeyError as e:
+            raise AdapterException(f"Missing key in Bybit kline message: {e}")
+        except (TypeError, ValueError) as e:
+            raise AdapterException(f"Invalid data format in Bybit kline message: {e}")
