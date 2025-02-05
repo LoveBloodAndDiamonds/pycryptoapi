@@ -1,4 +1,4 @@
-from typing import TypedDict, Optional, NamedTuple
+from typing import TypedDict, Optional
 
 
 class TickerDailyItem(TypedDict):
@@ -6,7 +6,7 @@ class TickerDailyItem(TypedDict):
     v: float  # volume (USDT)
 
 
-class OpenInterestItem(NamedTuple):
+class OpenInterestItem(TypedDict):
     t: int  # time
     v: float  # value
 

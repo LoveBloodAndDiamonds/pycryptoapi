@@ -104,11 +104,13 @@ class BinanceAdapter(AbstractAdapter):
         """
         # {'openInterest': '84548.990', 'symbol': 'BTCUSDT', 'time': 1738480839502}
         if isinstance(raw_data, dict):
-            return {raw_data["symbol"]: OpenInterestItem(int(raw_data["time"]), float(raw_data["openInterest"]))}
+            return {raw_data["symbol"]: OpenInterestItem(
+                t=int(raw_data["time"]),
+                v=float(raw_data["openInterest"]))}
         elif isinstance(raw_data, list):
             result = {}
             for item in raw_data:
-                result[item["symbol"]] = OpenInterestItem(int(item["time"]), float(item["openInterest"]))
+                result[item["symbol"]] = OpenInterestItem(t=int(item["time"]), v=float(item["openInterest"]))
             return result
 
     @staticmethod
