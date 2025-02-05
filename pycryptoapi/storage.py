@@ -2,7 +2,7 @@ __all__ = ["RedisStorage", ]
 
 import enum
 from datetime import datetime
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 
 import loguru
 import orjson
@@ -33,7 +33,7 @@ class RedisStorage:
         FUNDING_RATE: str = "FUNDING_RATE"
         OPEN_INTEREST: str = "OPEN_INTEREST"
 
-    def __init__(self, conn: redis.Redis, logger: Logger = loguru.logger) -> None:
+    def __init__(self, conn: redis.Redis, logger: Optional[Logger] = loguru.logger) -> None:
         self._redis: redis.Redis = conn
         self._logger: Logger = logger
 
@@ -92,10 +92,10 @@ class RedisStorage:
         """Получить FundingRate из Redis."""
         return await self._get(self._keygen(self._StorageKeys.FUNDING_RATE, ex))
 
-    async def set_open_interest(self, data: Dict[str, OpenInterestItem], ex: Exchange) -> None:
+    async def set_open_interest(self, data: Dict[str, List[OpenInterestItem]], ex: Exchange) -> None:
         """Установить OpenInterest в Redis."""
         await self._set(self._keygen(self._StorageKeys.OPEN_INTEREST, ex), data)
 
-    async def get_open_interest(self, ex: Exchange) -> Optional[Dict[str, OpenInterestItem]]:
+    async def get_open_interest(self, ex: Exchange) -> Optional[Dict[str, List[OpenInterestItem]]]:
         """Получить открытый интерес из Redis."""
         return await self._get(self._keygen(self._StorageKeys.OPEN_INTEREST, ex))
