@@ -1,6 +1,7 @@
 __all__ = ["RedisStorage", ]
 
 import enum
+import time
 from datetime import datetime
 from typing import Dict, Any, Optional, List
 
@@ -39,7 +40,13 @@ class RedisStorage:
 
     async def _get(self, key: str, default=None) -> Optional[Any]:
         """Вспомогательный метод для получения значения из Redis."""
+        start_time = time.perf_counter()  # Начало замера времени
         value = await self._redis.get(key)
+
+        # Логируем время выполнения запроса
+        elapsed_time = time.perf_counter() - start_time
+        self._logger.debug(f"Time taken to get key '{key}' from Redis: {elapsed_time:.4f} seconds.")
+
         if value is None:
             self._logger.error(f"Key '{key}' not found in Redis.")
             return default
@@ -51,14 +58,20 @@ class RedisStorage:
 
     async def _set(self, key: str, value: Any) -> None:
         """Вспомогательный метод для установки значения в Redis с добавлением временной метки."""
+        start_time = time.perf_counter()  # Начало замера времени
         try:
             # Устанавливаем основной ключ
             await self._redis.set(key, orjson.dumps(value))
+            elapsed_time = time.perf_counter() - start_time
+            self._logger.debug(f"Time taken to set key '{key}' in Redis: {elapsed_time:.4f} seconds.")
+
             self._logger.info(f"Key '{key}' updated in Redis.")
 
             if self.MARK_TIME:
                 # Добавляем ключ для временной метки
                 update_time = datetime.now().isoformat()
+
+                # Записываем временную метку
                 await self._redis.set(f"{self._StorageKeys.TIME_MARK}:{key}", update_time)
                 self._logger.info(f"Time for '{self._StorageKeys.TIME_MARK}:{key}' set to {update_time} in Redis.")
         except Exception as e:
