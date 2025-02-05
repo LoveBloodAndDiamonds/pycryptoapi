@@ -1,1 +1,2 @@
 2. Set up .tld
+3. Handle response

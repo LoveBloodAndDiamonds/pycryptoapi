@@ -73,7 +73,7 @@ class RedisStorage:
 
                 # Записываем временную метку
                 await self._redis.set(f"{self._StorageKeys.TIME_MARK}:{key}", update_time)
-                self._logger.info(f"Time for '{self._StorageKeys.TIME_MARK}:{key}' set to {update_time} in Redis.")
+                self._logger.debug(f"Time for '{self._StorageKeys.TIME_MARK}:{key}' set to {update_time} in Redis.")
         except Exception as e:
             self._logger.error(f"Failed to set value for key '{key}' in Redis: {e}")
             raise
