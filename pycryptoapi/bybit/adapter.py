@@ -130,9 +130,10 @@ class BybitAdapter(AbstractAdapter):
         # Обработка данных от Bybit
         try:
             result: dict[str, OpenInterestItem] = {}
+            time: int = raw_data["time"]
             for item in raw_data["result"]["list"]:
                 result[item["symbol"]] = OpenInterestItem(
-                    t=int(item["nextFundingTime"]),  # Используем nextFundingTime как время
+                    t=time,
                     v=float(item["openInterest"])  # Открытый интерес
                 )
             return result
