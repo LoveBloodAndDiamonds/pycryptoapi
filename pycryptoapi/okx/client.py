@@ -43,5 +43,13 @@ class OkxClient(AbstractClient):
         params = {"instId": symbol}
         return await self._make_request(method="GET", url=url, params=params)
 
-    async def open_interest(self, symbol: str) -> Dict[str, str]:
-        raise NotImplementedError("Will implemented soon...")
+    async def open_interest(self) -> Dict[str, str]:
+        """
+        Получает данные, которые содержат информацию о открытом интересе.
+
+        :return: JSON-ответ с данными открытого интереса.
+        :raises Exception: Если запрос не выполнен успешно.
+        """
+        url = f"{self._BASE_URL}/api/v5/public/open-interest?"
+        params = {"instType": "SWAP"}
+        return await self._make_request(method="GET", url=url, params=params)

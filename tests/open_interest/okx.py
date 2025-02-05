@@ -12,9 +12,7 @@ async def test_okx_funding_rate():
         client = OkxClient(session)
 
         # Пример вызова функции funding_rate
-        result = []
-        for t in ["BTC", "ETH", "XRP"]:
-            result.append(await client.open_interest(symbol=t + "-USDT-SWAP"))
+        result = await client.open_interest()
 
         # Печать результата с использованием prettyprint
         pprint(result)

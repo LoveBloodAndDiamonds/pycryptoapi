@@ -75,14 +75,20 @@ class AbstractAdapter(ABC):
 
     @staticmethod
     @abstractmethod
-    def open_interest(raw_data: Any) -> Dict[str, OpenInterestItem]:
+    def open_interest(raw_data: Dict[str, Any]) -> Dict[str, OpenInterestItem]:
         """
         Преобразует сырые данные открытого интереса в унифицированный вид.
 
         :param raw_data: Сырые данные открытого интереса по тикеру.
         :return: Cловарь с фьючерсными тикерами и их ставкой финансирования.
         """
-        pass
+        result: dict[str, OpenInterestItem] = {}
+        for item in raw_data["data"]:
+            result[item["instId"]] = OpenInterestItem(
+                t=int(item["ts"]),
+                v=float(item["oiUsd"])
+            )
+        return result
 
     @staticmethod
     @abstractmethod

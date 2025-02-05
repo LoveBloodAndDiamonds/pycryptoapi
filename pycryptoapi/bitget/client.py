@@ -1,6 +1,6 @@
 __all__ = ["BitgetClient"]
 
-from typing import Any, Optional
+from typing import Any, Optional, Dict
 
 from ..abstract import AbstractClient
 
@@ -8,7 +8,7 @@ from ..abstract import AbstractClient
 class BitgetClient(AbstractClient):
     _BASE_URL: str = "https://api.bitget.com"
 
-    async def ticker(self, symbol: Optional[str] = None) -> Any:
+    async def ticker(self, symbol: Optional[str] = None) -> Dict[str, Any]:
         """
         Получает 24-часовую статистику изменения цены и объема для спотового рынка.
 
@@ -21,7 +21,7 @@ class BitgetClient(AbstractClient):
         return await self._make_request(method="GET", url=url, params=params)
 
     # Frequency limit: 20 times/1s (IP)
-    async def futures_ticker(self, symbol: Optional[str] = None, product_type: str = "USDT-FUTURES") -> Any:
+    async def futures_ticker(self, symbol: Optional[str] = None, product_type: str = "USDT-FUTURES") -> Dict[str, Any]:
         """
         Получает 24-часовую статистику изменения цены и объема для фьючерсного рынка.
 
@@ -37,7 +37,7 @@ class BitgetClient(AbstractClient):
         return await self._make_request(method="GET", url=url, params=params)
 
     # Frequency limit: 20 times/1s (IP)
-    async def funding_rate(self, symbol: str, product_type: str = "USDT-FUTURES") -> Any:
+    async def funding_rate(self, symbol: str, product_type: str = "USDT-FUTURES") -> Dict[str, Any]:
         """
         Получает текущую ставку финансирования для указанного символа.
 
@@ -54,7 +54,7 @@ class BitgetClient(AbstractClient):
         return await self._make_request(method="GET", url=url, params=params)
 
     # Frequency limit: 20 times/1s (IP)
-    async def open_interest(self, symbol: str, product_type: str = "USDT-FUTURES") -> Any:
+    async def open_interest(self, symbol: str, product_type: str = "USDT-FUTURES") -> Dict[str, Any]:
         """
         Получает текущий открытый интерес для указанного символа.
 

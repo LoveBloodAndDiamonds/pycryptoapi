@@ -19,7 +19,6 @@ async def test_bitget_funding_rate():
             r.append(resp)
             s = resp
 
-
         # Печать результата с использованием prettyprint
         pprint(r)
 

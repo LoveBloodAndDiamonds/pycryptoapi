@@ -46,4 +46,4 @@ class MexcClient(AbstractClient):
         return await self._make_request(method="GET", url=url)
 
     async def open_interest(self, symbol: str) -> Dict[str, str]:
-        raise NotImplementedError("Will implemented soon...")
+        raise NotImplementedError("Mexc exchange are not allow to get open interest via API now (5feb2025).")
