@@ -1,5 +1,6 @@
 __all__ = ["RedisStorage", ]
 
+import enum
 from datetime import datetime
 from typing import Dict, Any, Optional
 
@@ -15,8 +16,8 @@ except ImportError:
         "```pip install redis``` or ```poetry add redis```"
     )
 
-from pycryptoapi.enums import StorageKeys, Exchange, MarketType
-from pycryptoapi.types import TickerDailyItem
+from pycryptoapi.enums import Exchange, MarketType
+from pycryptoapi.types import TickerDailyItem, OpenInterestItem
 
 
 class RedisStorage:
@@ -24,6 +25,13 @@ class RedisStorage:
 
     MARK_TIME: bool = True
     '''Записывать время обновления?'''
+
+    class _StorageKeys(enum.StrEnum):
+        TIME_MARK: str = "TIME_MARK"
+        CMC_RATING: str = "CMC_RATING"
+        TICKERS_24H: str = "TICKERS_24H"
+        FUNDING_RATE: str = "FUNDING_RATE"
+        OPEN_INTEREST: str = "OPEN_INTEREST"
 
     def __init__(self, conn: redis.Redis, logger: Logger = loguru.logger) -> None:
         self._redis: redis.Redis = conn
@@ -51,8 +59,8 @@ class RedisStorage:
             if self.MARK_TIME:
                 # Добавляем ключ для временной метки
                 update_time = datetime.now().isoformat()
-                await self._redis.set(f"{StorageKeys.TIME_MARK}:{key}", update_time)
-                self._logger.info(f"Time for '{StorageKeys.TIME_MARK}:{key}' set to {update_time} in Redis.")
+                await self._redis.set(f"{self._StorageKeys.TIME_MARK}:{key}", update_time)
+                self._logger.info(f"Time for '{self._StorageKeys.TIME_MARK}:{key}' set to {update_time} in Redis.")
         except Exception as e:
             self._logger.error(f"Failed to set value for key '{key}' in Redis: {e}")
             raise
@@ -62,24 +70,32 @@ class RedisStorage:
 
     async def set_cmc_rating(self, data: Dict[str, int]) -> None:
         """Установить CMC рейтинг в Redis."""
-        await self._set(StorageKeys.CMC_RATING, data)
+        await self._set(self._StorageKeys.CMC_RATING, data)
 
     async def get_cmc_rating(self) -> Optional[Dict[str, int]]:
         """Получить CMC рейтинг из Redis."""
-        return await self._get(StorageKeys.CMC_RATING)
+        return await self._get(self._StorageKeys.CMC_RATING)
 
     async def set_tickers_24h(self, data: Dict[str, TickerDailyItem], ex: Exchange, m_type: MarketType) -> None:
         """Установить Ticker24h в Redis."""
-        await self._set(self._keygen(StorageKeys.TICKERS_24H, ex, m_type), data)
+        await self._set(self._keygen(self._StorageKeys.TICKERS_24H, ex, m_type), data)
 
     async def get_tickers_24h(self, ex: Exchange, m_type: MarketType) -> Optional[Dict[str, TickerDailyItem]]:
         """Получить Ticker24h из Redis."""
-        return await self._get(self._keygen(StorageKeys.TICKERS_24H, ex, m_type))
+        return await self._get(self._keygen(self._StorageKeys.TICKERS_24H, ex, m_type))
 
     async def set_funding_rate(self, data: Dict[str, float], ex: Exchange) -> None:
         """Установить FundingRate в Redis."""
-        await self._set(self._keygen(StorageKeys.FUNDING_RATE, ex), data)
+        await self._set(self._keygen(self._StorageKeys.FUNDING_RATE, ex), data)
 
-    async def get_funding_rate(self, ex: Exchange) -> Dict[str, float]:
+    async def get_funding_rate(self, ex: Exchange) -> Optional[Dict[str, float]]:
         """Получить FundingRate из Redis."""
-        return await self._get(self._keygen(StorageKeys.FUNDING_RATE, ex))
+        return await self._get(self._keygen(self._StorageKeys.FUNDING_RATE, ex))
+
+    async def set_open_interest(self, data: Dict[str, OpenInterestItem], ex: Exchange) -> None:
+        """Установить OpenInterest в Redis."""
+        await self._set(self._keygen(self._StorageKeys.OPEN_INTEREST, ex), data)
+
+    async def get_open_interest(self, ex: Exchange) -> Optional[Dict[str, OpenInterestItem]]:
+        """Получить открытый интерес из Redis."""
+        return await self._get(self._keygen(self._StorageKeys.OPEN_INTEREST, ex))

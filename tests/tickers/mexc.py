@@ -1,5 +1,7 @@
-import aiohttp
 import asyncio
+
+import aiohttp
+
 from pycryptoapi.mexc import MexcClient, MexcAdapter
 
 
@@ -47,7 +49,7 @@ async def test_mexc_futures_ticker_24h():
 
 
 # Запуск тестов
-asyncio.run(test_mexc_tickers())
+# asyncio.run(test_mexc_tickers())
 asyncio.run(test_mexc_futures_tickers())
-asyncio.run(test_mexc_ticker_24h())
-asyncio.run(test_mexc_futures_ticker_24h())
+# asyncio.run(test_mexc_ticker_24h())
+# asyncio.run(test_mexc_futures_ticker_24h())
