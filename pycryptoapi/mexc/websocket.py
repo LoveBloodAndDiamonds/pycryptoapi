@@ -5,7 +5,7 @@ from typing import Optional, Union, List, Literal, Callable, Awaitable, Self, Di
 
 from ..abstract import AbstractWebsocket, AbstractSocketManager
 from ..enums import MarketType
-from ..exc import WrongMarketType, WrongTimeframe
+from ..exc import MarketException, TimeframeException
 
 
 class MexcWebsocket(AbstractWebsocket):
@@ -17,7 +17,7 @@ class MexcWebsocket(AbstractWebsocket):
         elif self._market_type == MarketType.FUTURES:
             return "wss://contract.mexc.com/edge"
         else:
-            raise WrongMarketType()
+            raise MarketException()
 
     @property
     def _subscribe_message(self) -> Union[str, List[str]]:
@@ -25,7 +25,7 @@ class MexcWebsocket(AbstractWebsocket):
         if self._market_type == MarketType.SPOT:
             if self._topic == "spot@public.kline.v3.api":
                 if not self._timeframe:
-                    raise WrongTimeframe()
+                    raise TimeframeException()
                 params: List[str] = [f"{self._topic}@{t}@{self._timeframe}" for t in self._tickers]
             elif self._topic == "spot@public.miniTickers.v3.api":
                 params: List[str] = [f"spot@public.miniTickers.v3.api@UTC{self._timeframe}"]
@@ -41,7 +41,7 @@ class MexcWebsocket(AbstractWebsocket):
                 params: List[Dict] = [{"symbol": t.replace("USDT", "_USDT")} for t in self._tickers]
             elif self._topic == "sub.kline":
                 if not self._timeframe:
-                    raise WrongTimeframe()
+                    raise TimeframeException()
                 params: List[Dict] = [{"symbol": t.replace("USDT", "_USDT"), "interval": self._timeframe} for t in
                                       self._tickers]
             elif self._topic == "sub.tickers":
@@ -72,7 +72,7 @@ class MexcSocketManager(AbstractSocketManager):
         elif market_type == MarketType.FUTURES:
             topic: str = "sub.deal"
         else:
-            raise WrongMarketType()
+            raise MarketException()
         return MexcWebsocket(
             topic=topic,
             tickers=tickers,
@@ -97,7 +97,7 @@ class MexcSocketManager(AbstractSocketManager):
         elif market_type == MarketType.FUTURES:
             topic: str = "sub.kline"
         else:
-            raise WrongMarketType()
+            raise MarketException()
         return MexcWebsocket(
             topic=topic,
             market_type=market_type,
@@ -118,7 +118,7 @@ class MexcSocketManager(AbstractSocketManager):
         elif market_type == MarketType.FUTURES:
             topic: str = "sub.tickers"
         else:
-            raise WrongMarketType()
+            raise MarketException()
         return MexcWebsocket(
             topic=topic,
             market_type=market_type,

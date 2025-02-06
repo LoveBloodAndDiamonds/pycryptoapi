@@ -5,7 +5,7 @@ from typing import Optional, Callable, List, Awaitable, Literal
 
 from ..abstract import AbstractWebsocket, AbstractSocketManager
 from ..enums import MarketType
-from ..exc import WrongMarketType
+from ..exc import MarketException
 
 
 class BybitWebsocket(AbstractWebsocket):
@@ -17,7 +17,7 @@ class BybitWebsocket(AbstractWebsocket):
         elif self._market_type == MarketType.FUTURES:
             return "wss://stream.bybit.com/v5/public/linear"
         else:
-            raise WrongMarketType()
+            raise MarketException()
 
     @property
     def _subscribe_message(self) -> Optional[str]:

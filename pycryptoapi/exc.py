@@ -5,17 +5,20 @@ class WebsocketException(Exception):
     pass
 
 
-class WrongMarketType(WebsocketException):
+class MarketException(WebsocketException):
+
     def __init__(self, message="Incorrect market type provided"):
         super().__init__(message)
 
 
-class WrongTimeframe(WebsocketException):
+class TimeframeException(WebsocketException):
+
     def __init__(self, message="Incorrect timeframe provided"):
         super().__init__(message)
 
 
-class WrongTickers(WebsocketException):
+class TickersException(WebsocketException):
+
     def __init__(self, message="Incorrect tickers provided"):
         super().__init__(message)
 

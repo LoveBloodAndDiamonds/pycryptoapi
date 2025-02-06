@@ -4,7 +4,7 @@ import json
 from typing import Optional, List, Callable, Awaitable, Literal
 
 from ..abstract import AbstractWebsocket, AbstractSocketManager
-from ..exc import WrongTickers
+from ..exc import TickersException
 
 
 class OkxWebsocket(AbstractWebsocket):
@@ -22,7 +22,7 @@ class OkxWebsocket(AbstractWebsocket):
     @property
     def _subscribe_message(self) -> Optional[str]:
         if not self._tickers:
-            raise WrongTickers()
+            raise TickersException()
 
         if self._topic == "liquidation-orders":
             streams: list[dict] = [

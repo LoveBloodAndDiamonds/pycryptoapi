@@ -4,7 +4,7 @@ from typing import Optional, Callable, Awaitable, List, Literal
 
 from ..abstract import AbstractWebsocket, AbstractSocketManager
 from ..enums import MarketType
-from ..exc import WrongMarketType
+from ..exc import MarketException
 
 
 class BinanceWebsocket(AbstractWebsocket):
@@ -17,7 +17,7 @@ class BinanceWebsocket(AbstractWebsocket):
         elif self._market_type == MarketType.SPOT:
             base_url: str = "wss://stream.binance.com:9443"
         else:
-            raise WrongMarketType()
+            raise MarketException()
 
         if not self._tickers:  # Case with all market streams with no ticker
             uri: str = f"{base_url}/ws/{self._topic}"
