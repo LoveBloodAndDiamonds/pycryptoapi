@@ -1,4 +1,6 @@
-from typing import TypedDict, Optional
+from typing import TypedDict, Optional, Union, List, Dict, TypeAlias
+
+JsonLike: TypeAlias = Union[Dict, List]
 
 
 class TickerDailyItem(TypedDict):

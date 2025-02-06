@@ -1,3 +1,6 @@
+from typing import Optional
+
+
 class WebsocketException(Exception):
     pass
 
@@ -19,3 +22,10 @@ class WrongTickers(WebsocketException):
 
 class AdapterException(Exception):
     pass
+
+
+class APIException(Exception):
+
+    def __init__(self, code: int, message: Optional[str] = "API Error"):
+        super().__init__(message)
+        self.code = code

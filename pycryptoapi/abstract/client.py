@@ -1,13 +1,15 @@
 __all__ = ["AbstractClient", "BaseClient", ]
 
+import asyncio
 import logging
 from abc import ABC, abstractmethod
 from typing import List, Any, Dict, Optional, Union, Literal
-import asyncio
 
 import aiohttp
 import loguru
 from loguru._logger import Logger  # noqa
+
+from ..types import JsonLike
 
 
 class ClientMixin:
@@ -87,7 +89,7 @@ class BaseClient(ABC, ClientMixin):
                 self._logger.error(f"Unexpected error: {e}")
                 raise  # Все остальные ошибки пробрасываем сразу
 
-    async def _handle_response(self, response: aiohttp.ClientResponse) -> Union[Dict[str, Any], List[Any]]:
+    async def _handle_response(self, response: aiohttp.ClientResponse) -> JsonLike:
         """
         Функция обрабатывает ответ от HTTP запроса.
         :return:
