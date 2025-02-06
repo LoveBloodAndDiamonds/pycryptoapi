@@ -29,3 +29,7 @@ class APIException(Exception):
     def __init__(self, code: int, message: Optional[str] = "API Error"):
         super().__init__(message)
         self.code = code
+
+    @property
+    def is_rate_limit_exception(self) -> bool:
+        return self.code == 429
