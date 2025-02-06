@@ -1,33 +1,33 @@
 from typing import Optional
 
 
-class WebsocketException(Exception):
+class PyCryptoAPIException(Exception):
     pass
 
 
-class MarketException(WebsocketException):
+class MarketException(PyCryptoAPIException):
 
     def __init__(self, message="Incorrect market type provided"):
         super().__init__(message)
 
 
-class TimeframeException(WebsocketException):
+class TimeframeException(PyCryptoAPIException):
 
     def __init__(self, message="Incorrect timeframe provided"):
         super().__init__(message)
 
 
-class TickersException(WebsocketException):
+class TickersException(PyCryptoAPIException):
 
     def __init__(self, message="Incorrect tickers provided"):
         super().__init__(message)
 
 
-class AdapterException(Exception):
+class AdapterException(PyCryptoAPIException):
     pass
 
 
-class APIException(Exception):
+class APIException(PyCryptoAPIException):
 
     def __init__(self, code: int, message: Optional[str] = "API Error"):
         super().__init__(message)
