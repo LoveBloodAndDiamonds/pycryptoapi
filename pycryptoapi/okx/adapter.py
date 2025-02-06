@@ -175,4 +175,16 @@ class OkxAdapter(AbstractAdapter):
 
     @staticmethod
     def open_interest(raw_data: Dict[str, Any]) -> Dict[str, OpenInterestItem]:
-        raise NotImplementedError("Not implemented yet...")
+        # Обработка данных от Bybit
+        try:
+            result: dict[str, OpenInterestItem] = {}
+            for item in raw_data["data"]:
+                result[item["instId"]] = OpenInterestItem(
+                    t=int(item["ts"]),
+                    v=float(item["oiUsd"])  # Открытый интерес
+                )
+            return result
+        except KeyError as e:
+            raise AdapterException(f"Missing key in OKX open interest data: {e}")
+        except (TypeError, ValueError) as e:
+            raise AdapterException(f"Invalid data format in OKX open interest data: {e}")

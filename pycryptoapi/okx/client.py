@@ -44,7 +44,7 @@ class OkxClient(AbstractClient):
         return await self._make_request(method="GET", url=url, params=params)
 
     # Rate Limit: 20 requests per 2 seconds
-    async def open_interest(self) -> Dict[str, str]:
+    async def open_interest(self) -> Dict[str, Any]:
         """
         Получает данные, которые содержат информацию о открытом интересе.
 

@@ -138,6 +138,6 @@ class BybitAdapter(AbstractAdapter):
                 )
             return result
         except KeyError as e:
-            raise AdapterException(f"Missing key in Bybit kline message: {e}")
+            raise AdapterException(f"Missing key in Bybit open intrest data: {e}")
         except (TypeError, ValueError) as e:
-            raise AdapterException(f"Invalid data format in Bybit kline message: {e}")
+            raise AdapterException(f"Invalid data format in Bybit open intrest data: {e}")
