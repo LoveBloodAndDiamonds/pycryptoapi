@@ -2,7 +2,7 @@ from typing import Any, List, Dict, Union
 
 from ..abstract import AbstractAdapter
 from ..exc import AdapterException
-from ..types import TickerDailyItem, KlineDict
+from ..types import TickerDailyItem, KlineDict, OpenInterestItem
 
 
 class OkxAdapter(AbstractAdapter):
@@ -172,3 +172,7 @@ class OkxAdapter(AbstractAdapter):
             raise AdapterException(f"Missing key in OKX kline message: {e}")
         except (TypeError, ValueError) as e:
             raise AdapterException(f"Invalid data format in OKX kline message: {e}")
+
+    @staticmethod
+    def open_interest(raw_data: Dict[str, Any]) -> Dict[str, OpenInterestItem]:
+        raise NotImplementedError("Not implemented yet...")
