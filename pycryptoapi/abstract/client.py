@@ -74,7 +74,7 @@ class BaseClient(ABC, ClientMixin):
                     return await self._handle_response(response=response)
 
             except (aiohttp.ServerTimeoutError, aiohttp.ConnectionTimeoutError) as e:
-                self._logger.warning(f"Attempt {attempt}/{self._max_retries} failed: {type(e)} -> {e}")
+                self._logger.debug(f"Attempt {attempt}/{self._max_retries} failed: {type(e)} -> {e}")
                 if attempt < self._max_retries:
                     await asyncio.sleep(self._retry_delay)
                 else:
@@ -83,6 +83,10 @@ class BaseClient(ABC, ClientMixin):
 
             except aiohttp.ClientError as e:
                 self._logger.error(f"Request error ({type(e)}): {e}")
+                raise  # Ошибки клиента нет смысла повторять
+
+            except TimeoutError:
+                self._logger.error(f"Timeout error: {e}")
                 raise  # Ошибки клиента нет смысла повторять
 
             except Exception as e:
