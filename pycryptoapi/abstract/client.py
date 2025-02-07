@@ -79,19 +79,7 @@ class BaseClient(ABC, ClientMixin):
                     await asyncio.sleep(self._retry_delay)
                 else:
                     self._logger.error("Max retries reached. Giving up.")
-                    raise
-
-            except aiohttp.ClientError as e:
-                self._logger.error(f"Request error ({type(e)}): {e}")
-                raise  # Ошибки клиента нет смысла повторять
-
-            except TimeoutError:
-                self._logger.error(f"Timeout error: {e}")
-                raise  # Ошибки клиента нет смысла повторять
-
-            except Exception as e:
-                self._logger.error(f"Unexpected error: {e}")
-                raise  # Все остальные ошибки пробрасываем сразу
+                    raise TimeoutError(f"Timeout error after {self._max_retries} request on {method} {url}")
 
     async def _handle_response(self, response: aiohttp.ClientResponse) -> JsonLike:
         """
