@@ -89,13 +89,13 @@ class RedisStorage:
         """Получить CMC рейтинг из Redis."""
         return await self._get(self._StorageKeys.CMC_RATING)
 
-    async def set_tickers_24h(self, data: Dict[str, TickerDailyItem], exchange: Exchange,
-                              market_type: MarketType) -> None:
+    async def set_tickers_24h(
+            self, data: Dict[str, TickerDailyItem], exchange: Exchange, market_type: MarketType) -> None:
         """Установить Ticker24h в Redis."""
         await self._set(self._keygen(self._StorageKeys.TICKERS_24H, exchange, market_type), data)
 
-    async def get_tickers_24h(self, exchange: Exchange, market_type: MarketType) -> Optional[
-        Dict[str, TickerDailyItem]]:
+    async def get_tickers_24h(
+            self, exchange: Exchange, market_type: MarketType) -> Optional[Dict[str, TickerDailyItem]]:
         """Получить Ticker24h из Redis."""
         return await self._get(self._keygen(self._StorageKeys.TICKERS_24H, exchange, market_type))
 
