@@ -63,8 +63,7 @@ class RedisStorage:
             # Устанавливаем основной ключ
             await self._redis.set(key, orjson.dumps(value))
 
-            elapsed_time = time.perf_counter() - start_time
-            self._logger.info(f"Key '{key}' updated in Redis ({elapsed_time:.4f} s)")
+            self._logger.info(f"Key '{key}' updated in Redis ({time.perf_counter() - start_time:.4f} s)")
 
             if self.MARK_TIME:
                 # Добавляем ключ для временной метки
