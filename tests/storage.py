@@ -68,18 +68,20 @@ class RedisStorage:
         """Получить CMC рейтинг из Redis."""
         return await self._get(StorageKeys.CMC_RATING)
 
-    async def set_tickers_24h(self, data: Dict[str, TickerDailyItem], ex: Exchange, m_type: MarketType) -> None:
+    async def set_tickers_24h(self, data: Dict[str, TickerDailyItem], exchange: Exchange,
+                              market_type: MarketType) -> None:
         """Установить Ticker24h в Redis."""
-        await self._set(self._keygen(StorageKeys.TICKERS_24H, ex, m_type), data)
+        await self._set(self._keygen(StorageKeys.TICKERS_24H, exchange, market_type), data)
 
-    async def get_tickers_24h(self, ex: Exchange, m_type: MarketType) -> Optional[Dict[str, TickerDailyItem]]:
+    async def get_tickers_24h(self, exchange: Exchange, market_type: MarketType) -> Optional[
+        Dict[str, TickerDailyItem]]:
         """Получить Ticker24h из Redis."""
-        return await self._get(self._keygen(StorageKeys.TICKERS_24H, ex, m_type))
+        return await self._get(self._keygen(StorageKeys.TICKERS_24H, exchange, market_type))
 
-    async def set_funding_rate(self, data: Dict[str, float], ex: Exchange) -> None:
+    async def set_funding_rate(self, data: Dict[str, float], exchange: Exchange) -> None:
         """Установить FundingRate в Redis."""
         await self._set(self._keygen(StorageKeys.FUNDING_RATE, ex), data)
 
-    async def get_funding_rate(self, ex: Exchange) -> Dict[str, float]:
+    async def get_funding_rate(self, exchange: Exchange) -> Dict[str, float]:
         """Получить FundingRate из Redis."""
         return await self._get(self._keygen(StorageKeys.FUNDING_RATE, ex))

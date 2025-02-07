@@ -89,26 +89,28 @@ class RedisStorage:
         """Получить CMC рейтинг из Redis."""
         return await self._get(self._StorageKeys.CMC_RATING)
 
-    async def set_tickers_24h(self, data: Dict[str, TickerDailyItem], ex: Exchange, m_type: MarketType) -> None:
+    async def set_tickers_24h(self, data: Dict[str, TickerDailyItem], exchange: Exchange,
+                              market_type: MarketType) -> None:
         """Установить Ticker24h в Redis."""
-        await self._set(self._keygen(self._StorageKeys.TICKERS_24H, ex, m_type), data)
+        await self._set(self._keygen(self._StorageKeys.TICKERS_24H, exchange, market_type), data)
 
-    async def get_tickers_24h(self, ex: Exchange, m_type: MarketType) -> Optional[Dict[str, TickerDailyItem]]:
+    async def get_tickers_24h(self, exchange: Exchange, market_type: MarketType) -> Optional[
+        Dict[str, TickerDailyItem]]:
         """Получить Ticker24h из Redis."""
-        return await self._get(self._keygen(self._StorageKeys.TICKERS_24H, ex, m_type))
+        return await self._get(self._keygen(self._StorageKeys.TICKERS_24H, exchange, market_type))
 
-    async def set_funding_rate(self, data: Dict[str, float], ex: Exchange) -> None:
+    async def set_funding_rate(self, data: Dict[str, float], exchange: Exchange) -> None:
         """Установить FundingRate в Redis."""
-        await self._set(self._keygen(self._StorageKeys.FUNDING_RATE, ex), data)
+        await self._set(self._keygen(self._StorageKeys.FUNDING_RATE, exchange), data)
 
-    async def get_funding_rate(self, ex: Exchange) -> Optional[Dict[str, float]]:
+    async def get_funding_rate(self, exchange: Exchange) -> Optional[Dict[str, float]]:
         """Получить FundingRate из Redis."""
-        return await self._get(self._keygen(self._StorageKeys.FUNDING_RATE, ex))
+        return await self._get(self._keygen(self._StorageKeys.FUNDING_RATE, exchange))
 
-    async def set_open_interest(self, data: Dict[str, List[OpenInterestItem]], ex: Exchange) -> None:
+    async def set_open_interest(self, data: Dict[str, List[OpenInterestItem]], exchange: Exchange) -> None:
         """Установить OpenInterest в Redis."""
-        await self._set(self._keygen(self._StorageKeys.OPEN_INTEREST, ex), data)
+        await self._set(self._keygen(self._StorageKeys.OPEN_INTEREST, exchange), data)
 
-    async def get_open_interest(self, ex: Exchange) -> Optional[Dict[str, List[OpenInterestItem]]]:
+    async def get_open_interest(self, exchange: Exchange) -> Optional[Dict[str, List[OpenInterestItem]]]:
         """Получить открытый интерес из Redis."""
-        return await self._get(self._keygen(self._StorageKeys.OPEN_INTEREST, ex))
+        return await self._get(self._keygen(self._StorageKeys.OPEN_INTEREST, exchange))
