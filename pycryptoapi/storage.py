@@ -45,10 +45,10 @@ class RedisStorage:
 
         # Логируем время выполнения запроса
         elapsed_time = time.perf_counter() - start_time
-        self._logger.debug(f"Time taken to get key '{key}' from Redis: {elapsed_time:.4f} seconds.")
+        self._logger.debug(f"Time taken to get key '{key}' from Redis: {elapsed_time:.4f} seconds")
 
         if value is None:
-            self._logger.error(f"Key '{key}' not found in Redis.")
+            self._logger.error(f"Key '{key}' not found in Redis")
             return default
         try:
             return orjson.loads(value)
@@ -62,10 +62,9 @@ class RedisStorage:
         try:
             # Устанавливаем основной ключ
             await self._redis.set(key, orjson.dumps(value))
-            elapsed_time = time.perf_counter() - start_time
-            self._logger.debug(f"Time taken to set key '{key}' in Redis: {elapsed_time:.4f} seconds.")
 
-            self._logger.info(f"Key '{key}' updated in Redis.")
+            elapsed_time = time.perf_counter() - start_time
+            self._logger.info(f"Key '{key}' updated in Redis ({elapsed_time:.4f} s)")
 
             if self.MARK_TIME:
                 # Добавляем ключ для временной метки
@@ -73,7 +72,7 @@ class RedisStorage:
 
                 # Записываем временную метку
                 await self._redis.set(f"{self._StorageKeys.TIME_MARK}:{key}", update_time)
-                self._logger.debug(f"Time for '{self._StorageKeys.TIME_MARK}:{key}' set to {update_time} in Redis.")
+                self._logger.debug(f"Time for '{self._StorageKeys.TIME_MARK}:{key}' set to {update_time} in Redis")
         except Exception as e:
             self._logger.error(f"Failed to set value for key '{key}' in Redis: {e}")
             raise
