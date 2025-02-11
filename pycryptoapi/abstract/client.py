@@ -3,7 +3,7 @@ __all__ = ["AbstractClient", "BaseClient", ]
 import asyncio
 import logging
 from abc import ABC, abstractmethod
-from typing import List, Any, Dict, Optional, Union, Literal
+from typing import List, Any, Dict, Optional, Union, Literal, Self
 
 import aiohttp
 import loguru
@@ -34,12 +34,32 @@ class BaseClient(ABC, ClientMixin):
             session: aiohttp.ClientSession,
             logger: logging.Logger | Logger = loguru.logger,
             max_retries: Optional[int] = 3,
-            retry_delay: Optional[int | float] = 0.1
+            retry_delay: Optional[int | float] = 0.1,
     ) -> None:
         self._session: aiohttp.ClientSession = session
         self._logger: logging.Logger | Logger = logger
         self._max_retries: int = max(max_retries, 1)
         self._retry_delay: int | float = max(retry_delay, 0)
+
+    @classmethod
+    async def create(
+            cls,
+            session: Optional[aiohttp.ClientSession] = None,
+            logger: logging.Logger | Logger = loguru.logger,
+            max_retries: Optional[int] = 3,
+            retry_delay: Optional[int | float] = 0.1,
+    ) -> Self:
+        """
+        Создает инстанцию клиента.
+        Создать клиент можно и через __init__, но в таком случае session: aiohttp.ClientSession - обязательный параметр.
+        :return:
+        """
+        return cls(
+            session=session or aiohttp.ClientSession(),
+            logger=logger,
+            max_retries=max_retries,
+            retry_delay=retry_delay,
+        )
 
     async def _make_request(
             self,

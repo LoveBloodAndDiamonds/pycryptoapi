@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, Any, Literal, Optional
+from typing import Dict, Any, Literal, Optional, Self
 from typing import List
 
 import aiohttp
@@ -18,11 +18,39 @@ class CoinmarketcapClient(BaseClient):
             self,
             session: aiohttp.ClientSession,
             api_key: str,
+            max_retries: Optional[int] = 3,
+            retry_delay: Optional[int | float] = 0.1,
             logger: logging.Logger | Logger = loguru.logger,
     ) -> None:
-        super().__init__(session=session, logger=logger)
+        super().__init__(session=session, logger=logger, max_retries=max_retries, retry_delay=retry_delay)
 
         self._api_key: str = api_key
+
+    @classmethod
+    async def create(
+            cls,
+            session: Optional[aiohttp.ClientSession] = None,
+            logger: logging.Logger | Logger = loguru.logger,
+            max_retries: Optional[int] = 3,
+            retry_delay: Optional[int | float] = 0.1,
+            **kwargs
+    ) -> Self:
+        """
+        Создает инстанцию клиента.
+        Создать клиент можно и через __init__, но в таком случае session: aiohttp.ClientSession - обязательный параметр.
+        :return:
+        """
+        api_key: str | None = kwargs.get("api_key")
+        if not isinstance(api_key, str):
+            raise ValueError("api_key required paramets and it must be a string")
+
+        return cls(
+            api_key=api_key,
+            session=session or aiohttp.ClientSession(),
+            logger=logger,
+            max_retries=max_retries,
+            retry_delay=retry_delay
+        )
 
     async def cryptocurrency_map(
             self,
