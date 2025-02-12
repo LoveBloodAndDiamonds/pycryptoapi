@@ -61,6 +61,14 @@ class BaseClient(ABC, ClientMixin):
             retry_delay=retry_delay,
         )
 
+    async def close(self) -> None:
+        """
+        Закрывает сессию aiohttp.
+        Используется, если сессия была создана через метод create.
+        :return:
+        """
+        await self._session.close()
+
     async def _make_request(
             self,
             method: Literal["GET", "POST", "PUT", "DELETE"],
