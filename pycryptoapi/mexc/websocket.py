@@ -4,7 +4,7 @@ import json
 from typing import Optional, Union, List, Literal, Callable, Awaitable, Self, Dict
 
 from ..abstract import AbstractWebsocket, AbstractSocketManager
-from ..enums import MarketType
+from ..enums import MarketType, Timeframe, Exchange
 from ..exc import MarketException, TimeframeException
 
 
@@ -84,11 +84,7 @@ class MexcSocketManager(AbstractSocketManager):
     def klines_socket(
             cls,
             tickers: List[str],
-            timeframe: Literal[
-                "Min1", "Min5", "Min15", "Min30",
-                "Min60", "Hour4", "Hour8", "Day1",
-                "Week1", "Month1"
-            ],
+            timeframe: Timeframe,
             market_type: MarketType,
             callback: Callable[..., Awaitable]
     ) -> MexcWebsocket:
@@ -101,7 +97,7 @@ class MexcSocketManager(AbstractSocketManager):
         return MexcWebsocket(
             topic=topic,
             market_type=market_type,
-            timeframe=timeframe,
+            timeframe=timeframe.to_exchange_format(Exchange.MEXC),
             tickers=tickers,
             callback=callback
         )

@@ -1,10 +1,10 @@
 __all__ = ["BybitWebsocket", "BybitSocketManager", ]
 
 import json
-from typing import Optional, Callable, List, Awaitable, Literal
+from typing import Optional, Callable, List, Awaitable
 
 from ..abstract import AbstractWebsocket, AbstractSocketManager
-from ..enums import MarketType
+from ..enums import MarketType, Timeframe, Exchange
 from ..exc import MarketException
 
 
@@ -56,16 +56,12 @@ class BybitSocketManager(AbstractSocketManager):
             cls,
             market_type: MarketType,
             tickers: List[str],
-            timeframe: Literal[
-                "1", "3", "5", "15", "30",
-                "60", "120", "240", "360", "720",
-                "D", "W", "M"
-            ],
+            timeframe: Timeframe,
             callback: Callable[..., Awaitable],
             **kwargs
     ) -> BybitWebsocket:
         return BybitWebsocket(
-            topic="kline" + "." + timeframe,
+            topic="kline" + "." + timeframe.to_exchange_format(Exchange.BYBIT),
             tickers=tickers,
             market_type=market_type,
             callback=callback,

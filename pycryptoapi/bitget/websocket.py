@@ -1,10 +1,10 @@
 __all__ = ["BitgetWebsocket", "BitgetSocketManager", ]
 
 import json
-from typing import Optional, Callable, Awaitable, List, Literal
+from typing import Optional, Callable, Awaitable, List
 
 from ..abstract.websocket import AbstractWebsocket, AbstractSocketManager
-from ..enums import MarketType
+from ..enums import MarketType, Timeframe, Exchange
 
 
 class BitgetWebsocket(AbstractWebsocket):
@@ -56,16 +56,10 @@ class BitgetSocketManager(AbstractSocketManager):
             market_type: MarketType,
             tickers: List[str],
             callback: Callable[..., Awaitable],
-            timeframe: Literal[
-                "1m", "5m", "15m", "30m",
-                "1h", "4h", "12h", "1d",
-                "1w", "6h", "3d", "1M",
-                "6Hutc", "12Hutc", "1Dutc",
-                "3Dutc", "1Wutc", "1Mutc"
-            ],
+            timeframe: Timeframe,
     ) -> BitgetWebsocket:
         return BitgetWebsocket(
-            topic="candle" + timeframe,
+            topic="candle" + timeframe.to_exchange_format(Exchange.BITGET),
             tickers=tickers,
             market_type=market_type,
             callback=callback

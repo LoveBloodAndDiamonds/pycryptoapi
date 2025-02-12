@@ -1,9 +1,9 @@
 __all__ = ["BinanceWebsocket", "BinanceSocketManager", ]
 
-from typing import Optional, Callable, Awaitable, List, Literal
+from typing import Optional, Callable, Awaitable, List
 
 from ..abstract import AbstractWebsocket, AbstractSocketManager
-from ..enums import MarketType
+from ..enums import MarketType, Timeframe, Exchange
 from ..exc import MarketException
 
 
@@ -60,16 +60,12 @@ class BinanceSocketManager(AbstractSocketManager):
             cls,
             market_type: MarketType,
             tickers: List[str],
-            timeframe: Literal[
-                "1m", "3m", "5m", "15m", "30m",
-                "1h", "2h", "4h", "6h", "8h", "12h",
-                "1d", "3d", "1w", "1M"
-            ],
+            timeframe: Timeframe,
             callback: Callable[..., Awaitable],
             **kwargs
     ) -> BinanceWebsocket:
         return BinanceWebsocket(
-            topic="@kline" + "_" + timeframe,
+            topic="@kline" + "_" + timeframe.to_exchange_format(Exchange.BINANCE),
             tickers=tickers,
             market_type=market_type,
             callback=callback,

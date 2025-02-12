@@ -1,9 +1,10 @@
 __all__ = ["OkxWebsocket", "OkxSocketManager"]
 
 import json
-from typing import Optional, List, Callable, Awaitable, Literal
+from typing import Optional, List, Callable, Awaitable
 
 from ..abstract import AbstractWebsocket, AbstractSocketManager
+from ..enums import Timeframe, Exchange
 from ..exc import TickersException
 
 
@@ -67,15 +68,11 @@ class OkxSocketManager(AbstractSocketManager):
     def klines_socket(
             cls,
             tickers: List[str],
-            timeframe: Literal[
-                "3M", "1M", "1W", "1D", "2D", "3D", "5D", "12H", "6H", "4H", "2H", "1H",
-                "30m", "15m", "5m", "3m", "1m", "1s",
-                "3Mutc", "1Mutc", "1Wutc", "1Dutc", "2Dutc", "3Dutc", "5Dutc", "12Hutc", "6Hutc"
-            ],
+            timeframe: Timeframe,
             callback: Callable[..., Awaitable]
     ) -> OkxWebsocket:
         return OkxWebsocket(
-            topic=f"candle{timeframe}",
+            topic=f"candle{timeframe.to_exchange_format(Exchange.OKX)}",
             tickers=tickers,
             callback=callback
         )

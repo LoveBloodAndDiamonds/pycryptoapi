@@ -1,8 +1,8 @@
 import asyncio
 
 from pycryptoapi.binance import BinanceSocketManager, BinanceAdapter
-from pycryptoapi.enums import MarketType
-from pycryptoapi.exceptions import AdapterException
+from pycryptoapi.enums import MarketType, Timeframe
+from pycryptoapi.exc import AdapterException
 
 
 async def callback(msg):
@@ -18,7 +18,7 @@ async def callback(msg):
 async def main():
     socket = BinanceSocketManager.klines_socket(
         market_type=MarketType.SPOT,
-        timeframe="1m",
+        timeframe=Timeframe.MIN_1,
         tickers=["BTCUSDT", "ETHUSDT"],
         callback=callback
     )
