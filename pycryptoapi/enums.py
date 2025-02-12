@@ -58,7 +58,7 @@ class MarketCombo(StrEnum):
         try:
             return Exchange(exchange_name), MarketType(market_name)
         except Exception as e:
-            raise ValueError(f"MarketPait {self} can not be disassembled: {e}")
+            raise ValueError(f"MarketCombo {self} can not be disassembled: {e}")
 
 # BITMEX: str = "BITMEX"
 # BINGX: str = "BINGX"
