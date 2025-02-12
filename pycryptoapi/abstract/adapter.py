@@ -82,13 +82,7 @@ class AbstractAdapter(ABC):
         :param raw_data: Сырые данные открытого интереса по тикеру.
         :return: Cловарь с фьючерсными тикерами и их ставкой финансирования.
         """
-        result: dict[str, OpenInterestItem] = {}
-        for item in raw_data["data"]:
-            result[item["instId"]] = OpenInterestItem(
-                t=int(item["ts"]),
-                v=float(item["oiUsd"])
-            )
-        return result
+        pass
 
     @staticmethod
     @abstractmethod
