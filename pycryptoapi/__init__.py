@@ -7,13 +7,17 @@ __all__ = [
     "OkxAdapter", "OkxClient", "OkxSocketManager", "OkxWebsocket",
     "ADAPTERS_MAPPER", "CLIENTS_MAPPER", "SOCKETS_MAPPER",
     "CoinmarketcapAdapter", "CoinmarketcapClient",
+    "DeribitClient",
+    "CoinalyzeClient"
 ]
 
 from .abstract import *
 from .binance import *
 from .bitget import *
 from .bybit import *
+from .coinalyze import *
 from .coinmarketcap import *
+from .deribit import *
 from .mappers import *
 from .mexc import *
 from .okx import *
