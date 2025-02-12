@@ -41,13 +41,15 @@ class BitgetSocketManager(AbstractSocketManager):
             cls,
             market_type: MarketType,
             tickers: List[str],
-            callback: Callable[..., Awaitable]
+            callback: Callable[..., Awaitable],
+            **kwargs
     ) -> BitgetWebsocket:
         return BitgetWebsocket(
             topic="trade",
             tickers=tickers,
             market_type=market_type,
-            callback=callback
+            callback=callback,
+            **kwargs
         )
 
     @classmethod
@@ -57,12 +59,14 @@ class BitgetSocketManager(AbstractSocketManager):
             tickers: List[str],
             callback: Callable[..., Awaitable],
             timeframe: Timeframe,
+            **kwargs
     ) -> BitgetWebsocket:
         return BitgetWebsocket(
             topic="candle" + timeframe.to_exchange_format(Exchange.BITGET),
             tickers=tickers,
             market_type=market_type,
-            callback=callback
+            callback=callback,
+            **kwargs
         )
 
     @classmethod
@@ -70,13 +74,15 @@ class BitgetSocketManager(AbstractSocketManager):
             cls,
             market_type: MarketType,
             tickers: List[str],
-            callback: Callable[..., Awaitable]
+            callback: Callable[..., Awaitable],
+            **kwargs
     ) -> BitgetWebsocket:
         return BitgetWebsocket(
             topic="ticker",
             tickers=tickers,
             market_type=market_type,
-            callback=callback
+            callback=callback,
+            **kwargs
         )
 
     @classmethod

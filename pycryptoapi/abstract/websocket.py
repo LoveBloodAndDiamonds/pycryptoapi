@@ -2,6 +2,7 @@ __all__ = ["AbstractWebsocket", "AbstractSocketManager", ]
 
 import asyncio
 import logging
+import time
 from abc import ABC, abstractmethod
 from typing import List, Callable, Optional, Awaitable, Union
 
@@ -17,22 +18,9 @@ from ..enums import MarketType
 class AbstractWebsocket(ABC):
     """
     Базовый класс для подключения к WebSocket и обработки потоков данных.
-
-    На данный момент задача стоит в том, чтобы поддерживать 4 типа соединений для обоих типов рынков:
-    - Свечи
-    - Аггрегированные сделки
-    - Ликвидации (устарело, ликвидации с криптобирж приходят некорректные, идея отложена)
-    - Тикеры (объем, изменение цены за 24ч и пр. общая информация)
-
-    Параметры:
-        market_type (MarketType): Тип рынка.
-        tickers (List[str]): Список тикеров для подписки.
-        callback (Callable[..., Awaitable]): Асинхронная функция обратного вызова для обработки сообщений.
-        logger (logging.Logger | loguru._logger.Logger): Логгер для вывода информации.
-        ping_interval (int): Интервал отправки ping-сообщений.
-        reconnect_interval (int): Интервал для повторного подключения при ошибке.
-        **kwargs (dict): Аргументы для вебсокет-соединения.
     """
+
+    NO_MESSAGE_RECONNECT_TIMEOUT: int = 60
 
     def __init__(
             self,
@@ -48,6 +36,22 @@ class AbstractWebsocket(ABC):
             max_queue_size: int = 100,  # Макс. размер очереди
             **ws_kwargs  # websocket kwargs
     ) -> None:
+        """
+        Инициализация WebSocket-клиента.
+
+        Параметры:
+            topic (str): Топик (канал) подписки.
+            callback (Callable[..., Awaitable]): Асинхронная функция обратного вызова для обработки сообщений.
+            market_type (MarketType, optional): Тип рынка.
+            tickers (List[str], optional): Список тикеров для подписки.
+            timeframe (str, optional): Таймфрейм (если применимо).
+            logger (logging.Logger | loguru._logger.Logger): Логгер для вывода информации.
+            ping_interval (int): Интервал отправки ping-сообщений.
+            reconnect_interval (int): Интервал для повторного подключения при ошибке.
+            num_workers (int): Количество воркеров для обработки сообщений.
+            max_queue_size (int): Максимальный размер очереди сообщений.
+            **ws_kwargs (dict): Дополнительные аргументы для WebSocket-соединения.
+        """
         self._topic: str = topic
         self._callback: Callable = callback
         self._market_type: Optional[MarketType] = market_type
@@ -64,6 +68,7 @@ class AbstractWebsocket(ABC):
 
         # Задача для отправки ping-сообщений
         self._curr_ping_task: Optional[asyncio.Task] = None
+        self._curr_health_task: Optional[asyncio.Task] = None
 
         # Аргументы для подключения к websocket.connect
         self._ws_kwargs: Optional[dict] = dict(
@@ -72,22 +77,23 @@ class AbstractWebsocket(ABC):
             **ws_kwargs
         )
 
-        # Флаг активности подключения
+        # Флаги и состояния
         self._is_active: bool = False
+        self._last_message_time: float = 0.0  # re-defined when connected
 
     @property
     @abstractmethod
     def _connection_uri(self) -> str:
         """Абстрактное свойство: URI для подключения к WebSocket. Если подключение к топику(ам) происходит через
         uri - то нужно указать его тут. Иначе оно указывается в _subscribe_message."""
-        ...
+        pass
 
     @property
     @abstractmethod
     def _ping_message(self) -> Optional[str]:
         """Абстрактное свойство: Сообщение ping. (JSON). websockets предоставляет автоматический PING и PONG, это
         свойство нужно указывать, если сервис требует кастомного PING сообщения."""
-        ...
+        pass
 
     @property
     @abstractmethod
@@ -97,7 +103,7 @@ class AbstractWebsocket(ABC):
         Если тип возвращаемых данных - List - то значит биржа не поддерживает множественные аргументы и нужно отправить
         несколько сообщений с подпиской на топик.
         """
-        ...
+        pass
 
     async def _connect(self):
         """
@@ -111,6 +117,10 @@ class AbstractWebsocket(ABC):
             if self._curr_ping_task:
                 self._curr_ping_task.cancel()
 
+            # Отменяем предыдущую задачу health (если есть)
+            if self._curr_health_task:
+                self._curr_health_task.cancel()
+
             try:
 
                 uri: str = self._connection_uri
@@ -118,19 +128,38 @@ class AbstractWebsocket(ABC):
                 async with websockets.connect(uri=uri, **self._ws_kwargs) as websocket:
                     self._logger.debug(f"{self} Connected {uri}")
 
+                    # Обновленяем время последнего сообщения при каждом подключении
+                    self._last_message_time: float = time.time()
+
                     # Отправляем сообщение для подписки
                     await self._subscribe(websocket)
 
-                    # Запускаем задачу для ping
+                    # Запускаем обработчик сообщений
+                    tasks = [asyncio.create_task(self._handler(websocket))]
+
+                    # Запускаем ping-процесс
                     if self._ping_message:
                         self._curr_ping_task = asyncio.create_task(self._ping_task(websocket))
+                        tasks.append(self._curr_ping_task)
 
-                    # Прослушиваем сообщения
-                    await self._handler(websocket)
+                    # Запускаем health-процесс
+                    if self.NO_MESSAGE_RECONNECT_TIMEOUT:
+                        self._curr_health_task = asyncio.create_task(self._health_task())
+                        tasks.append(self._curr_health_task)
+
+                    # Ждём завершения любой задачи
+                    done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_EXCEPTION)
+
+                    # Завершаем оставшиеся задачи
+                    for task in pending:
+                        task.cancel()
+
+                    # Если одна из задач упала — пробрасываем ошибку, чтобы сработал reconnect
+                    for task in done:
+                        task.result()  # Выбросит исключение, если оно было
 
             except Exception as e:
-                self._logger.exception(
-                    f"{self} Connection error: {e}. Reconnecting in {self._reconnect_interval} seconds.")
+                self._logger.error(f"{self} Connection error: {e}. Reconnecting in {self._reconnect_interval} seconds.")
                 await asyncio.sleep(self._reconnect_interval)
 
     async def _handler(self, conn: ClientConnection) -> None:
@@ -144,6 +173,7 @@ class AbstractWebsocket(ABC):
         while self._is_active:
             try:
                 message = await conn.recv()
+                self._last_message_time = time.time()
                 self._logger.trace(f"{self} Received message: {message}")
                 await self._queue.put(orjson.loads(message))
             except orjson.JSONDecodeError:
@@ -171,6 +201,17 @@ class AbstractWebsocket(ABC):
                 self._logger.exception(f"{self} Error({type(e)}) while sending ping: {e}")
             finally:
                 await asyncio.sleep(self._ping_interval)
+
+    async def _health_task(self) -> None:
+        """
+        Проверяет как давно получено последнее сообщение с вебсокета. Если давно - то перезапускает подключение.
+        """
+        while self._is_active:
+            try:
+                if self._last_message_time + self.NO_MESSAGE_RECONNECT_TIMEOUT < time.time():
+                    raise TimeoutError(f"No messages for {self.NO_MESSAGE_RECONNECT_TIMEOUT} seconds")
+            finally:
+                await asyncio.sleep(1)
 
     async def _subscribe(self, conn: ClientConnection) -> None:
         """
@@ -239,8 +280,11 @@ class AbstractWebsocket(ABC):
         # Дождаться завершения воркеров
         await asyncio.gather(*self._workers, return_exceptions=True)
 
+        # Отменяем задачи
         if self._curr_ping_task:
             self._curr_ping_task.cancel()
+        if self._curr_health_task:
+            self._curr_health_task.cancel()
 
     def __str__(self) -> str:
         return f"[Ws {self._market_type} {self._topic} {len(self._tickers) if self._tickers else '*'}Xtickers]"

@@ -7,7 +7,6 @@ from pycryptoapi.exc import AdapterException
 
 async def callback(msg):
     try:
-        print(msg)
         k = BinanceAdapter.kline_message(raw_msg=msg)
         print(k)
 
@@ -19,8 +18,8 @@ async def main():
     socket = BinanceSocketManager.klines_socket(
         market_type=MarketType.SPOT,
         timeframe=Timeframe.MIN_1,
-        tickers=["BTCUSDT", "ETHUSDT"],
-        callback=callback
+        tickers=["BTCUSDT"],
+        callback=callback,
     )
 
     await socket.start()

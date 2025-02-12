@@ -65,7 +65,8 @@ class MexcSocketManager(AbstractSocketManager):
             cls,
             market_type: MarketType,
             tickers: List[str],
-            callback: Callable[..., Awaitable]
+            callback: Callable[..., Awaitable],
+            **kwargs
     ) -> MexcWebsocket:
         if market_type == MarketType.SPOT:
             topic: str = "spot@public.deals.v3.api"
@@ -77,7 +78,8 @@ class MexcSocketManager(AbstractSocketManager):
             topic=topic,
             tickers=tickers,
             market_type=market_type,
-            callback=callback
+            callback=callback,
+            **kwargs
         )
 
     @classmethod
@@ -86,7 +88,8 @@ class MexcSocketManager(AbstractSocketManager):
             tickers: List[str],
             timeframe: Timeframe,
             market_type: MarketType,
-            callback: Callable[..., Awaitable]
+            callback: Callable[..., Awaitable],
+            **kwargs
     ) -> MexcWebsocket:
         if market_type == MarketType.SPOT:
             topic: str = "spot@public.kline.v3.api"
@@ -99,7 +102,8 @@ class MexcSocketManager(AbstractSocketManager):
             market_type=market_type,
             timeframe=timeframe.to_exchange_format(Exchange.MEXC),
             tickers=tickers,
-            callback=callback
+            callback=callback,
+            **kwargs
         )
 
     @classmethod
@@ -107,7 +111,8 @@ class MexcSocketManager(AbstractSocketManager):
             cls,
             market_type: MarketType,
             callback: Callable[..., Awaitable],
-            timezone: Literal[""] = "+8"
+            timezone: Literal[""] = "+8",
+            **kwargs
     ) -> MexcWebsocket:
         if market_type == MarketType.SPOT:
             topic: str = "spot@public.miniTickers.v3.api"
@@ -119,7 +124,8 @@ class MexcSocketManager(AbstractSocketManager):
             topic=topic,
             market_type=market_type,
             timeframe=timezone,
-            callback=callback
+            callback=callback,
+            **kwargs
         )
 
     @classmethod

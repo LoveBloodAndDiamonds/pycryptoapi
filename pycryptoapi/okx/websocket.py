@@ -56,12 +56,14 @@ class OkxSocketManager(AbstractSocketManager):
     def aggtrades_socket(
             cls,
             tickers: List[str],
-            callback: Callable[..., Awaitable]
+            callback: Callable[..., Awaitable],
+            **kwargs
     ) -> OkxWebsocket:
         return OkxWebsocket(
             topic="trades-all",
             tickers=tickers,
-            callback=callback
+            callback=callback,
+            **kwargs
         )
 
     @classmethod
@@ -69,33 +71,39 @@ class OkxSocketManager(AbstractSocketManager):
             cls,
             tickers: List[str],
             timeframe: Timeframe,
-            callback: Callable[..., Awaitable]
+            callback: Callable[..., Awaitable],
+            **kwargs
     ) -> OkxWebsocket:
         return OkxWebsocket(
             topic=f"candle{timeframe.to_exchange_format(Exchange.OKX)}",
             tickers=tickers,
-            callback=callback
+            callback=callback,
+            **kwargs
         )
 
     @classmethod
     def tickers_socket(
             cls,
             tickers: List[str],
-            callback: Callable[..., Awaitable]
+            callback: Callable[..., Awaitable],
+            **kwargs
     ) -> OkxWebsocket:
         return OkxWebsocket(
             topic="tickers",
             tickers=tickers,
-            callback=callback
+            callback=callback,
+            **kwargs
         )
 
     @classmethod
     def liquidations_socket(
             cls,
-            callback: Callable[..., Awaitable]
+            callback: Callable[..., Awaitable],
+            **kwargs
     ) -> OkxWebsocket:
         return OkxWebsocket(
             topic="liquidation-orders",
             tickers=["SWAP"],
-            callback=callback
+            callback=callback,
+            **kwargs
         )
