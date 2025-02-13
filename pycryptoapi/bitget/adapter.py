@@ -1,3 +1,4 @@
+import warnings
 from typing import Any, List, Dict, Union
 
 from ..abstract import AbstractAdapter
@@ -131,7 +132,11 @@ class BitgetAdapter(AbstractAdapter):
         elif isinstance(raw_data, list):
             result: dict[str, OpenInterestItem] = {}
             for item in raw_data:
-                data = item["data"]["openInterestList"][0]
+                try:
+                    data = item["data"]["openInterestList"][0]
+                except IndexError:
+                    warnings.warn(f"Item with empty data: {item}")
+                    continue
                 result[data["symbol"]] = OpenInterestItem(
                     t=int(item["data"]["ts"]),
                     v=float(data["size"])
