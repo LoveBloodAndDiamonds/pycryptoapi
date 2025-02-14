@@ -1,9 +1,9 @@
 import warnings
-from typing import Any, List, Dict, Union
+from typing import Any, List, Dict, Union, Optional
 
 from ..abstract import AbstractAdapter
 from ..exc import AdapterException
-from ..types import TickerDailyItem, KlineDict, OpenInterestItem
+from ..types import TickerDailyItem, KlineDict, OpenInterestItem, AggTradeDict
 
 
 class BitgetAdapter(AbstractAdapter):
@@ -178,3 +178,32 @@ class BitgetAdapter(AbstractAdapter):
             raise AdapterException(f"Missing key in Bitget kline message: {e}")
         except (TypeError, ValueError) as e:
             raise AdapterException(f"Invalid data format in Bitget kline message: {e}")
+
+    @staticmethod
+    def aggtrades_message(raw_msg: Any) -> Optional[List[AggTradeDict]]:
+        """
+        Преобразует сырое сообщение с вебсокета Bitget в унифицированный вид.
+
+        :param raw_msg: Сырое сообщение с вебсокета.
+        :return: Список унифицированных объектов AggTradeDict или None, если сообщение невалидно.
+        :raises: AdapterException, если возникла ошибка при обработке данных.
+        """
+        try:
+            if not isinstance(raw_msg, dict) or "data" not in raw_msg:
+                return None
+
+            trades = raw_msg["data"]
+            if not isinstance(trades, list) or not trades:
+                return None
+
+            return [
+                {
+                    "s": raw_msg["arg"]["instId"],  # Получаем символ из аргументов запроса
+                    "t": int(trade["ts"]),
+                    "p": float(trade["price"]),
+                    "v": float(trade["size"]),
+                }
+                for trade in trades
+            ]
+        except (KeyError, ValueError, TypeError) as e:
+            raise AdapterException(f"Error processing Bitget aggTrade: {e}")

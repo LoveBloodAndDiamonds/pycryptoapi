@@ -24,3 +24,10 @@ class KlineDict(TypedDict):
     i: str  # timeframe
     T: Optional[int]  # close time
     x: Optional[bool]  # is closed?
+
+
+class AggTradeDict(TypedDict):
+    s: str  # symbol
+    t: int  # trade time
+    p: float  # trade price
+    v: float  # trade volume (Coins)

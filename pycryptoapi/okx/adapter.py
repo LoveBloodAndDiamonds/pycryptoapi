@@ -1,8 +1,8 @@
-from typing import Any, List, Dict, Union
+from typing import Any, List, Dict, Union, Optional
 
 from ..abstract import AbstractAdapter
 from ..exc import AdapterException
-from ..types import TickerDailyItem, KlineDict, OpenInterestItem
+from ..types import TickerDailyItem, KlineDict, OpenInterestItem, AggTradeDict
 
 
 class OkxAdapter(AbstractAdapter):
@@ -188,3 +188,34 @@ class OkxAdapter(AbstractAdapter):
             raise AdapterException(f"Missing key in OKX open interest data: {e}")
         except (TypeError, ValueError) as e:
             raise AdapterException(f"Invalid data format in OKX open interest data: {e}")
+
+    @staticmethod
+    def aggtrades_message(raw_msg: Any) -> Optional[List[AggTradeDict]]:
+        """
+        Преобразует сырое сообщение с вебсокета OKX в унифицированный вид.
+
+        :param raw_msg: Сырое сообщение с вебсокета.
+        :return: Список унифицированных объектов AggTradeDict или None, если сообщение невалидно.
+        :raises: AdapterException, если возникла ошибка при обработке данных.
+        """
+        try:
+            # Проверяем структуру сообщения
+            if not isinstance(raw_msg, dict) or "data" not in raw_msg or not isinstance(raw_msg["data"], list):
+                return None
+
+            trades = raw_msg["data"]
+            if not trades:
+                return None
+
+            return [
+                {
+                    "s": trade["instId"],
+                    "t": int(trade["ts"]),
+                    "p": float(trade["px"]),
+                    "v": float(trade["sz"]),
+                }
+                for trade in trades
+            ]
+
+        except (KeyError, ValueError, TypeError) as e:
+            raise AdapterException(f"Error processing OKX aggTrade: {e}")

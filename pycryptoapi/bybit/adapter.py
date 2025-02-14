@@ -1,8 +1,8 @@
-from typing import Any, List, Dict
+from typing import Any, List, Dict, Optional
 
 from ..abstract import AbstractAdapter
 from ..exc import AdapterException
-from ..types import TickerDailyItem, KlineDict, OpenInterestItem
+from ..types import TickerDailyItem, KlineDict, OpenInterestItem, AggTradeDict
 
 
 class BybitAdapter(AbstractAdapter):
@@ -141,3 +141,31 @@ class BybitAdapter(AbstractAdapter):
             raise AdapterException(f"Missing key in Bybit open intrest data: {e}")
         except (TypeError, ValueError) as e:
             raise AdapterException(f"Invalid data format in Bybit open intrest data: {e}")
+
+    @staticmethod
+    def aggtrades_message(raw_msg: Any) -> Optional[List[AggTradeDict]]:
+        """
+        Преобразует сырое сообщение с вебсокета Bybit в унифицированный вид.
+
+        :param raw_msg: Сырое сообщение с вебсокета.
+        :return: Унифицированный объект AggTradeDict или None, если сообщение невалидно.
+        """
+        try:
+            if not isinstance(raw_msg, dict) or "data" not in raw_msg:
+                return None
+
+            trades = raw_msg["data"]
+            if not isinstance(trades, list) or not trades:
+                return None
+
+            return [
+                {
+                    "s": trade["s"],
+                    "t": trade["T"],
+                    "p": float(trade["p"]),
+                    "v": float(trade["v"]),
+                }
+                for trade in trades
+            ]
+        except (KeyError, ValueError, TypeError) as e:
+            raise AdapterException(f"Error processing Bybit aggTrade: {e}")

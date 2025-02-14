@@ -1,8 +1,8 @@
-from typing import Any, List, Dict
+from typing import Any, List, Dict, Optional
 
 from ..abstract import AbstractAdapter
 from ..exc import AdapterException
-from ..types import TickerDailyItem, KlineDict, OpenInterestItem
+from ..types import TickerDailyItem, KlineDict, OpenInterestItem, AggTradeDict
 
 
 class MexcAdapter(AbstractAdapter):
@@ -179,6 +179,48 @@ class MexcAdapter(AbstractAdapter):
             raise AdapterException(f"Missing key in MEXC kline message: {e}")
         except (TypeError, ValueError) as e:
             raise AdapterException(f"Invalid data format in MEXC kline message: {e}")
+
+    @staticmethod
+    def aggtrades_message(raw_msg: Any) -> Optional[List[AggTradeDict]]:
+        """
+        Преобразует сырое сообщение с вебсокета MEXC в унифицированный вид.
+
+        :param raw_msg: Сырое сообщение с вебсокета.
+        :return: Список унифицированных объектов AggTradeDict или None, если сообщение невалидно.
+        :raises: AdapterException, если возникла ошибка при обработке данных.
+        """
+        try:
+            # Проверяем первый формат (spot@public.deals.v3.api)
+            if isinstance(raw_msg, dict) and "d" in raw_msg and "deals" in raw_msg["d"]:
+                trades = raw_msg["d"]["deals"]
+                if not isinstance(trades, list) or not trades:
+                    return None
+
+                return [
+                    {
+                        "s": raw_msg["s"],  # Символ
+                        "t": int(trade["t"]),
+                        "p": float(trade["p"]),
+                        "v": float(trade["v"]),
+                    }
+                    for trade in trades
+                ]
+
+            # Проверяем второй формат (push.deal)
+            if isinstance(raw_msg, dict) and "symbol" in raw_msg and "data" in raw_msg:
+                trade = raw_msg["data"]
+                return [
+                    {
+                        "s": raw_msg["symbol"].replace("_", ""),  # Приводим BTC_USDT → BTCUSDT
+                        "t": int(trade["t"]),
+                        "p": float(trade["p"]),
+                        "v": float(trade["v"]),
+                    }
+                ]
+
+            return None  # Если формат неизвестен
+        except (KeyError, ValueError, TypeError) as e:
+            raise AdapterException(f"Error processing MEXC aggTrade: {e}")
 
     @staticmethod
     def open_interest(raw_data: Dict[str, Any]) -> Dict[str, OpenInterestItem]:

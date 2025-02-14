@@ -1,8 +1,8 @@
-from typing import Any, List, Dict, Union
+from typing import Any, List, Dict, Union, Optional
 
 from ..abstract import AbstractAdapter
 from ..exc import AdapterException
-from ..types import TickerDailyItem, OpenInterestItem, KlineDict
+from ..types import TickerDailyItem, OpenInterestItem, KlineDict, AggTradeDict
 
 
 class BinanceAdapter(AbstractAdapter):
@@ -145,3 +145,25 @@ class BinanceAdapter(AbstractAdapter):
             raise AdapterException(f"Missing key in Binance kline message: {e}")
         except (TypeError, ValueError) as e:
             raise AdapterException(f"Invalid data format in Binance kline message: {e}")
+
+    @staticmethod
+    def aggtrades_message(raw_msg: Any) -> Optional[AggTradeDict]:
+        """
+        Преобразует сырое сообщение с вебсокета Binance в унифицированный вид.
+
+        :param raw_msg: Сырое сообщение с вебсокета.
+        :return: Унифицированный объект AggTradeDict или None, если сообщение невалидно.
+        """
+        try:
+            # Если сообщение в обёртке (мульти-стрим), то достаем `data`
+            if "data" in raw_msg:
+                raw_msg = raw_msg["data"]
+
+            return {
+                "s": raw_msg["s"],
+                "t": raw_msg["T"],
+                "p": float(raw_msg["p"]),
+                "v": float(raw_msg["q"]),
+            }
+        except (KeyError, ValueError, TypeError) as e:
+            raise AdapterException(f"Invalid data format in Binance aggtrades message: {e}")
