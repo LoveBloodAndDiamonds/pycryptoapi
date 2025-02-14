@@ -1,5 +1,5 @@
 import warnings
-from typing import Any, List, Dict, Union, Optional
+from typing import Any, List, Dict, Union
 
 from ..abstract import AbstractAdapter
 from ..exc import AdapterException
@@ -157,10 +157,9 @@ class BitgetAdapter(AbstractAdapter):
         try:
             symbol = raw_msg["arg"]["instId"]
             timeframe = raw_msg["arg"]["channel"].replace("candle", "")  # Извлекаем таймфрейм
-            klines = []
 
-            for data in raw_msg["data"]:
-                klines.append(KlineDict(
+            return [
+                KlineDict(
                     s=symbol,
                     t=int(data[0]),
                     o=float(data[1]),
@@ -171,16 +170,16 @@ class BitgetAdapter(AbstractAdapter):
                     T=None,
                     x=None,
                     i=timeframe
-                ))
+                ) for data in raw_msg["data"]
+            ]
 
-            return klines
         except KeyError as e:
             raise AdapterException(f"Missing key in Bitget kline message: {e}")
         except (TypeError, ValueError) as e:
             raise AdapterException(f"Invalid data format in Bitget kline message: {e}")
 
     @staticmethod
-    def aggtrades_message(raw_msg: Any) -> Optional[List[AggTradeDict]]:
+    def aggtrades_message(raw_msg: Any) -> List[AggTradeDict]:
         """
         Преобразует сырое сообщение с вебсокета Bitget в унифицированный вид.
 
@@ -189,13 +188,7 @@ class BitgetAdapter(AbstractAdapter):
         :raises: AdapterException, если возникла ошибка при обработке данных.
         """
         try:
-            if not isinstance(raw_msg, dict) or "data" not in raw_msg:
-                return None
-
             trades = raw_msg["data"]
-            if not isinstance(trades, list) or not trades:
-                return None
-
             return [
                 {
                     "s": raw_msg["arg"]["instId"],  # Получаем символ из аргументов запроса
@@ -206,4 +199,4 @@ class BitgetAdapter(AbstractAdapter):
                 for trade in trades
             ]
         except (KeyError, ValueError, TypeError) as e:
-            raise AdapterException(f"Error processing Bitget aggTrade: {e}")
+            raise AdapterException(f"Error processing Bitget aggTrade ({raw_msg}): {e}")

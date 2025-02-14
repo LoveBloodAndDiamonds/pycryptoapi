@@ -1,4 +1,4 @@
-from typing import Any, List, Dict, Optional
+from typing import Any, List, Dict
 
 from ..abstract import AbstractAdapter
 from ..exc import AdapterException
@@ -129,7 +129,7 @@ class MexcAdapter(AbstractAdapter):
             return {item["symbol"]: float(item["fundingRate"]) * 100 for item in raw_data["data"]}
 
     @staticmethod
-    def kline_message(raw_msg: Any) -> KlineDict | List[KlineDict]:
+    def kline_message(raw_msg: Any) -> List[KlineDict]:
         """
         Преобразует сырое сообщение с вебсокета MEXC (спот или фьючерсы) в унифицированный формат свечи (Kline).
 
@@ -141,10 +141,8 @@ class MexcAdapter(AbstractAdapter):
             # Обработка спота
             if "d" in raw_msg and "k" in raw_msg["d"]:
                 data = raw_msg["d"]["k"]
-                symbol = raw_msg["s"]
-                timeframe = data["i"]
-                return KlineDict(
-                    s=symbol,
+                return [KlineDict(
+                    s=raw_msg["s"],
                     t=int(data["t"]),
                     o=float(data["o"]),
                     h=float(data["h"]),
@@ -153,16 +151,14 @@ class MexcAdapter(AbstractAdapter):
                     v=float(data["v"]),
                     T=int(data["T"]),
                     x=None,
-                    i=timeframe
-                )
+                    i=data["i"]
+                )]
 
             # Обработка фьючерсов
             elif "symbol" in raw_msg and "data" in raw_msg:
                 data = raw_msg["data"]
-                symbol = data["symbol"].replace("_", "")
-                timeframe = data["interval"]
-                return KlineDict(
-                    s=symbol,
+                return [KlineDict(
+                    s=data["symbol"].replace("_", ""),
                     t=int(data["t"]),
                     o=float(data["o"]),
                     h=float(data["h"]),
@@ -171,8 +167,8 @@ class MexcAdapter(AbstractAdapter):
                     v=float(data["a"]),
                     T=None,  # Добавляем 60 сек, так как таймфрейм 1 мин
                     x=None,
-                    i=timeframe
-                )
+                    i=data["interval"]
+                )]
 
             raise AdapterException("Unsupported message format or missing data.")
         except KeyError as e:
@@ -181,7 +177,7 @@ class MexcAdapter(AbstractAdapter):
             raise AdapterException(f"Invalid data format in MEXC kline message: {e}")
 
     @staticmethod
-    def aggtrades_message(raw_msg: Any) -> Optional[List[AggTradeDict]]:
+    def aggtrades_message(raw_msg: Any) -> List[AggTradeDict]:
         """
         Преобразует сырое сообщение с вебсокета MEXC в унифицированный вид.
 
@@ -193,8 +189,6 @@ class MexcAdapter(AbstractAdapter):
             # Проверяем первый формат (spot@public.deals.v3.api)
             if isinstance(raw_msg, dict) and "d" in raw_msg and "deals" in raw_msg["d"]:
                 trades = raw_msg["d"]["deals"]
-                if not isinstance(trades, list) or not trades:
-                    return None
 
                 return [
                     {
@@ -218,9 +212,9 @@ class MexcAdapter(AbstractAdapter):
                     }
                 ]
 
-            return None  # Если формат неизвестен
+            raise AdapterException("Unknown format")
         except (KeyError, ValueError, TypeError) as e:
-            raise AdapterException(f"Error processing MEXC aggTrade: {e}")
+            raise AdapterException(f"Error processing MEXC aggTrade({raw_msg}): {e}")
 
     @staticmethod
     def open_interest(raw_data: Dict[str, Any]) -> Dict[str, OpenInterestItem]:

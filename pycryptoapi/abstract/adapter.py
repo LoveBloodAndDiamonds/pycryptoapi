@@ -86,7 +86,7 @@ class AbstractAdapter(ABC):
 
     @staticmethod
     @abstractmethod
-    def kline_message(raw_msg: Any) -> KlineDict | List[KlineDict]:
+    def kline_message(raw_msg: Any) -> List[KlineDict]:
         """
         Преобразует сырое сообщение с вебсокета в унифицированный вид.
         :param raw_msg: Сырое сообщение с вебсокета.
@@ -97,7 +97,7 @@ class AbstractAdapter(ABC):
 
     @staticmethod
     @abstractmethod
-    def aggtrades_message(raw_msg: Any) -> AggTradeDict | List[AggTradeDict]:
+    def aggtrades_message(raw_msg: Any) -> List[AggTradeDict]:
         """
         Преобразует сырое сообщение с вебсокета в унифицированный вид.
         :param raw_msg: Сырое сообщение с вебсокета.

@@ -1,4 +1,4 @@
-from typing import Any, List, Dict, Union, Optional
+from typing import Any, List, Dict, Union
 
 from ..abstract import AbstractAdapter
 from ..exc import AdapterException
@@ -116,7 +116,7 @@ class BinanceAdapter(AbstractAdapter):
             raise ValueError(f"Wrong raw_data type: {type(raw_data)}, excepted: list or dict")
 
     @staticmethod
-    def kline_message(raw_msg: Dict[str, Any]) -> KlineDict:
+    def kline_message(raw_msg: Dict[str, Any]) -> List[KlineDict]:
         """
         Преобразует сырое сообщение с вебсокета Binance в унифицированный формат свечи (Kline).
 
@@ -129,7 +129,7 @@ class BinanceAdapter(AbstractAdapter):
                 kline = raw_msg["data"]["k"]
             except KeyError:
                 kline = raw_msg["k"]
-            return KlineDict(
+            return [KlineDict(
                 s=kline["s"],
                 t=kline["t"],
                 o=float(kline["o"]),
@@ -140,14 +140,14 @@ class BinanceAdapter(AbstractAdapter):
                 T=kline["T"],
                 x=kline["x"],  # Берём через .get(), чтобы не выбрасывало KeyError
                 i=kline["i"]
-            )
+            )]
         except KeyError as e:
             raise AdapterException(f"Missing key in Binance kline message: {e}")
         except (TypeError, ValueError) as e:
             raise AdapterException(f"Invalid data format in Binance kline message: {e}")
 
     @staticmethod
-    def aggtrades_message(raw_msg: Any) -> Optional[AggTradeDict]:
+    def aggtrades_message(raw_msg: Any) -> List[AggTradeDict]:
         """
         Преобразует сырое сообщение с вебсокета Binance в унифицированный вид.
 
@@ -159,11 +159,11 @@ class BinanceAdapter(AbstractAdapter):
             if "data" in raw_msg:
                 raw_msg = raw_msg["data"]
 
-            return {
+            return [{
                 "s": raw_msg["s"],
                 "t": raw_msg["T"],
                 "p": float(raw_msg["p"]),
                 "v": float(raw_msg["q"]),
-            }
+            }]
         except (KeyError, ValueError, TypeError) as e:
             raise AdapterException(f"Invalid data format in Binance aggtrades message: {e}")

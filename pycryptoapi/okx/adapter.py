@@ -1,4 +1,4 @@
-from typing import Any, List, Dict, Union, Optional
+from typing import Any, List, Dict, Union
 
 from ..abstract import AbstractAdapter
 from ..exc import AdapterException
@@ -151,10 +151,9 @@ class OkxAdapter(AbstractAdapter):
         try:
             symbol = raw_msg["arg"]["instId"].replace("-", "")  # Убираем дефисы из символа
             timeframe = raw_msg["arg"]["channel"].replace("candle", "")  # Извлекаем таймфрейм
-            klines = []
 
-            for data in raw_msg["data"]:
-                klines.append(KlineDict(
+            return [
+                KlineDict(
                     s=symbol,
                     t=int(data[0]),
                     o=float(data[1]),
@@ -165,9 +164,8 @@ class OkxAdapter(AbstractAdapter):
                     i=timeframe,
                     T=None,  # Добавляем 60 сек, так как таймфрейм 1 мин
                     x=None,  # OKX всегда отправляет закрытые свечи
-                ))
-
-            return klines
+                ) for data in raw_msg["data"]
+            ]
         except KeyError as e:
             raise AdapterException(f"Missing key in OKX kline message: {e}")
         except (TypeError, ValueError) as e:
@@ -190,7 +188,7 @@ class OkxAdapter(AbstractAdapter):
             raise AdapterException(f"Invalid data format in OKX open interest data: {e}")
 
     @staticmethod
-    def aggtrades_message(raw_msg: Any) -> Optional[List[AggTradeDict]]:
+    def aggtrades_message(raw_msg: Any) -> List[AggTradeDict]:
         """
         Преобразует сырое сообщение с вебсокета OKX в унифицированный вид.
 
@@ -199,14 +197,7 @@ class OkxAdapter(AbstractAdapter):
         :raises: AdapterException, если возникла ошибка при обработке данных.
         """
         try:
-            # Проверяем структуру сообщения
-            if not isinstance(raw_msg, dict) or "data" not in raw_msg or not isinstance(raw_msg["data"], list):
-                return None
-
             trades = raw_msg["data"]
-            if not trades:
-                return None
-
             return [
                 {
                     "s": trade["instId"],
