@@ -36,3 +36,9 @@ class APIException(PyCryptoAPIException):
     @property
     def is_rate_limit_exception(self) -> bool:
         return self.code == 429
+
+
+class QueueOverflowException(PyCryptoAPIException):
+
+    def __init__(self, message: str = "Queue overflowed...") -> None:
+        super().__init__(message)

@@ -13,6 +13,7 @@ from loguru._logger import Logger  # noqa
 from websockets.asyncio.client import ClientConnection
 
 from ..enums import MarketType
+from ..exc import QueueOverflowException
 
 
 class AbstractWebsocket(ABC):
@@ -21,6 +22,7 @@ class AbstractWebsocket(ABC):
     """
 
     NO_MESSAGE_RECONNECT_TIMEOUT: int = 60
+    MAX_QUEUE_SIZE: int = 100
 
     def __init__(
             self,
@@ -33,7 +35,6 @@ class AbstractWebsocket(ABC):
             ping_interval: int = 30,
             reconnect_interval: int = 30,
             num_workers: int = 3,  # Количество воркеров
-            max_queue_size: int = 100,  # Макс. размер очереди
             **ws_kwargs  # websocket kwargs
     ) -> None:
         """
@@ -49,7 +50,6 @@ class AbstractWebsocket(ABC):
             ping_interval (int): Интервал отправки ping-сообщений.
             reconnect_interval (int): Интервал для повторного подключения при ошибке.
             num_workers (int): Количество воркеров для обработки сообщений.
-            max_queue_size (int): Максимальный размер очереди сообщений.
             **ws_kwargs (dict): Дополнительные аргументы для WebSocket-соединения.
         """
         self._topic: str = topic
@@ -62,7 +62,7 @@ class AbstractWebsocket(ABC):
         self._logger: logging.Logger | Logger = logger
 
         # Очередь и список рабочих
-        self._queue = asyncio.Queue(maxsize=max_queue_size)
+        self._queue = asyncio.Queue(maxsize=self.MAX_QUEUE_SIZE)
         self._num_workers: int = num_workers
         self._workers = []
 
@@ -239,6 +239,10 @@ class AbstractWebsocket(ABC):
             try:
                 data = await self._queue.get()  # Получаем сообщение
                 await self._callback(data)  # Передаем в callback
+
+                qsize = self._queue.qsize()
+                if qsize >= self.MAX_QUEUE_SIZE:
+                    raise QueueOverflowException(f"Message queue size {qsize} exceeded maximum {self.MAX_QUEUE_SIZE}")
             except Exception as e:
                 self._logger.error(f"{self} Error({type(e)}) while processing message: {e}")
             finally:

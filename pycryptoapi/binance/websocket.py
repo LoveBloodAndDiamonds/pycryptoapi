@@ -76,8 +76,8 @@ class BinanceSocketManager(AbstractSocketManager):
     def aggtrades_socket(
             cls,
             market_type: MarketType,
-            callback: Callable[..., Awaitable],
             tickers: List[str],
+            callback: Callable[..., Awaitable],
             **kwargs
     ) -> BinanceWebsocket:
         return BinanceWebsocket(
