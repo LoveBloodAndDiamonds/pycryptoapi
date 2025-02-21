@@ -1,8 +1,8 @@
 from typing import Any, List, Dict
 
 from ..abstract import AbstractAdapter
-from ..exc import AdapterException
-from ..types import TickerDailyItem, KlineDict, OpenInterestItem, AggTradeDict
+from ..exceptions import AdapterException
+from ..types import TickerDailyItem, KlineDict, OpenInterestItem, AggTradeDict, LiquidationDict
 
 
 class BybitAdapter(AbstractAdapter):
@@ -164,3 +164,25 @@ class BybitAdapter(AbstractAdapter):
             ]
         except (KeyError, ValueError, TypeError) as e:
             raise AdapterException(f"Error processing Bybit aggTrade({raw_msg}): {e}")
+
+    @staticmethod
+    def liquidation_message(raw_msg: Any) -> List[LiquidationDict]:
+        """
+        Преобразует сырое сообщение с вебсокета в унифицированный вид.
+        :param raw_msg: Сырое сообщение с вебсокета.
+        :return: Унифицированный объект LiquidationDict, или None, если сообщение невалидно.
+        """
+        try:
+            liquidations = raw_msg["data"]
+
+            return [
+                LiquidationDict(
+                    t=liquidation["T"],
+                    s=liquidation["s"],
+                    S=liquidation["S"].upper(),
+                    v=float(liquidation["v"]),
+                    p=float(liquidation["p"])
+                )
+                for liquidation in liquidations]
+        except (KeyError, ValueError, TypeError) as e:
+            raise AdapterException(f"Error processing Bybit liquidation({raw_msg}): {e}")

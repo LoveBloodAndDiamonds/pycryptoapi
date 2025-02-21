@@ -1,7 +1,8 @@
 __all__ = [
     "MarketType",
     "Exchange",
-    "Timeframe"
+    "Timeframe",
+    "Side"
 ]
 
 from enum import StrEnum
@@ -90,6 +91,12 @@ class Timeframe(StrEnum):
             return self.mapping[exchange][self]  # noqa
         except KeyError:
             raise ValueError(f"Timeframe {self.value} is not supported for exchange {exchange.value}")
+
+
+class Side(StrEnum):
+    """Перечисление сторон позиций."""
+    BUY = "BUY"
+    SELL = "SELL"
 
 # BITMEX: str = "BITMEX"
 # BINGX: str = "BINGX"

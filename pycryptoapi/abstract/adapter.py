@@ -3,7 +3,7 @@ __all__ = ["AbstractAdapter", ]
 from abc import ABC, abstractmethod
 from typing import List, Any, Dict
 
-from ..types import TickerDailyItem, KlineDict, OpenInterestItem, AggTradeDict
+from ..types import TickerDailyItem, KlineDict, OpenInterestItem, AggTradeDict, LiquidationDict
 
 
 class AbstractAdapter(ABC):
@@ -90,7 +90,7 @@ class AbstractAdapter(ABC):
         """
         Преобразует сырое сообщение с вебсокета в унифицированный вид.
         :param raw_msg: Сырое сообщение с вебсокета.
-        :return: Унифицированный обьект KlineDict, или None, если сообщение невалидно.
+        :return: Унифицированный обьект List[KlineDict], или None, если сообщение невалидно.
         :raises: AdapterException если возникла ошибка при унификации данных.
         """
         pass
@@ -101,7 +101,17 @@ class AbstractAdapter(ABC):
         """
         Преобразует сырое сообщение с вебсокета в унифицированный вид.
         :param raw_msg: Сырое сообщение с вебсокета.
-        :return: Унифицированный обьект AggTradeDict или List[AggTradesDict], или None, если сообщение невалидно.
+        :return: Унифицированный обьект List[AggTradesDict], или None, если сообщение невалидно.
         :raises: AdapterException если возникла ошибка при унификации данных.
+        """
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def liquidation_message(raw_msg: Any) -> List[LiquidationDict]:
+        """
+        Преобразует сырое сообщение с вебсокета в унифицированный вид.
+        :param raw_msg: Сырое сообщение с вебсокета.
+        :return: Унифицированный объект List[LiquidationDict], или None, если сообщение невалидно.
         """
         pass

@@ -5,7 +5,7 @@ from typing import Optional, Callable, List, Awaitable
 
 from ..abstract import AbstractWebsocket, AbstractSocketManager
 from ..enums import MarketType, Timeframe, Exchange
-from ..exc import MarketException
+from ..exceptions import MarketException
 
 
 class BybitWebsocket(AbstractWebsocket):

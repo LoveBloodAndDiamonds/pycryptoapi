@@ -2,8 +2,8 @@ import warnings
 from typing import Any, List, Dict, Union
 
 from ..abstract import AbstractAdapter
-from ..exc import AdapterException
-from ..types import TickerDailyItem, KlineDict, OpenInterestItem, AggTradeDict
+from ..exceptions import AdapterException
+from ..types import TickerDailyItem, KlineDict, OpenInterestItem, AggTradeDict, LiquidationDict
 
 
 class BitgetAdapter(AbstractAdapter):
@@ -200,3 +200,7 @@ class BitgetAdapter(AbstractAdapter):
             ]
         except (KeyError, ValueError, TypeError) as e:
             raise AdapterException(f"Error processing Bitget aggTrade ({raw_msg}): {e}")
+
+    @staticmethod
+    def liquidation_message(raw_msg: Any) -> List[LiquidationDict]:
+        raise NotImplementedError("Not implemented yet...")

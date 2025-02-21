@@ -2,7 +2,7 @@ import asyncio
 
 from pycryptoapi.binance import BinanceSocketManager, BinanceAdapter, BinanceClient
 from pycryptoapi.enums import MarketType
-from pycryptoapi.exc import AdapterException
+from pycryptoapi.exceptions import AdapterException
 
 
 async def callback(msg):

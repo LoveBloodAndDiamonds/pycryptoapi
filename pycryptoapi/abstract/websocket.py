@@ -13,7 +13,7 @@ from loguru._logger import Logger  # noqa
 from websockets.asyncio.client import ClientConnection
 
 from ..enums import MarketType
-from ..exc import QueueOverflowException
+from ..exceptions import QueueOverflowException
 
 
 class AbstractWebsocket(ABC):

@@ -1,8 +1,8 @@
 from typing import Any, List, Dict, Union
 
 from ..abstract import AbstractAdapter
-from ..exc import AdapterException
-from ..types import TickerDailyItem, KlineDict, OpenInterestItem, AggTradeDict
+from ..exceptions import AdapterException
+from ..types import TickerDailyItem, KlineDict, OpenInterestItem, AggTradeDict, LiquidationDict
 
 
 class OkxAdapter(AbstractAdapter):
@@ -210,3 +210,7 @@ class OkxAdapter(AbstractAdapter):
 
         except (KeyError, ValueError, TypeError) as e:
             raise AdapterException(f"Error processing OKX aggTrade: {e}")
+
+    @staticmethod
+    def liquidation_message(raw_msg: Any) -> List[LiquidationDict]:
+        raise NotImplementedError("Not implemented yet...")

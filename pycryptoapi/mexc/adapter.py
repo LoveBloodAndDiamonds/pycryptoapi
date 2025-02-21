@@ -1,8 +1,8 @@
 from typing import Any, List, Dict
 
 from ..abstract import AbstractAdapter
-from ..exc import AdapterException
-from ..types import TickerDailyItem, KlineDict, OpenInterestItem, AggTradeDict
+from ..exceptions import AdapterException
+from ..types import TickerDailyItem, KlineDict, OpenInterestItem, AggTradeDict, LiquidationDict
 
 
 class MexcAdapter(AbstractAdapter):
@@ -218,4 +218,8 @@ class MexcAdapter(AbstractAdapter):
 
     @staticmethod
     def open_interest(raw_data: Dict[str, Any]) -> Dict[str, OpenInterestItem]:
+        raise NotImplementedError("Not implemented yet...")
+
+    @staticmethod
+    def liquidation_message(raw_msg: Any) -> List[LiquidationDict]:
         raise NotImplementedError("Not implemented yet...")

@@ -1,8 +1,8 @@
 from typing import Any, List, Dict, Union
 
 from ..abstract import AbstractAdapter
-from ..exc import AdapterException
-from ..types import TickerDailyItem, OpenInterestItem, KlineDict, AggTradeDict
+from ..exceptions import AdapterException
+from ..types import TickerDailyItem, OpenInterestItem, KlineDict, AggTradeDict, LiquidationDict
 
 
 class BinanceAdapter(AbstractAdapter):
@@ -167,3 +167,7 @@ class BinanceAdapter(AbstractAdapter):
             }]
         except (KeyError, ValueError, TypeError) as e:
             raise AdapterException(f"Invalid data format in Binance aggtrades message: {e}")
+
+    @staticmethod
+    def liquidation_message(raw_msg: Any) -> List[LiquidationDict]:
+        raise NotImplementedError("Not implemented yet...")

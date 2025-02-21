@@ -2,7 +2,7 @@ import asyncio
 
 from pycryptoapi import SOCKETS_MAPPER, ADAPTERS_MAPPER
 from pycryptoapi.enums import MarketType, Exchange
-from pycryptoapi.exc import AdapterException
+from pycryptoapi.exceptions import AdapterException
 
 exchange = Exchange.BYBIT
 

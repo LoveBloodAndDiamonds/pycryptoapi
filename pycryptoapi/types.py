@@ -1,4 +1,6 @@
-from typing import TypedDict, Optional, Union, List, Dict, TypeAlias
+from typing import TypedDict, Optional, Union, List, Dict, TypeAlias, Literal
+
+from .enums import Side
 
 JsonLike: TypeAlias = Union[Dict, List]
 
@@ -31,3 +33,11 @@ class AggTradeDict(TypedDict):
     t: int  # trade time
     p: float  # trade price
     v: float  # trade volume (Coins)
+
+
+class LiquidationDict(TypedDict):
+    t: int  # time
+    s: str  # symbol
+    S: Side | Literal["BUY", "SELL"]  # side
+    v: float  # volume
+    p: float  # price

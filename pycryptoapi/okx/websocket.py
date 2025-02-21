@@ -5,7 +5,7 @@ from typing import Optional, List, Callable, Awaitable
 
 from ..abstract import AbstractWebsocket, AbstractSocketManager
 from ..enums import Timeframe, Exchange
-from ..exc import TickersException
+from ..exceptions import TickersException
 
 
 class OkxWebsocket(AbstractWebsocket):

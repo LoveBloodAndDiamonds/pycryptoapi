@@ -5,7 +5,7 @@ from typing import Any, Optional, Dict, List
 import aiohttp
 
 from ..abstract import AbstractClient
-from ..exc import APIException
+from ..exceptions import APIException
 from ..types import JsonLike
 
 

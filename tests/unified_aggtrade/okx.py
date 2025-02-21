@@ -1,8 +1,9 @@
 import asyncio
 
+from pycryptoapi.exceptionsimport AdapterException
+
 from pycryptoapi import SOCKETS_MAPPER, ADAPTERS_MAPPER
 from pycryptoapi.enums import Exchange
-from pycryptoapi.exc import AdapterException
 
 exchange = Exchange.OKX
 
