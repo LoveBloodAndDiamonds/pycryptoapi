@@ -1,24 +1,19 @@
 import asyncio
 
 # from pycryptoapi.binance import BinanceSocketManager
-from pycryptoapi.bybit import BybitSocketManager, BybitAdapter
-from pycryptoapi.enums import MarketType
-from pycryptoapi.exceptions import AdapterException
+from pycryptoapi.bybit import BybitSocketManager
 
 
 async def callback(msg):
     try:
-        k = BybitAdapter.kline_message(raw_msg=msg)
-        print(k)
-    except AdapterException as e:
-        print(f"Can not adapt message ({e}): {msg}")
+        print(msg)
+    except Exception as e:
+        print("error", e, msg)
 
 
 async def main():
-    socket = BybitSocketManager.klines_socket(
-        market_type=MarketType.SPOT,
-        timeframe="1",
-        tickers=["BTCUSDT", "ETHUSDT"],
+    socket = BybitSocketManager.liquidations_socket(
+        tickers=["BTCUSDT"],
         callback=callback
     )
 

@@ -92,7 +92,7 @@ class BybitSocketManager(AbstractSocketManager):
             **kwargs
     ) -> BybitWebsocket:
         return BybitWebsocket(
-            topic="liquidation",
+            topic="allLiquidation",
             tickers=tickers,
             market_type=MarketType.FUTURES,
             callback=callback,
