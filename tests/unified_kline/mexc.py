@@ -1,9 +1,8 @@
 import asyncio
 
-from pycryptoapi.exceptionsimport AdapterException
-
 from pycryptoapi import MexcSocketManager, MexcAdapter
 from pycryptoapi.enums import MarketType, Timeframe
+from pycryptoapi.exceptions import AdapterException
 from pycryptoapi.types import KlineDict
 
 

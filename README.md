@@ -19,7 +19,7 @@
 
 ## Установка
 
-Для установки PyCryptoAPI можно использовать `pip` или `poetry`.
+Для установки PyCryptoAPI можно использовать `pip` или `poetry` или `uv`.
 
 ### Использование pip
 
@@ -31,6 +31,12 @@ pip install git+https://github.com/LoveBloodAndDiamonds/pycryptoapi.git@main
 
 ```bash
 poetry add git+https://github.com/LoveBloodAndDiamonds/pycryptoapi.git
+```
+
+### Использование uv
+
+```bash
+uv add git+https://github.com/LoveBloodAndDiamonds/pycryptoapi.git
 ```
 
 ## Использование

@@ -317,3 +317,9 @@ class AbstractSocketManager(ABC):
     def tickers_socket(cls, *args, **kwargs) -> AbstractWebsocket:
         """Возвращает обьект, который позволяет подключаться к Tickers вебсокету."""
         pass
+
+    @classmethod
+    @abstractmethod
+    def liquidations_socket(cls, *args, **kwargs) -> AbstractWebsocket:
+        """Возвращает обьект, который позволяет подключаться к Liquidations вебсокету."""
+        pass

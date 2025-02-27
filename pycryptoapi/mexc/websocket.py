@@ -1,7 +1,7 @@
 __all__ = ["MexcWebsocket", "MexcSocketManager", ]
 
 import json
-from typing import Optional, Union, List, Literal, Callable, Awaitable, Self, Dict
+from typing import Optional, Union, List, Literal, Callable, Awaitable, Dict
 
 from ..abstract import AbstractWebsocket, AbstractSocketManager
 from ..enums import MarketType, Timeframe, Exchange
@@ -129,6 +129,6 @@ class MexcSocketManager(AbstractSocketManager):
         )
 
     @classmethod
-    def liquidations_socket(cls) -> Self:
+    def liquidations_socket(cls) -> MexcWebsocket:
         """https://mexcdevelop.github.io/apidocs/contract_v1_en/#public-channels"""
         raise NotImplementedError("Metod can not be imlemented at this exchange")

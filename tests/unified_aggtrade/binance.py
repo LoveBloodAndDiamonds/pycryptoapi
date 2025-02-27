@@ -1,9 +1,8 @@
 import asyncio
 
-from pycryptoapi.exceptionsimport AdapterException
-
 from pycryptoapi import SOCKETS_MAPPER, ADAPTERS_MAPPER
 from pycryptoapi.enums import MarketType, Exchange
+from pycryptoapi.exceptions import AdapterException
 
 exchange = Exchange.BINANCE
 
