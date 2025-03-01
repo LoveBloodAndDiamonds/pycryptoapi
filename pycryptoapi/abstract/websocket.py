@@ -198,7 +198,7 @@ class AbstractWebsocket(ABC):
                     await conn.send(self._ping_message)
                     self._logger.debug(f"{self} Ping sent.")
             except Exception as e:
-                self._logger.exception(f"{self} Error({type(e)}) while sending ping: {e}")
+                self._logger.error(f"{self} Error({type(e)}) sending ping: {e}")
             finally:
                 await asyncio.sleep(self._ping_interval)
 
