@@ -21,7 +21,6 @@ class AbstractWebsocket(ABC):
     Базовый класс для подключения к WebSocket и обработки потоков данных.
     """
 
-    NO_MESSAGE_RECONNECT_TIMEOUT: int = 60
     MAX_QUEUE_SIZE: int = 100
 
     def __init__(
@@ -34,7 +33,8 @@ class AbstractWebsocket(ABC):
             logger: Union[logging.Logger, Logger] = loguru.logger,
             ping_interval: int = 30,
             reconnect_interval: int = 30,
-            num_workers: int = 3,  # Количество воркеров
+            no_message_reconnect_timeout: int = 60,
+            num_workers: int = 3,
             **ws_kwargs  # websocket kwargs
     ) -> None:
         """
@@ -49,6 +49,7 @@ class AbstractWebsocket(ABC):
             logger (logging.Logger | loguru._logger.Logger): Логгер для вывода информации.
             ping_interval (int): Интервал отправки ping-сообщений.
             reconnect_interval (int): Интервал для повторного подключения при ошибке.
+            no_message_reconnect_timeout (int): Макс. секунд без сообщений до попытки переподключения.
             num_workers (int): Количество воркеров для обработки сообщений.
             **ws_kwargs (dict): Дополнительные аргументы для WebSocket-соединения.
         """
@@ -59,6 +60,7 @@ class AbstractWebsocket(ABC):
         self._timeframe: Optional[str] = timeframe
         self._ping_interval: int = ping_interval
         self._reconnect_interval: int = reconnect_interval
+        self._no_message_reconnect_timeout: int = no_message_reconnect_timeout
         self._logger: logging.Logger | Logger = logger
 
         # Очередь и список рабочих
@@ -143,7 +145,7 @@ class AbstractWebsocket(ABC):
                         tasks.append(self._curr_ping_task)
 
                     # Запускаем health-процесс
-                    if self.NO_MESSAGE_RECONNECT_TIMEOUT:
+                    if self._no_message_reconnect_timeout:
                         self._curr_health_task = asyncio.create_task(self._health_task())
                         tasks.append(self._curr_health_task)
 
@@ -208,8 +210,8 @@ class AbstractWebsocket(ABC):
         """
         while self._is_active:
             try:
-                if self._last_message_time + self.NO_MESSAGE_RECONNECT_TIMEOUT < time.time():
-                    raise TimeoutError(f"No messages for {self.NO_MESSAGE_RECONNECT_TIMEOUT} seconds")
+                if self._last_message_time + self._no_message_reconnect_timeout < time.time():
+                    raise TimeoutError(f"No messages for {self._no_message_reconnect_timeout} seconds")
             finally:
                 await asyncio.sleep(1)
 

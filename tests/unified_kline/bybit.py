@@ -15,7 +15,8 @@ async def callback(msg):
 async def main():
     socket = BybitSocketManager.liquidations_socket(
         tickers=["BTCUSDT", "ETHUSDT", "XRPUSDT", "TRUMPUSDT", "SOLUSDT"],
-        callback=callback
+        callback=callback,
+        no_message_reconnect_timeout=120,
     )
 
     await socket.start()
