@@ -3,7 +3,7 @@ __all__ = ["AbstractClient", "BaseClient", ]
 import asyncio
 import logging
 from abc import ABC, abstractmethod
-from typing import List, Any, Dict, Optional, Union, Literal, Self
+from typing import Any, Dict, Optional, Literal, Self
 
 import aiohttp
 import loguru
@@ -61,35 +61,28 @@ class BaseClient(ABC, ClientMixin):
             retry_delay=retry_delay,
         )
 
-    async def close(self) -> None:
-        """
-        Закрывает сессию aiohttp.
-        Используется, если сессия была создана через метод create.
-        :return:
-        """
-        await self._session.close()
-
     async def _make_request(
             self,
             method: Literal["GET", "POST", "PUT", "DELETE"],
             url: str,
             params: Optional[Dict[str, Any]] = None,
+            data: Optional[Dict[str, Any]] = None,
             headers: Optional[Dict[str, Any]] = None,
-    ) -> Union[Dict[str, Any], List[Any]]:
+    ) -> JsonLike:
         """
         Выполняет HTTP-запрос к API биржи.
 
         Параметры:
-            method (RequestMethod): HTTP-метод запроса (GET, POST).
-            endpoint (str): Конечная точка API (например, "/ticker").
-            params (dict, optional): Параметры запроса.
-            data (dict, optional): Данные для POST-запроса.
+            method (Literal["GET", "POST", "PUT", "DELETE"]): HTTP-метод запроса.
+            url (str): Полный URL API.
+            params (dict, optional): Параметры запроса (query string).
+            data (dict, optional): Тело запроса для POST/PUT.
             headers (dict, optional): Заголовки запроса.
 
         Возвращает:
             dict или list: Ответ API в формате JSON.
         """
-        self._logger.debug(f"Request: {method} {url} | Params: {params} | Headers: {headers}")
+        self._logger.debug(f"Request: {method} {url} | Params: {params} | Data: {data} | Headers: {headers}")
 
         for attempt in range(1, self._max_retries + 1):
             try:
@@ -97,6 +90,7 @@ class BaseClient(ABC, ClientMixin):
                         method=method,
                         url=url,
                         params=params,
+                        json=data if method in {"POST", "PUT"} else None,  # Передача тела запроса
                         headers=headers
                 ) as response:
                     return await self._handle_response(response=response)
@@ -105,9 +99,9 @@ class BaseClient(ABC, ClientMixin):
                 self._logger.debug(f"Attempt {attempt}/{self._max_retries} failed: {type(e)} -> {e}")
                 if attempt < self._max_retries:
                     await asyncio.sleep(self._retry_delay)
-                else:
-                    self._logger.error("Max retries reached. Giving up.")
-                    raise TimeoutError(f"Timeout error after {self._max_retries} request on {method} {url}")
+
+        self._logger.error("Max retries reached. Giving up.")
+        raise TimeoutError(f"Timeout error after {self._max_retries} request on {method} {url}")
 
     async def _handle_response(self, response: aiohttp.ClientResponse) -> JsonLike:
         """
