@@ -1,5 +1,7 @@
-import aiohttp
 import asyncio
+
+import aiohttp
+
 from pycryptoapi.binance import BinanceClient, BinanceAdapter
 
 
@@ -50,7 +52,7 @@ async def test_binance_futures_ticker_24h():
 
 
 # Запуск тестов
-asyncio.run(test_binance_tickers())
+# asyncio.run(test_binance_tickers())
 # asyncio.run(test_binance_futures_tickers())
 # asyncio.run(test_binance_ticker_24h())
-# asyncio.run(test_binance_futures_ticker_24h())
+asyncio.run(test_binance_futures_ticker_24h())

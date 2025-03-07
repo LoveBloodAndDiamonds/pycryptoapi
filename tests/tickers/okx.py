@@ -39,9 +39,9 @@ async def test_okx_futures_ticker_24h(session: ClientSession):
 
 # To run all the tests for OKX
 async def test_okx(session: ClientSession):
-    await test_okx_tickers(session)
-    await test_okx_futures_tickers(session)
-    await test_okx_ticker_24h(session)
+    # await test_okx_tickers(session)
+    # await test_okx_futures_tickers(session)
+    # await test_okx_ticker_24h(session)
     await test_okx_futures_ticker_24h(session)
 
 

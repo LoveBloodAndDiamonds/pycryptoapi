@@ -56,14 +56,14 @@ class BybitAdapter(AbstractAdapter):
                 if symbol.endswith("USDT"):
                     ticker_data[symbol] = TickerDailyItem(
                         p=round(float(item["price24hPcnt"]) * 100, 2),  # Изменение цены в процентах за 24ч
-                        v=int(float(item["volume24h"]))  # Объем за 24ч
+                        v=int(float(item["turnover24h"]))  # Объем за 24ч в USDT. Объем в монетах - volume24h
                     )
             return ticker_data
         else:
             return {
                 item["symbol"]: TickerDailyItem(
                     p=round(float(item["price24hPcnt"]) * 100, 2),  # Изменение цены в процентах за 24ч
-                    v=int(float(item["volume24h"]))  # Объем за 24ч
+                    v=int(float(item["turnover24h"]))  # Объем за 24ч в USDT. Объем в монетах - volume24h
                 ) for item in raw_data["result"]
             }
 
@@ -98,7 +98,7 @@ class BybitAdapter(AbstractAdapter):
             return {item["symbol"]: float(item["fundingRate"]) * 100 for item in raw_data["result"]["list"]}
 
     @staticmethod
-    def kline_message(raw_msg: Any) -> KlineDict:
+    def kline_message(raw_msg: Any) -> List[KlineDict]:
         """
         Преобразует сырое сообщение с вебсокета Bybit в унифицированный формат свечи (Kline).
 
@@ -108,7 +108,7 @@ class BybitAdapter(AbstractAdapter):
         """
         try:
             data = raw_msg["data"][0]
-            return KlineDict(
+            return [KlineDict(
                 s=raw_msg["topic"].split(".")[-1],
                 t=data["start"],
                 o=float(data["open"]),
@@ -119,7 +119,7 @@ class BybitAdapter(AbstractAdapter):
                 T=data["end"],
                 x=data["confirm"],  # Флаг закрытия свечи
                 i=data["interval"]  # Таймфрейм в минутах
-            )
+            )]
         except KeyError as e:
             raise AdapterException(f"Missing key in Bybit kline message: {e}")
         except (TypeError, ValueError) as e:

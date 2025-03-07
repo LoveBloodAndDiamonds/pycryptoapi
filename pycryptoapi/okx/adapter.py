@@ -179,7 +179,7 @@ class OkxAdapter(AbstractAdapter):
             for item in raw_data["data"]:
                 result[item["instId"]] = OpenInterestItem(
                     t=int(item["ts"]),
-                    v=float(item["oiUsd"])  # Открытый интерес
+                    v=float(item["oiCcy"])  # Открытый интерес (COINS)
                 )
             return result
         except KeyError as e:

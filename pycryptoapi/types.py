@@ -12,7 +12,7 @@ class TickerDailyItem(TypedDict):
 
 class OpenInterestItem(TypedDict):
     t: int  # time
-    v: float  # value
+    v: float  # open interest (COIN)
 
 
 class KlineDict(TypedDict):

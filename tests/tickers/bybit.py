@@ -54,6 +54,6 @@ async def test_bybit_futures_ticker_24h():
 
 # Запуск тестов
 # asyncio.run(test_bybit_tickers())
-asyncio.run(test_bybit_futures_tickers())
+# asyncio.run(test_bybit_futures_tickers())
 # asyncio.run(test_bybit_ticker_24h())
-# asyncio.run(test_bybit_futures_ticker_24h())
+asyncio.run(test_bybit_futures_ticker_24h())

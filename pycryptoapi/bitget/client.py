@@ -8,6 +8,7 @@ from ..abstract import AbstractClient
 class BitgetClient(AbstractClient):
     _BASE_URL: str = "https://api.bitget.com"
 
+    # Frequency limit: 20 times/1s (IP)
     async def ticker(self, symbol: Optional[str] = None) -> Dict[str, Any]:
         """
         Получает 24-часовую статистику изменения цены и объема для спотового рынка.

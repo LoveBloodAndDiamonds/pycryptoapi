@@ -1,7 +1,9 @@
-import aiohttp
-from pycryptoapi.bybit import BybitClient, BybitAdapter
-from pprint import pprint
 import asyncio
+from pprint import pprint
+
+import aiohttp
+
+from pycryptoapi.bybit import BybitClient, BybitAdapter
 
 
 async def test_bybit_funding_rate():
@@ -14,7 +16,7 @@ async def test_bybit_funding_rate():
         result = await client.open_interest()
 
         # Печать результата с использованием prettyprint
-        pprint(result)
+        # pprint(result)
 
         a = BybitAdapter.open_interest(raw_data=result)
 

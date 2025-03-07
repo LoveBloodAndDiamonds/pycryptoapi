@@ -20,8 +20,8 @@ async def callback(msg):
 
 async def main():
     socket = SOCKETS_MAPPER[exchange].aggtrades_socket(
-        # tickers=["BTC-USDT"],
-        tickers=["BTC-USDT-SWAP", "ETH-USDT-SWAP"],
+        tickers=["BTC-USDT"],
+        # tickers=["BTC-USDT-SWAP"],
         callback=callback,
     )
 

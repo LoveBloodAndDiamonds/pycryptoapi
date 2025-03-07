@@ -9,10 +9,8 @@ exchange = Exchange.BYBIT
 
 async def callback(msg):
     try:
-        print(msg)
         k = ADAPTERS_MAPPER[exchange].aggtrades_message(raw_msg=msg)
         print(k)
-        print()
 
     except AdapterException as e:
         print(f"Can not adapt message ({e}): {msg}")
@@ -20,9 +18,9 @@ async def callback(msg):
 
 async def main():
     socket = SOCKETS_MAPPER[exchange].aggtrades_socket(
-        market_type=MarketType.FUTURES,
+        market_type=MarketType.SPOT,
         # tickers=["BTCUSDT"],
-        tickers=["BTCUSDT", "ETHUSDT"],
+        tickers=["BTCUSDT"],
         callback=callback,
     )
 
