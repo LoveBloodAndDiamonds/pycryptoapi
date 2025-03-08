@@ -198,12 +198,12 @@ class BybitAdapter(AbstractAdapter):
         result = raw_data["result"]
         return [KlineDict(
             s=result["symbol"],
-            t=item[0],
-            o=item[1],
-            h=item[2],
-            l=item[3],
-            c=item[4],
-            v=item[5],
+            t=int(item[0]),
+            o=float(item[1]),
+            h=float(item[2]),
+            l=float(item[3]),
+            c=float(item[4]),
+            v=float(item[5]),
             i=None,
             T=None,
             x=None,
