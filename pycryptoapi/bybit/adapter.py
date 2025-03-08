@@ -186,3 +186,25 @@ class BybitAdapter(AbstractAdapter):
                 for liquidation in liquidations]
         except (KeyError, ValueError, TypeError) as e:
             raise AdapterException(f"Error processing Bybit liquidation({raw_msg}): {e}")
+
+    @staticmethod
+    def kline(raw_data: Dict[str, Any]) -> List[KlineDict]:
+        """
+        Преобразует сырой ответ с HTTP запроса в унифицированный вид.
+
+        :param raw_data: Сырые данные с HTTP запроса klines
+        :return: Список унифицированных свечей.
+        """
+        result = raw_data["result"]
+        return [KlineDict(
+            s=result["symbol"],
+            t=item[0],
+            o=item[1],
+            h=item[2],
+            l=item[3],
+            c=item[4],
+            v=item[5],
+            i=None,
+            T=None,
+            x=None,
+        ) for item in result["list"]]

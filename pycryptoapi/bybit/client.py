@@ -3,6 +3,7 @@ __all__ = ["BybitClient"]
 from typing import Any, Optional, Dict, Literal
 
 from ..abstract import AbstractClient
+from ..enums import Timeframe, Exchange
 
 
 class BybitClient(AbstractClient):
@@ -77,3 +78,60 @@ class BybitClient(AbstractClient):
         :raises Exception: Если запрос не выполнен успешно.
         """
         return await self.ticker(symbol=symbol, _category="linear")
+
+    async def klines(
+            self,
+            symbol: str,
+            interval: Timeframe,
+            start: Optional[int] = None,
+            end: Optional[int] = None,
+            limit: Optional[int] = 200,
+            _category: Literal["spot", "linear"] = "spot",
+    ) -> Dict[str, Any]:
+        """
+        Получает данные, которые содержат список свечей..
+
+        :param symbol: Торговая пара.
+        :param interval: Интервал.
+        :param start: Опционально. Время начала получения данных.
+        :param end: Опционально. Время окончания получения данных.
+        :param limit: Опционально. Количество свечей.
+        :param _category: Категория рынка.
+        :return: JSON-ответ с данными свеч.
+        :raises Exception: Если запрос не выполнен успешно.
+        """
+        url = f"{self._BASE_URL}/v5/market/kline"
+        params = {
+            "category": _category,
+            "symbol": symbol,
+            "interval": interval.to_exchange_format(Exchange.BYBIT),
+            "limit": limit
+        }
+        if start:
+            params["start"] = start
+        if end:
+            params["end"] = end
+
+        return await self._make_request(method="GET", url=url, params=params)
+
+    async def futures_klines(
+            self,
+            symbol: str,
+            interval: Timeframe,
+            start: Optional[int] = None,
+            end: Optional[int] = None,
+            limit: Optional[int] = 200,
+    ) -> Dict[str, Any]:
+        """
+        Получает данные, которые содержат список свечей.
+
+        :param symbol: Торговая пара.
+        :param interval: Интервал.
+        :param start: Опционально. Время начала получения данных.
+        :param end: Опционально. Время окончания получения данных.
+        :param limit: Опционально. Количество свечей.
+        :return: JSON-ответ с данными свеч.
+        :raises Exception: Если запрос не выполнен успешно.
+        """
+        return await self.klines(
+            symbol=symbol, interval=interval, start=start, end=end, limit=limit, _category="linear")

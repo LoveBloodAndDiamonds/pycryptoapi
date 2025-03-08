@@ -23,7 +23,7 @@ class KlineDict(TypedDict):
     l: float  # low price
     c: float  # close price
     v: float  # volume (USDT)
-    i: str  # timeframe
+    i: Optional[str]  # timeframe
     T: Optional[int]  # close time
     x: Optional[bool]  # is closed?
 

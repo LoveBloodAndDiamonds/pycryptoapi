@@ -61,6 +61,10 @@ class BaseClient(ABC, ClientMixin):
             retry_delay=retry_delay,
         )
 
+    async def close(self) -> None:
+        """Закрывает сессию."""
+        await self._session.close()
+
     async def _make_request(
             self,
             method: Literal["GET", "POST", "PUT", "DELETE"],
