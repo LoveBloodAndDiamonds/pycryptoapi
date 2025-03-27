@@ -92,6 +92,13 @@ class Timeframe(StrEnum):
         except KeyError:
             raise ValueError(f"Timeframe {self.value} is not supported for exchange {exchange.value}")
 
+    @property
+    def to_seconds(self) -> int:
+        """Возвращает количество секунд для таймфрейма."""
+        unit_map = {"m": 60, "h": 3600, "d": 86400, "w": 604800, "M": 2592000}  # Условно 30 дней в месяце
+        value, unit = int(self.value[:-1]), self.value[-1]
+        return value * unit_map[unit]
+
 
 class Side(StrEnum):
     """Перечисление сторон позиций."""
