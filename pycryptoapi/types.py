@@ -15,6 +15,9 @@ class OpenInterestItem(TypedDict):
     v: float  # open interest (COIN)
 
 
+OpenInterestDict: TypeAlias = Dict[str, OpenInterestItem]
+
+
 class KlineDict(TypedDict):
     s: str  # symbol
     t: int  # open time

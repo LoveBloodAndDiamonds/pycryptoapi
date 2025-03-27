@@ -2,7 +2,7 @@ from typing import Any, List, Dict, Union
 
 from ..abstract import AbstractAdapter
 from ..exceptions import AdapterException
-from ..types import TickerDailyItem, OpenInterestItem, KlineDict, AggTradeDict, LiquidationDict
+from ..types import TickerDailyItem, OpenInterestItem, KlineDict, AggTradeDict, LiquidationDict, OpenInterestDict
 
 
 class BinanceAdapter(AbstractAdapter):
@@ -95,7 +95,7 @@ class BinanceAdapter(AbstractAdapter):
             return {item["symbol"]: float(item["lastFundingRate"]) for item in raw_data}
 
     @staticmethod
-    def open_interest(raw_data: Union[Dict[str, str], List[Dict[str, str]]]) -> Dict[str, OpenInterestItem]:
+    def open_interest(raw_data: Union[Dict[str, str], List[Dict[str, str]]]) -> OpenInterestDict:
         """
         Преобразует сырые данные открытого интереса в унифицированный вид.
 

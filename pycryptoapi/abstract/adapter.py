@@ -3,7 +3,7 @@ __all__ = ["AbstractAdapter", ]
 from abc import ABC, abstractmethod
 from typing import List, Any, Dict
 
-from ..types import TickerDailyItem, KlineDict, OpenInterestItem, AggTradeDict, LiquidationDict
+from ..types import TickerDailyItem, KlineDict, OpenInterestDict, AggTradeDict, LiquidationDict
 
 
 class AbstractAdapter(ABC):
@@ -75,7 +75,7 @@ class AbstractAdapter(ABC):
 
     @staticmethod
     @abstractmethod
-    def open_interest(raw_data: Dict[str, Any]) -> Dict[str, OpenInterestItem]:
+    def open_interest(raw_data: Dict[str, Any]) -> OpenInterestDict:
         """
         Преобразует сырые данные открытого интереса в унифицированный вид.
 

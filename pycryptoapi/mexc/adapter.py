@@ -2,7 +2,7 @@ from typing import Any, List, Dict
 
 from ..abstract import AbstractAdapter
 from ..exceptions import AdapterException
-from ..types import TickerDailyItem, KlineDict, OpenInterestItem, AggTradeDict, LiquidationDict
+from ..types import TickerDailyItem, KlineDict, AggTradeDict, LiquidationDict, OpenInterestDict
 
 
 class MexcAdapter(AbstractAdapter):
@@ -217,7 +217,7 @@ class MexcAdapter(AbstractAdapter):
             raise AdapterException(f"Error processing MEXC aggTrade({raw_msg}): {e}")
 
     @staticmethod
-    def open_interest(raw_data: Dict[str, Any]) -> Dict[str, OpenInterestItem]:
+    def open_interest(raw_data: Dict[str, Any]) -> OpenInterestDict:
         raise NotImplementedError("Not implemented yet...")
 
     @staticmethod

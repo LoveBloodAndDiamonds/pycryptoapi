@@ -3,7 +3,7 @@ from typing import Any, List, Dict, Union
 
 from ..abstract import AbstractAdapter
 from ..exceptions import AdapterException
-from ..types import TickerDailyItem, KlineDict, OpenInterestItem, AggTradeDict, LiquidationDict
+from ..types import TickerDailyItem, KlineDict, OpenInterestItem, AggTradeDict, LiquidationDict, OpenInterestDict
 
 
 class BitgetAdapter(AbstractAdapter):
@@ -99,7 +99,7 @@ class BitgetAdapter(AbstractAdapter):
             raise TypeError(f"Wrong raw_data type: {type(raw_data)}, excepted List[Dict] or Dict")
 
     @staticmethod
-    def open_interest(raw_data: Union[Dict[str, Any], List[Dict[str, Any]]]) -> Dict[str, OpenInterestItem]:
+    def open_interest(raw_data: Union[Dict[str, Any], List[Dict[str, Any]]]) -> OpenInterestDict:
         """
         Преобразует сырой ответ с запроса в унифированный формат.
 
