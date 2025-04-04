@@ -42,5 +42,5 @@ class LiquidationDict(TypedDict):
     t: int  # time
     s: str  # symbol
     S: Side | Literal["BUY", "SELL"]  # side
-    v: float  # volume
+    v: float  # volume (Coins)
     p: float  # price
