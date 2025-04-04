@@ -88,7 +88,7 @@ import asyncio
 
 from pycryptoapi import MexcSocketManager, MexcAdapter
 from pycryptoapi.enums import MarketType, Timeframe
-from pycryptoapi.exc import AdapterException
+from pycryptoapi.exceptions import AdapterException
 from pycryptoapi.types import KlineDict
 
 
@@ -107,7 +107,7 @@ async def callback(msg):
     try:
         # У каждой биржи есть свой адаптер, который приводит данные в единый формат.
         # Так, например, мы можем иметь одинаковый объект KlineDict для любой биржи.
-        kline: KlineDict = MexcAdapter.kline_message(raw_msg=msg)
+        kline: list[KlineDict] = MexcAdapter.kline_message(raw_msg=msg)
         print(kline)
 
     except AdapterException as e:

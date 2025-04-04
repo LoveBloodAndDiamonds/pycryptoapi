@@ -14,6 +14,8 @@ async def test_binance_funding_rate():
         # Пример вызова функции funding_rate
         result = await client.open_interest(symbol="BTCUSDT")
 
+        pprint(result)
+
         # Печать результата с использованием prettyprint
         # pprint(result)
         # print(len(result), "LEN")
