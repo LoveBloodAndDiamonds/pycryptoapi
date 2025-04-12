@@ -198,14 +198,15 @@ class OkxAdapter(AbstractAdapter):
         """
         try:
             trades = raw_msg["data"]
+
             return [
-                {
-                    "s": trade["instId"],
-                    "t": int(trade["ts"]),
-                    "p": float(trade["px"]),
-                    "v": float(trade["sz"]),
-                }
-                for trade in trades
+                AggTradeDict(
+                    t=int(trade["ts"]),
+                    s=trade["instId"],
+                    S=trade["side"].upper(),
+                    p=float(trade["px"]),
+                    v=float(trade["sz"]),
+                ) for trade in trades
             ]
 
         except (KeyError, ValueError, TypeError) as e:

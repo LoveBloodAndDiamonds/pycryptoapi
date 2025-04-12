@@ -154,14 +154,15 @@ class BybitAdapter(AbstractAdapter):
             trades = raw_msg["data"]
 
             return [
-                {
-                    "s": trade["s"],
-                    "t": trade["T"],
-                    "p": float(trade["p"]),
-                    "v": float(trade["v"]),
-                }
-                for trade in trades
+                AggTradeDict(
+                    t=trade["T"],
+                    s=trade["s"],
+                    S=trade["S"].upper(),
+                    p=float(trade["p"]),
+                    v=float(trade["v"])
+                ) for trade in trades
             ]
+
         except (KeyError, ValueError, TypeError) as e:
             raise AdapterException(f"Error processing Bybit aggTrade({raw_msg}): {e}")
 

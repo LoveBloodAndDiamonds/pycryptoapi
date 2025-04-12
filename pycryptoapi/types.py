@@ -32,8 +32,9 @@ class KlineDict(TypedDict):
 
 
 class AggTradeDict(TypedDict):
-    s: str  # symbol
     t: int  # trade time
+    s: str  # symbol
+    S: Side | Literal["BUY", "SELL"]  # side
     p: float  # trade price
     v: float  # trade volume (Coins)
 

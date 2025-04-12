@@ -4,11 +4,13 @@ from pycryptoapi import SOCKETS_MAPPER, ADAPTERS_MAPPER
 from pycryptoapi.enums import MarketType, Exchange
 from pycryptoapi.exceptions import AdapterException
 
-exchange = Exchange.BINANCE
+exchange = Exchange.OKX
+mtype = MarketType.FUTURES
 
 
 async def callback(msg):
     try:
+        # print(exchange, msg)
         k = ADAPTERS_MAPPER[exchange].aggtrades_message(raw_msg=msg)
         print(k)
 
@@ -18,9 +20,8 @@ async def callback(msg):
 
 async def main():
     socket = SOCKETS_MAPPER[exchange].aggtrades_socket(
-        market_type=MarketType.SPOT,
-        # tickers=["BTCUSDT"],
-        tickers=["BTCUSDT"],
+        market_type=mtype,
+        tickers=["BTC-USDT-SWAP"],
         callback=callback,
     )
 

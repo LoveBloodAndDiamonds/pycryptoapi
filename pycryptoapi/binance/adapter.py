@@ -159,12 +159,14 @@ class BinanceAdapter(AbstractAdapter):
             if "data" in raw_msg:
                 raw_msg = raw_msg["data"]
 
-            return [{
-                "s": raw_msg["s"],
-                "t": raw_msg["T"],
-                "p": float(raw_msg["p"]),
-                "v": float(raw_msg["q"]),
-            }]
+            return [AggTradeDict(
+                t=raw_msg["T"],
+                s=raw_msg["s"],
+                S="SELL" if raw_msg["m"] else "BUY",
+                p=float(raw_msg["p"]),
+                v=float(raw_msg["q"])
+            )]
+
         except (KeyError, ValueError, TypeError) as e:
             raise AdapterException(f"Invalid data format in Binance aggtrades message: {e}")
 

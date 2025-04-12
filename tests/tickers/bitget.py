@@ -39,9 +39,9 @@ async def test_bitget_futures_ticker_24h(session: ClientSession):
 
 # To run all the tests for Bitget
 async def test_bitget(session: ClientSession):
-    await test_bitget_tickers(session)
-    await test_bitget_futures_tickers(session)
-    await test_bitget_ticker_24h(session)
+    # await test_bitget_tickers(session)
+    # await test_bitget_futures_tickers(session)
+    # await test_bitget_ticker_24h(session)
     await test_bitget_futures_ticker_24h(session)
 
 

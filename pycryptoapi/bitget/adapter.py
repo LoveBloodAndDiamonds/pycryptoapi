@@ -189,15 +189,19 @@ class BitgetAdapter(AbstractAdapter):
         """
         try:
             trades = raw_msg["data"]
+
+            symbol = raw_msg["arg"]["instId"]  # Получаем символ из аргументов запроса
+
             return [
-                {
-                    "s": raw_msg["arg"]["instId"],  # Получаем символ из аргументов запроса
-                    "t": int(trade["ts"]),
-                    "p": float(trade["price"]),
-                    "v": float(trade["size"]),
-                }
-                for trade in trades
+                AggTradeDict(
+                    t=int(trade["ts"]),
+                    s=symbol,
+                    S=trade["side"].upper(),
+                    p=float(trade["price"]),
+                    v=float(trade["size"])
+                ) for trade in trades
             ]
+
         except (KeyError, ValueError, TypeError) as e:
             raise AdapterException(f"Error processing Bitget aggTrade ({raw_msg}): {e}")
 

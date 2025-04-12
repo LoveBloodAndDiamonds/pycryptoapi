@@ -191,25 +191,26 @@ class MexcAdapter(AbstractAdapter):
                 trades = raw_msg["d"]["deals"]
 
                 return [
-                    {
-                        "s": raw_msg["s"],  # Символ
-                        "t": int(trade["t"]),
-                        "p": float(trade["p"]),
-                        "v": float(trade["v"]),
-                    }
-                    for trade in trades
+                    AggTradeDict(
+                        t=int(trade["t"]),
+                        s=raw_msg["s"],
+                        S="BUY" if trade["S"] == 1 else "SELL",
+                        p=float(trade["p"]),
+                        v=float(trade["v"])
+                    ) for trade in trades
                 ]
 
             # Проверяем второй формат (push.deal)
             if isinstance(raw_msg, dict) and "symbol" in raw_msg and "data" in raw_msg:
                 trade = raw_msg["data"]
                 return [
-                    {
-                        "s": raw_msg["symbol"].replace("_", ""),  # Приводим BTC_USDT → BTCUSDT
-                        "t": int(trade["t"]),
-                        "p": float(trade["p"]),
-                        "v": float(trade["v"]),
-                    }
+                    AggTradeDict(
+                        t=int(trade["t"]),
+                        s=raw_msg["symbol"].replace("_", ""),  # Приводим BTC_USDT → BTCUSDT
+                        S="BUY" if trade["T"] == 1 else "SELL",
+                        p=float(trade["p"]),
+                        v=float(trade["v"])
+                    )
                 ]
 
             raise AdapterException("Unknown format")
