@@ -113,7 +113,7 @@ class AbstractWebsocket(ABC):
         """
         while self._is_active:
             # Логируем запуск
-            self._logger.info(f"{self} Starting connection")
+            self._logger.debug(f"{self} Starting connection")
 
             # Отменяем предыдущую задачу ping (если есть)
             if self._curr_ping_task:
