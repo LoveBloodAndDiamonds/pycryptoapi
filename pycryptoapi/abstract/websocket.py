@@ -128,7 +128,7 @@ class AbstractWebsocket(ABC):
                 uri: str = self._connection_uri
                 self._logger.debug(f"{self} Estabilishing connection with {uri}")
                 async with websockets.connect(uri=uri, **self._ws_kwargs) as websocket:
-                    self._logger.debug(f"{self} Connected {uri}")
+                    self._logger.info(f"{self} Connected {uri[:20]}...")
 
                     # Обновленяем время последнего сообщения при каждом подключении
                     self._last_message_time: float = time.time()
