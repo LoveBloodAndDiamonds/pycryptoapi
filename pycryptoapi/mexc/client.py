@@ -35,6 +35,20 @@ class MexcClient(AbstractClient):
         params = {"symbol": symbol} if symbol else {}
         return await self._make_request(method="GET", url=url, params=params)
 
+    # Weight(IP): 1
+    async def depth(self, symbol: str, limit: int = 100) -> Dict[str, Any]:
+        """
+        Получает книгу ордеров (глубину рынка) для заданной торговой пары.
+
+        :param symbol: Торговая пара, например 'BTCUSDT'.
+        :param limit: Количество уровней книги заявок (допустимые значения: 5, 10, 20, 50, 100, 500, 1000, 5000).
+        :return: JSON-ответ с данными глубины рынка.
+        :raises Exception: Если запрос не выполнен успешно.
+        """
+        url = f"{self._BASE_SPOT_URL}/api/v3/depth"
+        params = {"symbol": symbol, "limit": limit}
+        return await self._make_request(method="GET", url=url, params=params)
+
     async def funding_rate(self) -> Dict[str, Any]:
         """
         Получает текущую ставку финансирования для всех символов.
