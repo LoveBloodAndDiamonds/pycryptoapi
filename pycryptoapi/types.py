@@ -15,6 +15,8 @@ class OpenInterestItem(TypedDict):
     v: float  # open interest (COIN)
 
 
+TickerDailyDict: TypeAlias = Dict[str, TickerDailyItem]
+
 OpenInterestDict: TypeAlias = Dict[str, OpenInterestItem]
 
 
