@@ -1,7 +1,7 @@
 __all__ = ["MexcWebsocket", "MexcSocketManager", ]
 
 import json
-from typing import Optional, Union, List, Literal, Callable, Awaitable, Dict
+from typing import Optional, Union, List, Literal, Callable, Awaitable, Dict, Tuple
 
 from ..abstract import AbstractWebsocket, AbstractSocketManager
 from ..enums import MarketType, Timeframe, Exchange

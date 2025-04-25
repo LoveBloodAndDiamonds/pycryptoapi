@@ -1,7 +1,7 @@
 __all__ = ["OkxWebsocket", "OkxSocketManager"]
 
 import json
-from typing import Optional, List, Callable, Awaitable
+from typing import Optional, List, Callable, Awaitable, Tuple
 
 from ..abstract import AbstractWebsocket, AbstractSocketManager
 from ..enums import Timeframe, Exchange

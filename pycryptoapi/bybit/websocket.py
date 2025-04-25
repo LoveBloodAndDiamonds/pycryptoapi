@@ -1,7 +1,7 @@
 __all__ = ["BybitWebsocket", "BybitSocketManager", ]
 
 import json
-from typing import Optional, Callable, List, Awaitable
+from typing import Optional, Callable, List, Awaitable, Tuple
 
 from ..abstract import AbstractWebsocket, AbstractSocketManager
 from ..enums import MarketType, Timeframe, Exchange
