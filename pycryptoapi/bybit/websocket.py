@@ -39,7 +39,7 @@ class BybitSocketManager(AbstractSocketManager):
     def aggtrades_socket(
             cls,
             market_type: MarketType,
-            tickers: List[str],
+            tickers: List[str] | Tuple[str],
             callback: Callable[..., Awaitable],
             **kwargs
     ) -> BybitWebsocket:
@@ -55,7 +55,7 @@ class BybitSocketManager(AbstractSocketManager):
     def klines_socket(
             cls,
             market_type: MarketType,
-            tickers: List[str],
+            tickers: List[str] | Tuple[str],
             timeframe: Timeframe,
             callback: Callable[..., Awaitable],
             **kwargs
@@ -72,7 +72,7 @@ class BybitSocketManager(AbstractSocketManager):
     def tickers_socket(
             cls,
             market_type: MarketType,
-            tickers: List[str],
+            tickers: List[str] | Tuple[str],
             callback: Callable[..., Awaitable],
             **kwargs
     ) -> BybitWebsocket:
@@ -87,7 +87,7 @@ class BybitSocketManager(AbstractSocketManager):
     @classmethod
     def liquidations_socket(
             cls,
-            tickers: List[str],
+            tickers: List[str] | Tuple[str],
             callback: Callable[..., Awaitable],
             **kwargs
     ) -> BybitWebsocket:

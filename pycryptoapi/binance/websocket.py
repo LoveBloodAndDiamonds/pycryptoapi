@@ -1,6 +1,6 @@
 __all__ = ["BinanceWebsocket", "BinanceSocketManager", ]
 
-from typing import Optional, Callable, Awaitable, List
+from typing import Optional, Callable, Awaitable, List, Tuple
 
 from ..abstract import AbstractWebsocket, AbstractSocketManager
 from ..enums import MarketType, Timeframe, Exchange
@@ -59,7 +59,7 @@ class BinanceSocketManager(AbstractSocketManager):
     def klines_socket(
             cls,
             market_type: MarketType,
-            tickers: List[str],
+            tickers: List[str] | Tuple[str],
             timeframe: Timeframe,
             callback: Callable[..., Awaitable],
             **kwargs
@@ -76,7 +76,7 @@ class BinanceSocketManager(AbstractSocketManager):
     def aggtrades_socket(
             cls,
             market_type: MarketType,
-            tickers: List[str],
+            tickers: List[str] | Tuple[str],
             callback: Callable[..., Awaitable],
             **kwargs
     ) -> BinanceWebsocket:

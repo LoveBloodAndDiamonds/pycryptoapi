@@ -64,7 +64,7 @@ class MexcSocketManager(AbstractSocketManager):
     def aggtrades_socket(
             cls,
             market_type: MarketType,
-            tickers: List[str],
+            tickers: List[str] | Tuple[str],
             callback: Callable[..., Awaitable],
             **kwargs
     ) -> MexcWebsocket:
@@ -85,7 +85,7 @@ class MexcSocketManager(AbstractSocketManager):
     @classmethod
     def klines_socket(
             cls,
-            tickers: List[str],
+            tickers: List[str] | Tuple[str],
             timeframe: Timeframe,
             market_type: MarketType,
             callback: Callable[..., Awaitable],
