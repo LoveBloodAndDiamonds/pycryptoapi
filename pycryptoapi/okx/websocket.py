@@ -55,7 +55,7 @@ class OkxSocketManager(AbstractSocketManager):
     @classmethod
     def aggtrades_socket(
             cls,
-            tickers: List[str] | Tuple[str],
+            tickers: List[str] | Tuple[str, ...],
             callback: Callable[..., Awaitable],
             **kwargs
     ) -> OkxWebsocket:
@@ -69,7 +69,7 @@ class OkxSocketManager(AbstractSocketManager):
     @classmethod
     def klines_socket(
             cls,
-            tickers: List[str] | Tuple[str],
+            tickers: List[str] | Tuple[str, ...],
             timeframe: Timeframe,
             callback: Callable[..., Awaitable],
             **kwargs
@@ -84,7 +84,7 @@ class OkxSocketManager(AbstractSocketManager):
     @classmethod
     def tickers_socket(
             cls,
-            tickers: List[str] | Tuple[str],
+            tickers: List[str] | Tuple[str, ...],
             callback: Callable[..., Awaitable],
             **kwargs
     ) -> OkxWebsocket:

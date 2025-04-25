@@ -40,7 +40,7 @@ class BitgetSocketManager(AbstractSocketManager):
     def aggtrades_socket(
             cls,
             market_type: MarketType,
-            tickers: List[str] | Tuple[str],
+            tickers: List[str] | Tuple[str, ...],
             callback: Callable[..., Awaitable],
             **kwargs
     ) -> BitgetWebsocket:
@@ -56,7 +56,7 @@ class BitgetSocketManager(AbstractSocketManager):
     def klines_socket(
             cls,
             market_type: MarketType,
-            tickers: List[str] | Tuple[str],
+            tickers: List[str] | Tuple[str, ...],
             callback: Callable[..., Awaitable],
             timeframe: Timeframe,
             **kwargs
@@ -73,7 +73,7 @@ class BitgetSocketManager(AbstractSocketManager):
     def tickers_socket(
             cls,
             market_type: MarketType,
-            tickers: List[str] | Tuple[str],
+            tickers: List[str] | Tuple[str, ...],
             callback: Callable[..., Awaitable],
             **kwargs
     ) -> BitgetWebsocket:
