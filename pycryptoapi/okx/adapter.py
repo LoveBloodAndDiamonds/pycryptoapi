@@ -115,7 +115,7 @@ class OkxAdapter(AbstractAdapter):
 
                 ticker_data[symbol] = TickerDailyItem(
                     p=round(p_change, 2),  # Процентное изменение
-                    v=int(float(item["volCcy24h"]))  # Объём торгов в валюте котировки
+                    v=int(float(item["vol24h"]))  # Объём торгов в валюте котировки
                 )
             return ticker_data
 
