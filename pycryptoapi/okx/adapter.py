@@ -173,7 +173,7 @@ class OkxAdapter(AbstractAdapter):
 
     @staticmethod
     def open_interest(raw_data: Dict[str, Any]) -> OpenInterestDict:
-        # Обработка данных от Bybit
+        # Обработка данных от Okx
         try:
             result: dict[str, OpenInterestItem] = {}
             for item in raw_data["data"]:

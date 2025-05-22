@@ -3,6 +3,7 @@ __all__ = ["MexcClient"]
 from typing import Any, Optional, Dict
 
 from ..abstract import AbstractClient
+from ..types import JsonLike
 
 
 class MexcClient(AbstractClient):
@@ -10,7 +11,7 @@ class MexcClient(AbstractClient):
     _BASE_FUTURES_URL: str = "https://contract.mexc.com"
 
     # Rate limit: 1w w/ symbol or 40w w/o symbol
-    async def ticker(self, symbol: Optional[str] = None) -> Any:
+    async def ticker(self, symbol: Optional[str] = None) -> JsonLike:
         """
         Получает 24-часовую статистику изменения цены и объема для спотового рынка.
 
@@ -23,7 +24,7 @@ class MexcClient(AbstractClient):
         return await self._make_request(method="GET", url=url, params=params)
 
     # Rate limit:20 times/2 seconds
-    async def futures_ticker(self, symbol: Optional[str] = None) -> Any:
+    async def futures_ticker(self, symbol: Optional[str] = None) -> JsonLike:
         """
         Получает 24-часовую статистику изменения цены и объема для фьючерсного рынка.
 
@@ -49,6 +50,7 @@ class MexcClient(AbstractClient):
         params = {"symbol": symbol, "limit": limit}
         return await self._make_request(method="GET", url=url, params=params)
 
+    # Rate limit:20 times/2 seconds
     async def funding_rate(self) -> Dict[str, Any]:
         """
         Получает текущую ставку финансирования для всех символов.
@@ -59,5 +61,14 @@ class MexcClient(AbstractClient):
         url = f"{self._BASE_FUTURES_URL}/api/v1/contract/funding_rate"
         return await self._make_request(method="GET", url=url)
 
-    async def open_interest(self, symbol: str) -> Dict[str, str]:
-        raise NotImplementedError("Mexc exchange are not allow to get open interest via API now (5feb2025).")
+    # Rate limit:20 times/2 seconds
+    async def open_interest(self, symbol: Optional[str] = None) -> JsonLike:
+        """
+        Получает текущий открытый интерес по тикеру или для всех тикеров.
+
+        :param symbol: Торговая пара, например 'BTC_USDT', опционально, если не передано - возвращаются все тикеры.
+        :return: JSON-ответ с данными открытого интереса.
+
+        NOTE! Mexc exchange are not allow to get open interest via API now (5feb2025).
+        """
+        return await self.futures_ticker()

@@ -15,9 +15,12 @@ async def test_mexc_funding_rate():
         # Печать результата с использованием prettyprint
         pprint(result)
 
-        a = MexcAdapter.open_interest(raw_data=result)
+        for i in result["data"]:
+            print(i["symbol"], i["holdVol"])
 
-        pprint(a)
+        # a = MexcAdapter.open_interest(raw_data=result)
+
+        # pprint(a)
 
 # Запуск теста
 if __name__ == "__main__":
