@@ -16,9 +16,9 @@ async def callback(msg):
         print(msg)
         print()
 
-        # k = ADAPTERS_MAPPER[exchange].aggtrades_message(raw_msg=msg)
-        # print(k)
-        # print()
+        k = ADAPTERS_MAPPER[exchange].aggtrades_message(raw_msg=msg)
+        print(k)
+        print()
 
     except AdapterException as e:
         print(f"Can not adapt message ({e}): {msg}")
