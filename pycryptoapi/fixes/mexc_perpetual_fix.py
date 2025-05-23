@@ -2,6 +2,7 @@ __all__ = [
     "init_mexc_perpetual_fix",
     "mexc_perpetual_ticker_daily_fix",
     "mexc_perpetual_open_interest_fix",
+    "mexc_perpetual_aggtrade_fix",
 ]
 
 import asyncio
@@ -135,3 +136,17 @@ def mexc_perpetual_open_interest_fix(raw_data: dict) -> dict:
     for item in raw_data["data"]:
         item["holdVol"] = item["holdVol"] * _mexc_exchange_info.get_contract_size(item["symbol"])
     return raw_data
+
+
+def mexc_perpetual_aggtrade_fix(raw_msg: dict) -> dict:
+    """
+    Функция принимает сырое сообщение с вебсокета и возвращает его пофикшенный вариант.
+    !Note: Обязательно нужно запустить _mexc_exchange_info перед вызовом этой функции.
+    """
+    # {'symbol': 'ETH_USDT', 'data': {'p': 2575.2, 'v': 1, 'T': 2, 'O': 1, 'M': 2, 't': 1748023214750}, 'channel': 'push.deal', 'ts': 1748023214750}
+    # Преобразуем данные
+    try:
+        raw_msg["data"]["v"] = raw_msg["data"]["v"] * _mexc_exchange_info.get_contract_size(raw_msg["symbol"])
+    except Exception as e:
+        logger.error(f"Can not fix aggtrade: {trade=}: {e}")
+    return raw_msg

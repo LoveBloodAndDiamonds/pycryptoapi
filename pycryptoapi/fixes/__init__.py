@@ -1,10 +1,10 @@
 __all__ = ["init_fixes", "okx_perpetual_ticker_daily_fix", "okx_perpetual_aggtrade_fix",
-           "mexc_perpetual_ticker_daily_fix", "mexc_perpetual_open_interest_fix", ]
+           "mexc_perpetual_ticker_daily_fix", "mexc_perpetual_open_interest_fix", "mexc_perpetual_aggtrade_fix", ]
 
 from pycryptoapi.enums import Exchange, MarketType
 
 from .mexc_perpetual_fix import init_mexc_perpetual_fix, mexc_perpetual_ticker_daily_fix, \
-    mexc_perpetual_open_interest_fix
+    mexc_perpetual_open_interest_fix, mexc_perpetual_aggtrade_fix
 from .okx_perpetual_fix import okx_perpetual_aggtrade_fix, init_okx_perpetual_fix, okx_perpetual_ticker_daily_fix
 
 
