@@ -228,18 +228,12 @@ class MexcAdapter(AbstractAdapter):
                 for item in raw_data["data"]:
                     symbol = item["symbol"]
                     if symbol.endswith("USDT"):
-                        try:
-                            result[symbol] = OpenInterestItem(
-                                t=int(item["timestamp"] / 1000), v=item["holdVol"] / item["lastPrice"])
-                        except ZeroDivisionError:
-                            continue
+                        result[symbol] = OpenInterestItem(
+                            t=int(item["timestamp"] / 1000), v=item["holdVol"])
             else:
                 for item in raw_data["data"]:
-                    try:
-                        result[item["symbol"]] = OpenInterestItem(
-                            t=int(item["timestamp"] / 1000), v=item["holdVol"] / item["lastPrice"])
-                    except ZeroDivisionError:
-                        continue
+                    result[item["symbol"]] = OpenInterestItem(
+                        t=int(item["timestamp"] / 1000), v=item["holdVol"])
             return result
         except KeyError as e:
             raise AdapterException(f"Missing key in MEXC open interest data: {e}")
