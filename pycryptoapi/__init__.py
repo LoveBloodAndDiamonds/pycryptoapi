@@ -8,7 +8,8 @@ __all__ = [
     "ADAPTERS_MAPPER", "CLIENTS_MAPPER", "SOCKETS_MAPPER",
     "CoinmarketcapAdapter", "CoinmarketcapClient",
     "DeribitClient",
-    "CoinalyzeClient"
+    "CoinalyzeClient",
+    "init_fixes"
 ]
 
 from .abstract import *
