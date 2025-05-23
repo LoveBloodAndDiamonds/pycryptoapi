@@ -21,3 +21,4 @@ from .deribit import *
 from .mappers import *
 from .mexc import *
 from .okx import *
+from .fixes import init_fixes

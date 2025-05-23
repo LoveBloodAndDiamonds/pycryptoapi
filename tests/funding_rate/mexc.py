@@ -13,7 +13,7 @@ async def test_mexc_funding_rate():
         result = await client.funding_rate()
 
         # Печать результата с использованием prettyprint
-        pprint(result)
+        # pprint(result)
 
         a = MexcAdapter.funding_rate(raw_data=result)
 
