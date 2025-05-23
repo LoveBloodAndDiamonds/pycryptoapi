@@ -15,19 +15,13 @@ __all__ = [
 
 import asyncio
 import re
-from typing import TYPE_CHECKING
 
 import aiohttp
-
-from app.core import get_logger
-
-if TYPE_CHECKING:
-    from loguru._logger import Logger  # noqa
-
-logger = get_logger("okx_exchange_info")
+from loguru import logger
 
 
 class _OkxExchangeInfo:
+    logger = logger
     precisions: dict[str, list[int]] = {}
 
     def __init__(self):

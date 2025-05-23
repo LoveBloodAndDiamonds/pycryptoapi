@@ -172,15 +172,25 @@ class OkxAdapter(AbstractAdapter):
             raise AdapterException(f"Invalid data format in OKX kline message: {e}")
 
     @staticmethod
-    def open_interest(raw_data: Dict[str, Any]) -> OpenInterestDict:
+    def open_interest(raw_data: Dict[str, Any], only_usdt: bool = True) -> OpenInterestDict:
         # Обработка данных от Okx
         try:
-            result: dict[str, OpenInterestItem] = {}
-            for item in raw_data["data"]:
-                result[item["instId"]] = OpenInterestItem(
-                    t=int(item["ts"]),
-                    v=float(item["oiCcy"])  # Открытый интерес (COINS)
-                )
+            result: OpenInterestDict = {}
+            if only_usdt:
+                for item in raw_data["data"]:
+                    symbol = item["instId"]
+                    symbol: str
+                    if symbol.endswith("USDT-SWAP"):
+                        result[symbol] = OpenInterestItem(
+                            t=int(item["ts"]),
+                            v=float(item["oiCcy"])  # Открытый интерес (COINS)
+                        )
+            else:
+                for item in raw_data["data"]:
+                    result[item["instId"]] = OpenInterestItem(
+                        t=int(item["ts"]),
+                        v=float(item["oiCcy"])  # Открытый интерес (COINS)
+                    )
             return result
         except KeyError as e:
             raise AdapterException(f"Missing key in OKX open interest data: {e}")

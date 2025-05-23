@@ -2,7 +2,7 @@ from typing import Any, List, Dict
 
 from ..abstract import AbstractAdapter
 from ..exceptions import AdapterException
-from ..types import TickerDailyItem, KlineDict, AggTradeDict, LiquidationDict, OpenInterestDict
+from ..types import TickerDailyItem, KlineDict, AggTradeDict, LiquidationDict, OpenInterestDict, OpenInterestItem
 
 
 class MexcAdapter(AbstractAdapter):
@@ -101,7 +101,7 @@ class MexcAdapter(AbstractAdapter):
                 symbol = item["symbol"]
                 ticker_data[symbol] = TickerDailyItem(
                     p=round(float(item["riseFallRate"]) * 100, 2),  # Процентное изменение
-                    v=int(float(item["volume24"])) * item["lastPrice"] # КОНТРАКТЫ
+                    v=int(float(item["volume24"])) * item["lastPrice"]  # КОНТРАКТЫ
                 )
             return ticker_data
 
@@ -110,7 +110,7 @@ class MexcAdapter(AbstractAdapter):
         """
         Преобразует сырые данные ставки финансирования для фьючерсных тикеров в унифицированный вид.
 
-        :param raw_data: Сырые данные ставки финансирования фьючерсов (список словарей)
+        :param raw_data: Сырые данные ставки финансирования фьючерсов.
         :param only_usdt: Если True, возвращаются данные только для тикеров, оканчивающихся на 'USDT'.
         :return: Cловарь с фьючерсными тикерами и их ставкой финансирования.
         """
@@ -214,8 +214,31 @@ class MexcAdapter(AbstractAdapter):
             raise AdapterException(f"Error processing MEXC aggTrade({raw_msg}): {e}")
 
     @staticmethod
-    def open_interest(raw_data: Dict[str, Any]) -> OpenInterestDict:
-        raise NotImplementedError("Not implemented yet...")
+    def open_interest(raw_data: Dict[str, Any], only_usdt: bool = True) -> OpenInterestDict:
+        """
+        Преобразует сырые данные открытого интереса для фьючерсных тикеров в унифицированный вид.
+
+        :param raw_data: Сырые данные открытого интереса.
+        :param only_usdt: Если True, возвращаются данные только для тикеров, оканчивающихся на 'USDT'.
+        :return: Cловарь с тикерами и их ставкой финансирования.
+        """
+        try:
+            result: OpenInterestDict = {}
+            if only_usdt:
+                for item in raw_data["data"]:
+                    symbol = item["symbol"]
+                    if symbol.endswith("USDT"):
+                        result[symbol] = OpenInterestItem(
+                            t=int(item["timestamp"] / 1000), v=float(item["holdVol"]))
+            else:
+                for item in raw_data["data"]:
+                    result[item["symbol"]] = OpenInterestItem(
+                        t=int(item["timestamp"] / 1000), v=float(item["holdVol"]))
+            return result
+        except KeyError as e:
+            raise AdapterException(f"Missing key in MEXC open interest data: {e}")
+        except (TypeError, ValueError) as e:
+            raise AdapterException(f"Invalid data format in MEXC open interest data: {e}")
 
     @staticmethod
     def liquidation_message(raw_msg: Any) -> List[LiquidationDict]:

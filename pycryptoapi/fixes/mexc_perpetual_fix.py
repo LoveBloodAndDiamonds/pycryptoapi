@@ -1,22 +1,18 @@
 __all__ = [
     "init_mexc_perpetual_fix",
     "mexc_perpetual_ticker_daily_fix",
+    "mexc_perpetual_open_interest_fix",
 ]
 
 import asyncio
-from typing import TYPE_CHECKING
 
 import aiohttp
-
-from app.core import get_logger
-
-if TYPE_CHECKING:
-    from loguru._logger import Logger  # noqa
-
-logger = get_logger("mexc_exchange_info")
+from loguru import logger
 
 
 class _MexcExchangeInfo:
+    logger = logger
+
     def __init__(self):
         self._contract_sizes: dict[str, float] = {}
         self._task = None
@@ -104,4 +100,38 @@ def mexc_perpetual_ticker_daily_fix(raw_data: dict) -> dict:
             ticker["volume24"] = ticker["volume24"] * _mexc_exchange_info.get_contract_size(ticker["symbol"])
         except Exception as e:
             logger.error(f"Can not fix ticker daily: {ticker=}: {e}")
+    return raw_data
+
+
+def mexc_perpetual_open_interest_fix(raw_data: dict) -> dict:
+    """
+    Функция принимает сырой ответ с http запроса открытого интереса с фьючерсов MEXC.
+    Возвращает пофикшенный вариант с правильным значением открытого интереса.
+    """
+    # {'amount24': 101140.06,
+    #  'ask1': 2.948,
+    #  'bid1': 2.947,
+    #  'contractId': 1149,
+    #  'fairPrice': 2.948,
+    #  'fundingRate': 0.0001,
+    #  'high24Price': 3.161,
+    #  'holdVol': 47206,
+    #  'indexPrice': 2.948,
+    #  'lastPrice': 2.948,
+    #  'lower24Price': 2.845,
+    #  'maxBidPrice': 3.537,
+    #  'minAskPrice': 2.358,
+    #  'riseFallRate': 0.0109,
+    #  'riseFallRates': {'r': 0.0109,
+    #                    'r30': 0.1844,
+    #                    'r7': 0.02,
+    #                    'v': 0.032,
+    #                    'zone': 'UTC+8'},
+    #  'riseFallRatesOfTimezone': [-0.034, -0.0419, 0.0109],
+    #  'riseFallValue': 0.032,
+    #  'symbol': 'NEAR_USDC',
+    #  'timestamp': 1748020547110,
+    #  'volume24': 33342},
+    for item in raw_data["data"]:
+        item["holdVol"] = item["holdVol"] * _mexc_exchange_info.get_contract_size(item["symbol"])
     return raw_data

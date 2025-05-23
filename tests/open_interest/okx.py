@@ -21,6 +21,8 @@ async def test_okx_funding_rate():
 
         pprint(a)
 
+        print(len(a))
+
 
 # Запуск теста
 if __name__ == "__main__":
