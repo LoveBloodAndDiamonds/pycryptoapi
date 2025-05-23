@@ -92,7 +92,7 @@ class MexcAdapter(AbstractAdapter):
                     continue
                 ticker_data[symbol] = TickerDailyItem(
                     p=float(item["riseFallRate"]) * 100,  # Процентное изменение
-                    v=int(float(item["volume24"]))  # КОНТРАКТЫ в оригинале
+                    v=int(float(item["volume24"])) * item["lastPrice"]  # КОНТРАКТЫ в оригинале
                 )
             return ticker_data
         else:
@@ -101,7 +101,7 @@ class MexcAdapter(AbstractAdapter):
                 symbol = item["symbol"]
                 ticker_data[symbol] = TickerDailyItem(
                     p=float(item["riseFallRate"]) * 100,  # Процентное изменение
-                    v=int(float(item["volume24"]))  # КОНТРАКТЫ
+                    v=int(float(item["volume24"])) * item["lastPrice"] # КОНТРАКТЫ
                 )
             return ticker_data
 
