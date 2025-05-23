@@ -91,7 +91,7 @@ class MexcAdapter(AbstractAdapter):
                 if not symbol.endswith("_USDT"):
                     continue
                 ticker_data[symbol] = TickerDailyItem(
-                    p=float(item["riseFallRate"]) * 100,  # Процентное изменение
+                    p=round(float(item["riseFallRate"]) * 100, 2),  # Процентное изменение
                     v=int(float(item["volume24"])) * item["lastPrice"]  # КОНТРАКТЫ в оригинале
                 )
             return ticker_data
@@ -100,7 +100,7 @@ class MexcAdapter(AbstractAdapter):
             for item in raw_data["data"]:
                 symbol = item["symbol"]
                 ticker_data[symbol] = TickerDailyItem(
-                    p=float(item["riseFallRate"]) * 100,  # Процентное изменение
+                    p=round(float(item["riseFallRate"]) * 100, 2),  # Процентное изменение
                     v=int(float(item["volume24"])) * item["lastPrice"] # КОНТРАКТЫ
                 )
             return ticker_data
