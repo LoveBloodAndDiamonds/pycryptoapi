@@ -90,22 +90,18 @@ class MexcAdapter(AbstractAdapter):
                 symbol = item["symbol"]
                 if not symbol.endswith("_USDT"):
                     continue
-                avg_price = (float(item["high24Price"]) + float(item["lower24Price"])) / 2
-                price_change = ((float(item["lastPrice"]) - avg_price) / avg_price) * 100 if avg_price != 0 else 0
                 ticker_data[symbol] = TickerDailyItem(
-                    p=round(price_change, 2),  # Процентное изменение
-                    v=int(float(item["volume24"]))
+                    p=float(item["riseFallRate"]) * 100,  # Процентное изменение
+                    v=int(float(item["volume24"]))  # КОНТРАКТЫ в оригинале
                 )
             return ticker_data
         else:
             ticker_data = {}
             for item in raw_data["data"]:
                 symbol = item["symbol"]
-                avg_price = (float(item["high24Price"]) + float(item["lower24Price"])) / 2
-                price_change = ((float(item["lastPrice"]) - avg_price) / avg_price) * 100 if avg_price != 0 else 0
                 ticker_data[symbol] = TickerDailyItem(
-                    p=round(price_change, 2),  # Процентное изменение
-                    v=int(float(item["volume24"]))
+                    p=float(item["riseFallRate"]) * 100,  # Процентное изменение
+                    v=int(float(item["volume24"]))  # КОНТРАКТЫ
                 )
             return ticker_data
 
