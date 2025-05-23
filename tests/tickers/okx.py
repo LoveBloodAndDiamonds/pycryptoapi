@@ -33,6 +33,8 @@ async def test_okx_ticker_24h(session: ClientSession):
 async def test_okx_futures_ticker_24h(session: ClientSession):
     client = OkxClient(session)
     raw_data = await client.futures_ticker()
+    # from pprint import pp
+    # pp(raw_data)
     futures_ticker_24h = OkxAdapter.futures_ticker_24h(raw_data)
     print("OKX 24h futures ticker:", futures_ticker_24h)
     print("Total OKX 24h futures tickers:", len(futures_ticker_24h))

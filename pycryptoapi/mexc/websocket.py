@@ -38,12 +38,16 @@ class MexcWebsocket(AbstractWebsocket):
 
         elif self._market_type == MarketType.FUTURES:
             if self._topic == "sub.deal":
-                params: List[Dict] = [{"symbol": t.replace("USDT", "_USDT")} for t in self._tickers]
+                params: List[Dict] = [
+                    {"symbol": t.replace("USDT", "_USDT") if not t.endswith("_USDT") else t} for t in self._tickers
+                ]
             elif self._topic == "sub.kline":
                 if not self._timeframe:
                     raise TimeframeException()
-                params: List[Dict] = [{"symbol": t.replace("USDT", "_USDT"), "interval": self._timeframe} for t in
-                                      self._tickers]
+                params: List[Dict] = [{
+                    "symbol": t.replace("USDT", "_USDT") if not t.endswith("_USDT") else t,
+                    "interval": self._timeframe
+                } for t in self._tickers]
             elif self._topic == "sub.tickers":
                 params: List[Dict] = [dict()]
             else:

@@ -45,11 +45,8 @@ async def test_bybit_ticker_24h():
 async def test_bybit_futures_ticker_24h():
     async with aiohttp.ClientSession() as session:
         client = BybitClient(session)
-        raw_data = await client.futures_ticker(symbol="BTCUSDT")
+        raw_data = await client.futures_ticker()
 
-        pprint(raw_data)
-
-        return
 
 
         # Преобразуем данные через адаптер
@@ -61,5 +58,5 @@ async def test_bybit_futures_ticker_24h():
 # Запуск тестов
 # asyncio.run(test_bybit_tickers())
 # asyncio.run(test_bybit_futures_tickers())
-# asyncio.run(test_bybit_ticker_24h())
-asyncio.run(test_bybit_futures_ticker_24h())
+asyncio.run(test_bybit_ticker_24h())
+# asyncio.run(test_bybit_futures_ticker_24h())

@@ -39,6 +39,8 @@ async def test_binance_ticker_24h():
         ticker_24h_data = BinanceAdapter.ticker_24h(raw_data)
         print("Processed 24h ticker data:", ticker_24h_data)
 
+        print(len(ticker_24h_data))
+
 
 async def test_binance_futures_ticker_24h():
     async with aiohttp.ClientSession() as session:
@@ -50,9 +52,11 @@ async def test_binance_futures_ticker_24h():
         futures_ticker_24h_data = BinanceAdapter.futures_ticker_24h(raw_data)
         print("Processed 24h futures ticker data:", futures_ticker_24h_data)
 
+        print(len(futures_ticker_24h_data))
+
 
 # Запуск тестов
 # asyncio.run(test_binance_tickers())
 # asyncio.run(test_binance_futures_tickers())
-# asyncio.run(test_binance_ticker_24h())
-asyncio.run(test_binance_futures_ticker_24h())
+asyncio.run(test_binance_ticker_24h())
+# asyncio.run(test_binance_futures_ticker_24h())
