@@ -22,19 +22,16 @@ class BitgetClient(AbstractClient):
         return await self._make_request(method="GET", url=url, params=params)
 
     # Frequency limit: 20 times/1s (IP)
-    async def futures_ticker(self, symbol: Optional[str] = None, product_type: str = "USDT-FUTURES") -> Dict[str, Any]:
+    async def futures_ticker(self, product_type: str = "USDT-FUTURES") -> Dict[str, Any]:
         """
         Получает 24-часовую статистику изменения цены и объема для фьючерсного рынка.
 
-        :param symbol: (опционально) Торговая пара, например 'BTCUSDT'. Если не указано, возвращает данные по всем парам.
         :param product_type: Тип продукта (по умолчанию: 'USDT-FUTURES' для USDT-Margined Futures).
         :return: JSON-ответ с данными статистики.
         :raises Exception: Если запрос не выполнен успешно.
         """
         url = f"{self._BASE_URL}/api/v2/mix/market/tickers"
         params = {'productType': product_type}
-        if symbol:
-            params["symbol"] = symbol
         return await self._make_request(method="GET", url=url, params=params)
 
     # Frequency limit: 20 times/1s (IP)
@@ -55,18 +52,12 @@ class BitgetClient(AbstractClient):
         return await self._make_request(method="GET", url=url, params=params)
 
     # Frequency limit: 20 times/1s (IP)
-    async def open_interest(self, symbol: str, product_type: str = "USDT-FUTURES") -> Dict[str, Any]:
+    async def open_interest(self, product_type: str = "USDT-FUTURES") -> Dict[str, Any]:
         """
         Получает текущий открытый интерес для указанного символа.
 
-        :param symbol: Торговая пара, например 'BTCUSDT'.
         :param product_type: Тип продукта (по умолчанию: 'USDT-FUTURES' для USDT-Margined Futures).
         :return: JSON-ответ с текущим открытым интересом.
         :raises Exception: Если запрос не выполнен успешно.
         """
-        url = f"{self._BASE_URL}/api/v2/mix/market/open-interest"
-        params = {
-            "symbol": symbol,
-            "productType": product_type,
-        }
-        return await self._make_request(method="GET", url=url, params=params)
+        return await self.futures_ticker(product_type=product_type)

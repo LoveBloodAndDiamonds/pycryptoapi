@@ -1,4 +1,3 @@
-import warnings
 from typing import Any, List, Dict, Union
 
 from ..abstract import AbstractAdapter
@@ -99,51 +98,59 @@ class BitgetAdapter(AbstractAdapter):
             raise TypeError(f"Wrong raw_data type: {type(raw_data)}, excepted List[Dict] or Dict")
 
     @staticmethod
-    def open_interest(raw_data: Union[Dict[str, Any], List[Dict[str, Any]]]) -> OpenInterestDict:
+    def open_interest(raw_data: Union[Dict[str, Any], List[Dict[str, Any]]],
+                      only_usdt: bool = True) -> OpenInterestDict:
         """
         Преобразует сырой ответ с запроса в унифированный формат.
 
         :param raw_data: Сырые данные открытого интереса по тикеру. Можно передать список данных.
+        :param only_usdt: Если True, возвращает только данные для тикеров, оканчивающихся на "USDT".
         :return: Cловарь с фьючерсными тикерами и их открытым интересом.
         """
-        '''
-            {
-        "code": "00000",
-        "msg": "success",
-        "requestTime": 1695796780343,
-        "data": {
-            "openInterestList": [
-                {
-                    "symbol": "BTCUSDT",
-                    "size": "34278.06"
-                }
-            ],
-            "ts": "1695796781616"
-        }
-        }'''
-        if isinstance(raw_data, dict):
-            data = raw_data["data"]["openInterestList"][0]
-            return {
-                data["symbol"]: OpenInterestItem(
-                    t=int(raw_data["data"]["ts"]),
-                    v=float(data["size"])
-                )
-            }
-        elif isinstance(raw_data, list):
+        # {'code': '00000',
+        #     'data': [{'askPr': '108821.1',
+        #        'askSz': '11.0513',
+        #        'baseVolume': '141491.5099',
+        #        'bidPr': '108821',
+        #        'bidSz': '1.4616',
+        #        'change24h': '0.00746',
+        #        'changeUtc24h': '0.0144',
+        #        'deliveryStartTime': None,
+        #        'deliveryStatus': '',
+        #        'deliveryTime': None,
+        #        'fundingRate': '0.000023',
+        #        'high24h': '109966',
+        #        'holdingAmount': '49203.8842',
+        #        'indexPrice': '108872.714460795874789',
+        #        'lastPr': '108821',
+        #        'low24h': '106741.3',
+        #        'markPrice': '108821',
+        #        'open24h': '108015.5',
+        #        'openUtc': '107275.7',
+        #        'quoteVolume': '15361104773.27924',
+        #        'symbol': 'BTCUSDT',
+        #        'ts': '1748089641516',
+        #        'usdtVolume': '15361104773.27924'},
+        #         { ... }
+        #  }
+        try:
             result: dict[str, OpenInterestItem] = {}
-            for item in raw_data:
-                try:
-                    data = item["data"]["openInterestList"][0]
-                except IndexError:
-                    warnings.warn(f"Item with empty data: {item}")
-                    continue
-                result[data["symbol"]] = OpenInterestItem(
-                    t=int(item["data"]["ts"]),
-                    v=float(data["size"])
-                )
+            if only_usdt:
+                for i in raw_data["data"]:
+                    symbol = i["symbol"]
+                    if symbol.endswith("USDT"):
+                        result[symbol] = OpenInterestItem(
+                            t=int(i["ts"]),
+                            v=float(i["holdingAmount"])
+                        )
+            else:
+                return {i["symbol"]: OpenInterestItem(
+                    t=int(i["ts"]),
+                    v=float(i["holdingAmount"])
+                ) for i in raw_data["data"]}
             return result
-        else:
-            raise ValueError(f"Wrong raw_data type: {type(raw_data)}, excepted: list or dict")
+        except Exception as e:
+            raise AdapterException(f"Error adapting bitget open interest data: {e}")
 
     @staticmethod
     def kline_message(raw_msg: Any) -> List[KlineDict]:

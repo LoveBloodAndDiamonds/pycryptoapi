@@ -11,24 +11,27 @@ async def test_bitget_funding_rate():
     async with aiohttp.ClientSession() as session:
         client = BitgetClient(session)
 
-        # Пример вызова функции funding_rate
-        r = []
-        s = None
-        for t in ["BTCUSDT", "ETHUSDT", "SKLUSDT"]:
-            resp = await client.open_interest(symbol=t)
-            r.append(resp)
-            s = resp
+        res = await client.open_interest()
 
-        # Печать результата с использованием prettyprint
-        pprint(r)
+        # pprint(res)
 
-        a = BitgetAdapter.open_interest(raw_data=r)
+        # print(len(res["data"]))
+
+        a = BitgetAdapter.open_interest(raw_data=res)
 
         pprint(a)
 
-        b = BitgetAdapter.open_interest(s)
 
-        print(b)
+        # res = res["data"]
+        #
+        # from pprint import pp
+        #
+        # for item in res:
+        #     if item["symbol"] == "TRXUSDT":
+        #         pp(item)
+
+
+        # pp(r)
 
 # Запуск теста
 if __name__ == "__main__":
