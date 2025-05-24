@@ -12,9 +12,9 @@ exchange = Exchange.MEXC
 async def callback(msg):
     try:
         print(msg)
-        msg = mexc_perpetual_aggtrade_fix(msg)
-        print(msg)
-        print()
+        # msg = mexc_perpetual_aggtrade_fix(msg)
+        # print(msg)
+        # print()
 
         k = ADAPTERS_MAPPER[exchange].aggtrades_message(raw_msg=msg)
         print(k)
@@ -27,7 +27,7 @@ async def callback(msg):
 async def main():
     await init_mexc_perpetual_fix()
     socket = SOCKETS_MAPPER[exchange].aggtrades_socket(
-        market_type=MarketType.FUTURES,
+        market_type=MarketType.SPOT,
         # tickers=["BTCUSDT"],
         tickers=["BTCUSDT", "ETHUSDT"],
         callback=callback,

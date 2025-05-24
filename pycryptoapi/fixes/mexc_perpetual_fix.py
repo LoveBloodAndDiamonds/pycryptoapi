@@ -146,7 +146,7 @@ def mexc_perpetual_aggtrade_fix(raw_msg: dict) -> dict:
     # {'symbol': 'ETH_USDT', 'data': {'p': 2575.2, 'v': 1, 'T': 2, 'O': 1, 'M': 2, 't': 1748023214750}, 'channel': 'push.deal', 'ts': 1748023214750}
     # Преобразуем данные
     try:
-        raw_msg["data"]["v"] = raw_msg["data"]["v"] * _mexc_exchange_info.get_contract_size(raw_msg["symbol"]) / raw_msg["data"]["p"]
+        raw_msg["data"]["v"] = raw_msg["data"]["v"] * _mexc_exchange_info.get_contract_size(raw_msg["symbol"])
     except Exception as e:
         logger.error(f"Can not fix aggtrade: {raw_msg=}: {e}")
     return raw_msg
