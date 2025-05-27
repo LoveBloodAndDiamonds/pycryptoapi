@@ -12,9 +12,7 @@ async def test_bitget_funding_rate():
         client = BitgetClient(session)
 
         # Пример вызова функции funding_rate
-        r = []
-        for t in ["BTCUSDT", "ETHUSDT", "SKLUSDT"]:
-            r.append(await client.funding_rate(symbol=t))
+        r = await client.funding_rate()
 
         # Печать результата с использованием prettyprint
         pprint(r)

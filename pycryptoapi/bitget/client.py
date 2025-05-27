@@ -35,7 +35,7 @@ class BitgetClient(AbstractClient):
         return await self._make_request(method="GET", url=url, params=params)
 
     # Frequency limit: 20 times/1s (IP)
-    async def funding_rate(self, symbol: str, product_type: str = "USDT-FUTURES") -> Dict[str, Any]:
+    async def funding_rate(self, symbol: Optional[str] = None, product_type: str = "USDT-FUTURES") -> Dict[str, Any]:
         """
         Получает текущую ставку финансирования для указанного символа.
 
@@ -46,9 +46,10 @@ class BitgetClient(AbstractClient):
         """
         url = f"{self._BASE_URL}/api/v2/mix/market/current-fund-rate"
         params = {
-            "symbol": symbol,
             "productType": product_type,
         }
+        if symbol:
+            params["symbol"] = symbol
         return await self._make_request(method="GET", url=url, params=params)
 
     # Frequency limit: 20 times/1s (IP)

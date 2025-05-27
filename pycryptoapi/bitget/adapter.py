@@ -92,8 +92,7 @@ class BitgetAdapter(AbstractAdapter):
                 tickers_info[data["symbol"]] = float(data["fundingRate"]) * 100
             return tickers_info
         elif isinstance(raw_data, dict):
-            data = raw_data["data"][0]
-            return {data["symbol"]: float(data["fundingRate"]) * 100}
+            return {item["symbol"]: float(item["fundingRate"]) * 100 for item in raw_data["data"]}
         else:
             raise TypeError(f"Wrong raw_data type: {type(raw_data)}, excepted List[Dict] or Dict")
 

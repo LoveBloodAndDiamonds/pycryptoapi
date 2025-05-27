@@ -38,6 +38,13 @@ async def test_mexc_ticker_24h():
         client = MexcClient(session)
         raw_data = await client.ticker()
 
+        from pprint import pp
+
+        # pp(raw_data)
+        for item in raw_data:
+            if item["symbol"] == 'FLOKI' + "USDT":
+                pp(item)
+
         # Преобразуем данные через адаптер
         ticker_24h_data = MexcAdapter.ticker_24h(raw_data)
         print("Processed 24h ticker data:", ticker_24h_data)
@@ -74,5 +81,5 @@ async def test_mexc_futures_ticker_24h():
 # Запуск тестов
 # asyncio.run(test_mexc_tickers())
 # asyncio.run(test_mexc_futures_tickers())
-# asyncio.run(test_mexc_ticker_24h())
-asyncio.run(test_mexc_futures_ticker_24h())
+asyncio.run(test_mexc_ticker_24h())
+# asyncio.run(test_mexc_futures_ticker_24h())
