@@ -116,7 +116,7 @@ class BinanceAdapter(AbstractAdapter):
             raise ValueError(f"Wrong raw_data type: {type(raw_data)}, excepted: list or dict")
 
     @staticmethod
-    def kline(raw_data: Dict[str, Any]) -> List[KlineDict]:
+    def kline(raw_data: List[Any]) -> List[KlineDict]:
         """
         Преобразует сырой ответ с запроса Binance в унифицированный формат свечи (Kline).
         """
@@ -137,7 +137,7 @@ class BinanceAdapter(AbstractAdapter):
         ]
 
     @staticmethod
-    def futures_kline(raw_data: Dict[str, Any]) -> List[KlineDict]:
+    def futures_kline(raw_data: List[Any]) -> List[KlineDict]:
         """
         Преобразует сырой ответ с запроса Binance в унифицированный формат свечи (Kline).
         """

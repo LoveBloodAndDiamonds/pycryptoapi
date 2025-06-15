@@ -86,6 +86,18 @@ class AbstractAdapter(ABC):
 
     @staticmethod
     @abstractmethod
+    def kline(raw_data: Dict[str, Any]) -> List[KlineDict]:
+        """Преобразует сырой ответ с запроса биржи в унифицированный формат свечи (Kline)."""
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def futures_kline(raw_data: Dict[str, Any]) -> List[KlineDict]:
+        """Преобразует сырой ответ с запроса биржи в унифицированный формат свечи (Kline)."""
+        pass
+
+    @staticmethod
+    @abstractmethod
     def kline_message(raw_msg: Any) -> List[KlineDict]:
         """
         Преобразует сырое сообщение с вебсокета в унифицированный вид.
