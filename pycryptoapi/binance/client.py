@@ -5,6 +5,7 @@ from typing import Any, Optional, Dict, List
 import aiohttp
 
 from ..abstract import AbstractClient
+from ..enums import Timeframe, Exchange
 from ..exceptions import APIException
 from ..types import JsonLike
 
@@ -99,4 +100,90 @@ class BinanceClient(AbstractClient):
         """
         url = f"{self._BASE_FUTURES_URL}/fapi/v1/openInterest"
         params = {"symbol": symbol}
+        return await self._make_request(method="GET", url=url, params=params)
+
+    async def klines(
+            self,
+            symbol: str,
+            interval: Timeframe,
+            limit: int = 500,
+            start_time: Optional[str] = None,
+            end_time: Optional[str] = None
+    ) -> Dict[str, str]:
+        """
+        Получает свечи с указанного торгового инструмента на спотовом рынке Binance
+
+        Используется эндпоинт: GET /api/v3/klines
+
+        Пример ответа:
+        [
+          [
+            1499040000000,      // Kline open time
+            "0.01634790",       // Open price
+            "0.80000000",       // High price
+            "0.01575800",       // Low price
+            "0.01577100",       // Close price
+            "148976.11427815",  // Volume
+            1499644799999,      // Kline Close time
+            "2434.19055334",    // Quote asset volume
+            308,                // Number of trades
+            "1756.87402397",    // Taker buy base asset volume
+            "28.46694368",      // Taker buy quote asset volume
+            "0"                 // Unused field, ignore.
+          ]
+        ]
+        """
+        url = f"{self._BASE_SPOT_URL}/api/v3/klines"
+        params = self.filter_params(
+            {
+                "symbol": symbol,
+                "interval": interval.to_exchange_format(Exchange.BINANCE),
+                "limit": limit,
+                "startTime": start_time,
+                "endTime": end_time
+            }
+        )
+        return await self._make_request(method="GET", url=url, params=params)
+
+    async def futures_klines(
+            self,
+            symbol: str,
+            interval: Timeframe,
+            limit: int = 500,
+            start_time: Optional[str] = None,
+            end_time: Optional[str] = None
+    ) -> Dict[str, str]:
+        """
+        Получает свечи с указанного торгового инструмента на фьючерсном рынке Binance
+
+        Используется эндпоинт: GET /api/v3/klines
+
+        Пример ответа:
+        [
+          [
+            1499040000000,      // Kline open time
+            "0.01634790",       // Open price
+            "0.80000000",       // High price
+            "0.01575800",       // Low price
+            "0.01577100",       // Close price
+            "148976.11427815",  // Volume
+            1499644799999,      // Kline Close time
+            "2434.19055334",    // Quote asset volume
+            308,                // Number of trades
+            "1756.87402397",    // Taker buy base asset volume
+            "28.46694368",      // Taker buy quote asset volume
+            "0"                 // Unused field, ignore.
+          ]
+        ]
+        """
+        url = f"{self._BASE_FUTURES_URL}/fapi/v1/klines"
+        params = self.filter_params(
+            {
+                "symbol": symbol,
+                "interval": interval.to_exchange_format(Exchange.BINANCE),
+                "limit": limit,
+                "startTime": start_time,
+                "endTime": end_time
+            }
+        )
         return await self._make_request(method="GET", url=url, params=params)

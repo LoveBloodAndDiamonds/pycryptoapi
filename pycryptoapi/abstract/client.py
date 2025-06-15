@@ -153,3 +153,13 @@ class AbstractClient(BaseClient, ABC):
     async def open_interest(self, *args, **kwargs) -> Any:
         """Возаращает JSON, в котором содержится информация об открытом интересе."""
         pass
+
+    @abstractmethod
+    async def klines(self, *args, **kwargs) -> Any:
+        """Возаращает JSON, в котором содержится информация о свечах на монете на спотовом рынке."""
+        pass
+
+    @abstractmethod
+    async def futures_klines(self, *args, **kwargs) -> Any:
+        """Возаращает JSON, в котором содержится информация о свечах на монете на фьючерсном рынке."""
+        pass
