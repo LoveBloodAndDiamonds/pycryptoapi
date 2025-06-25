@@ -11,6 +11,14 @@ class OkxAdapter(AbstractAdapter):
     """
 
     @staticmethod
+    def futures_kline(raw_data: Dict[str, Any]) -> List[KlineDict]:
+        raise NotImplementedError()
+
+    @staticmethod
+    def kline(raw_data: Dict[str, Any]) -> List[KlineDict]:
+        raise NotImplementedError()
+
+    @staticmethod
     def tickers(raw_data: Any, only_usdt: bool = True) -> List[str]:
         """
         Преобразует сырые данные тикеров OKX в список символов.

@@ -8,6 +8,12 @@ from ..abstract import AbstractClient
 class OkxClient(AbstractClient):
     _BASE_URL: str = "https://www.okx.com"
 
+    async def klines(self, *args, **kwargs) -> Any:
+        raise NotImplementedError()
+
+    async def futures_klines(self, *args, **kwargs) -> Any:
+        raise NotImplementedError()
+
     # Rate Limit: 20 requests per 2 seconds
     async def ticker(self) -> Any:
         """

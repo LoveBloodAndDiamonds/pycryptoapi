@@ -209,3 +209,13 @@ class BybitAdapter(AbstractAdapter):
             T=None,
             x=None,
         ) for item in result["list"]]
+
+    @staticmethod
+    def futures_kline(raw_data: Dict[str, Any]) -> List[KlineDict]:
+        """
+        Преобразует сырой ответ с HTTP запроса в унифицированный вид.
+
+        :param raw_data: Сырые данные с HTTP запроса klines
+        :return: Список унифицированных свечей.
+        """
+        return BybitAdapter.kline(raw_data)

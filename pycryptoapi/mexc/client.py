@@ -10,6 +10,12 @@ class MexcClient(AbstractClient):
     _BASE_SPOT_URL: str = "https://api.mexc.com"
     _BASE_FUTURES_URL: str = "https://contract.mexc.com"
 
+    async def klines(self, *args, **kwargs) -> Any:
+        raise NotImplementedError()
+
+    async def futures_klines(self, *args, **kwargs) -> Any:
+        raise NotImplementedError()
+
     # Rate limit: 1w w/ symbol or 40w w/o symbol
     async def ticker(self, symbol: Optional[str] = None) -> JsonLike:
         """

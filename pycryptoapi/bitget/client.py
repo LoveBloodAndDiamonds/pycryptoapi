@@ -6,7 +6,14 @@ from ..abstract import AbstractClient
 
 
 class BitgetClient(AbstractClient):
+
     _BASE_URL: str = "https://api.bitget.com"
+
+    async def klines(self, *args, **kwargs) -> Any:
+        raise NotImplementedError()
+
+    async def futures_klines(self, *args, **kwargs) -> Any:
+        raise NotImplementedError()
 
     # Frequency limit: 20 times/1s (IP)
     async def ticker(self, symbol: Optional[str] = None) -> Dict[str, Any]:
