@@ -21,7 +21,7 @@ OpenInterestDict: TypeAlias = Dict[str, OpenInterestItem]
 
 
 class KlineDict(TypedDict):
-    s: str  # symbol  # АЯЗ ИЗ БУДУЩЕГО, КОГДА ТЫ БУДЕШЬ ЭТО ДЕЛАТЬ - УБЕРИ ОТСЮДА ЭТОТ АТТРИБУТ, ПОТОМУ ЧТО ОН ТУТ ОЧЕВИДНО ЛИШНИЙ И НИКОГДА НЕ ПРИГОДИТСЯ
+    s: str  # symbol  # АЯЗ ИЗ БУДУЩЕГО, КОГДА ТЫ БУДЕШЬ ЭТО ДЕЛАТЬ - УБЕРИ ОТСЮДА ЭТОТ АТТРИБУТ, ПОТОМУ ЧТО ОН ТУТ ОЧЕВИДНО ЛИШНИЙ И НИКОГДА НЕ ПРИГОДИТСЯ, UPD: А ВОТ АДАПТЕР ПО ИДЕЕ ТИКЕР ДОЛЖЕН ВОЗВРАЩАТЬ
     t: int  # open time
     o: float  # open price
     h: float  # high price

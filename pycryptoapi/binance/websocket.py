@@ -60,7 +60,7 @@ class BinanceSocketManager(AbstractSocketManager):
             cls,
             market_type: MarketType,
             tickers: List[str] | Tuple[str, ...],
-            timeframe: Timeframe,
+            timeframe: Timeframe,  # АЯЗ ИЗ БУДУЩЕГО - ИЗМЕНИ ЭТО НАЗВАНИЕ НА INTERVAL
             callback: Callable[..., Awaitable],
             **kwargs
     ) -> BinanceWebsocket:

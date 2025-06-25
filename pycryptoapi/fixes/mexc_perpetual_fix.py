@@ -134,7 +134,10 @@ def mexc_perpetual_open_interest_fix(raw_data: dict) -> dict:
     #  'timestamp': 1748020547110,
     #  'volume24': 33342},
     for item in raw_data["data"]:
-        item["holdVol"] = item["holdVol"] * _mexc_exchange_info.get_contract_size(item["symbol"])
+        try:
+            item["holdVol"] = item["holdVol"] * _mexc_exchange_info.get_contract_size(item["symbol"])
+        except Exception as e:
+            logger.debug(f"Can not fix open interest: {item=}: {e}")
     return raw_data
 
 
