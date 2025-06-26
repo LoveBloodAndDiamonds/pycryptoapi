@@ -60,3 +60,17 @@ class OkxClient(AbstractClient):
         url = f"{self._BASE_URL}/api/v5/public/open-interest?"
         params = {"instType": "SWAP"}
         return await self._make_request(method="GET", url=url, params=params)
+
+    # Rate Limit: 40 requests per 2 seconds
+    async def depth(self, symbol: str, limit: int = 100) -> Dict[str, Any]:
+        """
+        Получает книгу ордеров (глубину рынка) для заданной торговой пары.
+
+        :param symbol: 	Instrument ID, e.g. BTC-USDT.
+        :param limit: Order book depth per side. Maximum 400, e.g. 400 bids + 400 asks. Default returns to 1 depth data.
+        :return: JSON-ответ с данными глубины рынка.
+        :raises Exception: Если запрос не выполнен успешно.
+        """
+        url = f"{self._BASE_URL}/api/v5/market/books"
+        params = {"instId": symbol, "sz": limit}
+        return await self._make_request(method="GET", url=url, params=params)
