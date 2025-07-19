@@ -8,21 +8,20 @@ exchange = Exchange.GATE
 
 
 async def callback(msg):
-    # try:
     print(msg)
-        # k = ADAPTERS_MAPPER[exchange].aggtrades_message(raw_msg=msg)
-        # print(k)
-        # print()
-
-    # except AdapterException as e:
-    #     print(f"Can not adapt message ({e}): {msg}")
+    try:
+        k = ADAPTERS_MAPPER[exchange].aggtrades_message(raw_msg=msg)
+        print(k)
+        print()
+    except AdapterException as e:
+        print(f"Can not adapt message ({e}): {msg}")
 
 
 async def main():
     socket = SOCKETS_MAPPER[exchange].aggtrades_socket(
-        tickers=["BTCUSDT"],
+        tickers=["BTCUSDT", "ETHUSDT"],
         market_type=MarketType.FUTURES,
-        # tickers=["BTC-USDT-SWAP"],
+        # tickers=["BTC-USDT-SWAP"],create_time_ms
         callback=callback,
     )
 

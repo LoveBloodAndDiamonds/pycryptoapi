@@ -1,0 +1,52 @@
+__all__ = ["GateClient"]
+
+from typing import Any, Optional, Dict
+
+from typing_extensions import Literal
+
+from ..abstract import AbstractClient
+from ..types import JsonLike
+
+
+class GateClient(AbstractClient):
+    _BASE_URL: str = "https://api.gateio.ws/api/v4"
+
+    async def klines(self, *args, **kwargs) -> Any:
+        raise NotImplementedError()
+
+    async def futures_klines(self, *args, **kwargs) -> Any:
+        raise NotImplementedError()
+
+    async def ticker(self, symbol: Optional[str] = None) -> JsonLike:
+        """
+        Получает 24-часовую статистику изменения цены и объема для спотового рынка.
+
+        :param symbol: (опционально) Торговая пара, например 'BTCUSDT'. Если не указано, возвращает данные по всем парам.
+        :return: JSON-ответ с данными статистики.
+        :raises Exception: Если запрос не выполнен успешно.
+        """
+        url = f"{self._BASE_URL}/spot/tickers"
+        params = {"currency_pair": symbol} if symbol else {}
+        return await self._make_request(method="GET", url=url, params=params)
+
+    async def futures_ticker(self, symbol: Optional[str] = None, settle: Literal["btc", "usdt"] = "usdt") -> JsonLike:
+        """
+        Получает 24-часовую статистику изменения цены и объема для фьючерсного рынка.
+
+        :param symbol: (опционально) Торговая пара, например 'BTC_USDT'. Если не указано, возвращает данные по всем парам.
+        :param settle: (опционально) Постфикс торговых пар для поиска. По умолчанию: usdt
+        :return: JSON-ответ с данными статистики.
+        :raises Exception: Если запрос не выполнен успешно.
+        """
+        url = f"{self._BASE_URL}/futures/{settle}/tickers"
+        params = {"contract": symbol} if symbol else {}
+        return await self._make_request(method="GET", url=url, params=params)
+
+    async def depth(self, symbol: str, limit: int = 100) -> Dict[str, Any]:
+        raise NotImplementedError()
+
+    async def funding_rate(self) -> Dict[str, Any]:
+        raise NotImplementedError()
+
+    async def open_interest(self, symbol: Optional[str] = None) -> JsonLike:
+        raise NotImplementedError()
