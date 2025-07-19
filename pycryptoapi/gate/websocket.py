@@ -25,7 +25,7 @@ class GateWebsocket(AbstractWebsocket):
 
         if self._market_type == MarketType.SPOT:
             if self._topic == "spot.trades":
-                payload = [t.replace("USDT", "_USDT") for t in self._tickers if not t.endswith("_USDT")]
+                payload = [t.replace("USDT", "_USDT") if t.endswith("_USDT") else t for t in self._tickers]
                 data = {
                     "time": int(time.time()),
                     "channel": self._topic,
@@ -39,7 +39,7 @@ class GateWebsocket(AbstractWebsocket):
 
         elif self._market_type == MarketType.FUTURES:
             if self._topic == "futures.trades":
-                payload = [t.replace("USDT", "_USDT") for t in self._tickers if not t.endswith("_USDT")]
+                payload = [t.replace("USDT", "_USDT") if t.endswith("_USDT") else t for t in self._tickers]
                 data = {
                     "time": int(time.time()),
                     "channel": self._topic,
