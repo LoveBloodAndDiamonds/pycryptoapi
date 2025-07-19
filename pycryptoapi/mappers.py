@@ -7,6 +7,7 @@ from .binance import BinanceClient, BinanceAdapter, BinanceSocketManager
 from .bitget import BitgetClient, BitgetAdapter, BitgetSocketManager
 from .bybit import BybitClient, BybitAdapter, BybitSocketManager
 from .enums import Exchange
+from .gate import GateSocketManager
 from .mexc import MexcClient, MexcAdapter, MexcSocketManager
 from .okx import OkxClient, OkxAdapter, OkxSocketManager
 
@@ -26,6 +27,7 @@ SOCKETS_MAPPER: Dict[Exchange, Type[AbstractSocketManager]] = {
     Exchange.BYBIT: BybitSocketManager,
     Exchange.MEXC: MexcSocketManager,
     Exchange.OKX: OkxSocketManager,
+    Exchange.GATE: GateSocketManager,
 }
 
 # Маппинг адаптеров бирж
