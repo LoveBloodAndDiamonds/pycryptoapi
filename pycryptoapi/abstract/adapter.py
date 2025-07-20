@@ -3,7 +3,8 @@ __all__ = ["AbstractAdapter", ]
 from abc import ABC, abstractmethod
 from typing import List, Any, Dict
 
-from ..types import TickerDailyItem, KlineDict, OpenInterestDict, AggTradeDict, LiquidationDict
+from ..types import TickerDailyItem, KlineDict, OpenInterestDict, AggTradeDict, LiquidationDict, DepthDict
+from ..exceptions import AdapterException
 
 
 class AbstractAdapter(ABC):
@@ -127,3 +128,27 @@ class AbstractAdapter(ABC):
         :return: Унифицированный объект List[LiquidationDict], или None, если сообщение невалидно.
         """
         pass
+
+    @staticmethod
+    @abstractmethod
+    def depth(raw_data: Any) -> DepthDict:
+        """
+        Преобразует сырой ответ с HTTP запроса в унифицированный вид.
+        :param raw_data: Сырой ответ с HTTP запроса.
+        :return: Унифицированный обьект.
+        """
+        pass
+
+    @staticmethod
+    def _parse_and_sort_depth(asks_raw: List[Any], bids_raw: List[Any]) -> DepthDict:
+        try:
+            asks = [(float(price), float(size)) for price, size in asks_raw]
+            bids = [(float(price), float(size)) for price, size in bids_raw]
+
+            # Унификация: asks ASC, bids DESC
+            asks.sort(key=lambda x: x[0])
+            bids.sort(key=lambda x: x[0], reverse=True)
+
+            return DepthDict(asks=asks, bids=bids)
+        except Exception as e:
+            raise AdapterException(f"Error parsing orderbook: {e}")

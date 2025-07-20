@@ -4,7 +4,7 @@ from typing import Any, List, Dict
 
 from ..abstract import AbstractAdapter
 from ..exceptions import AdapterException
-from ..types import TickerDailyItem, KlineDict, AggTradeDict, LiquidationDict, OpenInterestDict
+from ..types import TickerDailyItem, KlineDict, AggTradeDict, LiquidationDict, OpenInterestDict, DepthDict
 
 
 class GateAdapter(AbstractAdapter):
@@ -187,3 +187,10 @@ class GateAdapter(AbstractAdapter):
     @staticmethod
     def liquidation_message(raw_msg: Any) -> List[LiquidationDict]:
         raise NotImplementedError("Not implemented yet...")
+
+    @staticmethod
+    def depth(raw_data: Any) -> DepthDict:
+        try:
+            return AbstractAdapter._parse_and_sort_depth(raw_data["asks"], raw_data["bids"])
+        except Exception as e:
+            raise AdapterException(f"BybitAdapter error: {e}")

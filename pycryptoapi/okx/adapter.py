@@ -2,7 +2,8 @@ from typing import Any, List, Dict, Union
 
 from ..abstract import AbstractAdapter
 from ..exceptions import AdapterException
-from ..types import TickerDailyItem, KlineDict, OpenInterestItem, AggTradeDict, LiquidationDict, OpenInterestDict
+from ..types import TickerDailyItem, KlineDict, OpenInterestItem, AggTradeDict, LiquidationDict, OpenInterestDict, \
+    DepthDict
 
 
 class OkxAdapter(AbstractAdapter):
@@ -233,3 +234,13 @@ class OkxAdapter(AbstractAdapter):
     @staticmethod
     def liquidation_message(raw_msg: Any) -> List[LiquidationDict]:
         raise NotImplementedError("Not implemented yet...")
+
+    @staticmethod
+    def depth(raw_data: Any) -> DepthDict:
+        try:
+            data = raw_data["data"][0]
+            asks = [(p, s) for p, s, *_ in data["asks"]]
+            bids = [(p, s) for p, s, *_ in data["bids"]]
+            return AbstractAdapter._parse_and_sort_depth(asks, bids)
+        except Exception as e:
+            raise AdapterException(f"BybitAdapter error: {e}")

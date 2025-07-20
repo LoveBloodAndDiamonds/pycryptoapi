@@ -42,8 +42,18 @@ class GateClient(AbstractClient):
         params = {"contract": symbol} if symbol else {}
         return await self._make_request(method="GET", url=url, params=params)
 
-    async def depth(self, symbol: str, limit: int = 100) -> Dict[str, Any]:
-        raise NotImplementedError()
+    async def depth(self, symbol: str, limit: int = 100) -> JsonLike:
+        """
+        Получает данные ордербука (глубины рынка) для спотового рынка.
+
+        :param symbol: Торговая пара в формате 'BTC_USDT'
+        :param limit: Количество уровней ордербука (доступные значения: 5, 10, 20, 50, 100, 200, 500, 1000)
+        :return: JSON-ответ с ордерами на покупку и продажу.
+        :raises Exception: Если запрос не выполнен успешно.
+        """
+        url = f"{self._BASE_URL}/spot/order_book"
+        params = {"currency_pair": symbol, "limit": limit}
+        return await self._make_request(method="GET", url=url, params=params)
 
     async def funding_rate(self) -> Dict[str, Any]:
         raise NotImplementedError()

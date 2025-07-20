@@ -47,3 +47,12 @@ class LiquidationDict(TypedDict):
     S: Side | Literal["BUY", "SELL"]  # side
     v: float  # volume (Coins)
     p: float  # price
+
+
+type price = float
+type size = float
+
+
+class DepthDict(TypedDict):
+    asks: List[tuple[price, size]]  # Идет от ближней цены к дальней
+    bids: List[tuple[price, size]]  # Идет от ближней цены к дальней

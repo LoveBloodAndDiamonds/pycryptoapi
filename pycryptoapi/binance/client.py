@@ -187,3 +187,31 @@ class BinanceClient(AbstractClient):
             }
         )
         return await self._make_request(method="GET", url=url, params=params)
+
+    async def depth(self, symbol: str, limit: int = 100) -> Dict[str, Any]:
+        """
+        Получает стакан ордеров (Order Book) для спотового рынка Binance.
+
+        Используется эндпоинт: GET /api/v3/depth
+
+        :param symbol: Торговая пара, например 'BTCUSDT'.
+        :param limit: Количество уровней стакана (допустимые значения: 5, 10, 20, 50, 100, 500, 1000, 5000).
+        :return: JSON-ответ, содержащий массивы bids и asks.
+        """
+        url = f"{self._BASE_SPOT_URL}/api/v3/depth"
+        params = {"symbol": symbol, "limit": limit}
+        return await self._make_request(method="GET", url=url, params=params)
+
+    async def futures_depth(self, symbol: str, limit: int = 100) -> Dict[str, Any]:
+        """
+        Получает стакан ордеров (Order Book) для фьючерсного рынка Binance.
+
+        Используется эндпоинт: GET /fapi/v1/depth
+
+        :param symbol: Торговая пара, например 'BTCUSDT'.
+        :param limit: Количество уровней стакана (допустимые значения: 5, 10, 20, 50, 100, 500, 1000, 5000).
+        :return: JSON-ответ, содержащий массивы bids и asks.
+        """
+        url = f"{self._BASE_FUTURES_URL}/fapi/v1/depth"
+        params = {"symbol": symbol, "limit": limit}
+        return await self._make_request(method="GET", url=url, params=params)

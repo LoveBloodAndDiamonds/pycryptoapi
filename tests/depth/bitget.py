@@ -1,10 +1,10 @@
 import asyncio
 
-from pycryptoapi import MexcClient
+from pycryptoapi import BitgetClient
 
 
 async def main() -> None:
-    cl = await MexcClient.create()
+    cl = await BitgetClient.create()
 
     r = await cl.depth("BTCUSDT", 10)
 

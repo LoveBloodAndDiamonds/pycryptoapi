@@ -5,6 +5,7 @@ __all__ = [
     "BybitAdapter", "BybitClient", "BybitSocketManager", "BybitWebsocket",
     "MexcAdapter", "MexcClient", "MexcSocketManager", "MexcWebsocket",
     "OkxAdapter", "OkxClient", "OkxSocketManager", "OkxWebsocket",
+    "GateClient", "GateSocketManager", "GateWebsocket", "GateAdapter",
     "ADAPTERS_MAPPER", "CLIENTS_MAPPER", "SOCKETS_MAPPER",
     "CoinmarketcapAdapter", "CoinmarketcapClient",
     "DeribitClient",
@@ -23,3 +24,4 @@ from .mappers import *
 from .mexc import *
 from .okx import *
 from .fixes import init_fixes
+from .gate import *

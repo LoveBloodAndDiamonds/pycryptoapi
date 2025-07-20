@@ -1,12 +1,12 @@
 import asyncio
 
-from pycryptoapi import MexcClient
+from pycryptoapi import GateClient
 
 
 async def main() -> None:
-    cl = await MexcClient.create()
+    cl = await GateClient.create()
 
-    r = await cl.depth("BTCUSDT", 10)
+    r = await cl.depth("BTC_USDT", 10)
 
     import pprint
 

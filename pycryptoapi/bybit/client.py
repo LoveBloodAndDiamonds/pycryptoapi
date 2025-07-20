@@ -135,3 +135,36 @@ class BybitClient(AbstractClient):
         """
         return await self.klines(
             symbol=symbol, interval=interval, start=start, end=end, limit=limit, _category="linear")
+
+    async def depth(
+        self,
+        symbol: str,
+        limit: int = 50,
+        _category: Literal["spot", "linear"] = "spot"
+    ) -> Dict[str, Any]:
+        """
+        Получает данные ордербука (глубину рынка) для указанного символа.
+
+        :param symbol: Торговая пара, например 'BTCUSDT'.
+        :param limit: Количество записей (по умолчанию 50).
+        :param _category: Категория рынка (по умолчанию "spot").
+        :return: JSON-ответ с данными ордербука.
+        :raises Exception: Если запрос не выполнен успешно.
+        """
+        url = f"{self._BASE_URL}/v5/market/orderbook"
+        params = {
+            "category": _category,
+            "symbol": symbol,
+            "limit": limit
+        }
+        return await self._make_request(method="GET", url=url, params=params)
+
+    async def futures_depth(
+        self,
+        symbol: str,
+        limit: int = 50,
+    ) -> Dict[str, Any]:
+        """
+        Получает данные ордербука для фьючерсов.
+        """
+        return await self.depth(symbol=symbol, limit=limit, _category="linear")

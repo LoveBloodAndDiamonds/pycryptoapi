@@ -6,7 +6,7 @@ from pycryptoapi import MexcClient, OkxClient
 async def main() -> None:
     cl = await OkxClient.create()
 
-    r = await cl.depth("BTC-USDT", 1)
+    r = await cl.depth("BTC-USDT", 10)
 
     import pprint
 

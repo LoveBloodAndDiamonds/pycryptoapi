@@ -2,7 +2,8 @@ from typing import Any, List, Dict
 
 from ..abstract import AbstractAdapter
 from ..exceptions import AdapterException
-from ..types import TickerDailyItem, KlineDict, OpenInterestItem, AggTradeDict, LiquidationDict, OpenInterestDict
+from ..types import TickerDailyItem, KlineDict, OpenInterestItem, AggTradeDict, LiquidationDict, OpenInterestDict, \
+    DepthDict
 
 
 class BybitAdapter(AbstractAdapter):
@@ -219,3 +220,11 @@ class BybitAdapter(AbstractAdapter):
         :return: Список унифицированных свечей.
         """
         return BybitAdapter.kline(raw_data)
+
+    @staticmethod
+    def depth(raw_data: Any) -> DepthDict:
+        try:
+            result = raw_data["result"]
+            return AbstractAdapter._parse_and_sort_depth(result["a"], result["b"])
+        except Exception as e:
+            raise AdapterException(f"BybitAdapter error: {e}")
