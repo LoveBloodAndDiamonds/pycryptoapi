@@ -152,7 +152,7 @@ class GateAdapter(AbstractAdapter):
                 return [
                     AggTradeDict(
                         t=item["create_time_ms"],
-                        s=item["contract"].replace("_", ""),
+                        s=item["contract"],
                         S="BUY" if item["size"] >= 0 else "SELL",
                         p=float(item["price"]),
                         v=abs(item["size"]),
@@ -163,7 +163,7 @@ class GateAdapter(AbstractAdapter):
                 return [
                     AggTradeDict(
                         t=int(float(item["create_time_ms"])),
-                        s=item["currency_pair"].replace("_", ""),
+                        s=item["currency_pair"],
                         S=item["side"].upper(),
                         p=float(item["price"]),
                         v=item["amount"],
