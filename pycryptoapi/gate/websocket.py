@@ -37,7 +37,6 @@ class GateWebsocket(AbstractWebsocket):
                     "event": "subscribe",
                     "payload": payload,
                 }
-                print(data)
                 return json.dumps(data)
             else:
                 raise ValueError("Invalid topic.")
