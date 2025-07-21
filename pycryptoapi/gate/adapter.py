@@ -155,7 +155,7 @@ class GateAdapter(AbstractAdapter):
                         s=item["contract"],
                         S="BUY" if item["size"] >= 0 else "SELL",
                         p=float(item["price"]),
-                        v=abs(item["size"]),
+                        v=abs(float(item["size"])),
                     ) for item in raw_msg["result"]
                 ]
             elif channel == "spot.trades":
@@ -166,7 +166,7 @@ class GateAdapter(AbstractAdapter):
                         s=item["currency_pair"],
                         S=item["side"].upper(),
                         p=float(item["price"]),
-                        v=item["amount"],
+                        v=float(item["amount"]),
                     )
                 ]
             raise AdapterException("Unknown format")
