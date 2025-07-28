@@ -76,6 +76,10 @@ async def callback(msg):
         print(f"Can not adapt message ({e}): {msg}")
         return
 
+    print(aggtrades)
+
+    return
+
     now = int(time.time())
     current_start = get_candle_start(now)
 
@@ -111,8 +115,8 @@ async def callback(msg):
 async def main():
     await init_fixes(Exchange.XT, MarketType.FUTURES)
     socket = SOCKETS_MAPPER[exchange].aggtrades_socket(
-        tickers=["btc_usdt"],
-        market_type=MarketType.FUTURES,
+        tickers=["btc_usdt", "eth_usdt"],
+        market_type=MarketType.SPOT,
         callback=callback,
     )
 

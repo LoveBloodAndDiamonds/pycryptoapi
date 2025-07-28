@@ -23,10 +23,10 @@ class XtWebsocket(AbstractWebsocket):
 
     @property
     def _subscribe_message(self) -> Optional[str]:
-        streams: list[str] = [f"{self._topic}@" + ",".join(self._tickers)]
+        params = [f"{self._topic}@{s}" for s in self._tickers]
         subscribe_message = json.dumps({
             "method": "subscribe",
-            "params": streams,
+            "params": params,
             "id": str(uuid.uuid4())
         })
         return subscribe_message
