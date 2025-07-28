@@ -6,6 +6,7 @@ __all__ = [
     "MexcAdapter", "MexcClient", "MexcSocketManager", "MexcWebsocket",
     "OkxAdapter", "OkxClient", "OkxSocketManager", "OkxWebsocket",
     "GateClient", "GateSocketManager", "GateWebsocket", "GateAdapter",
+    "XtClient",  "XtSocketManager", "XtWebsocket", "XtAdapter",
     "ADAPTERS_MAPPER", "CLIENTS_MAPPER", "SOCKETS_MAPPER",
     "CoinmarketcapAdapter", "CoinmarketcapClient",
     "DeribitClient",
@@ -20,8 +21,9 @@ from .bybit import *
 from .coinalyze import *
 from .coinmarketcap import *
 from .deribit import *
+from .fixes import init_fixes
+from .gate import *
 from .mappers import *
 from .mexc import *
 from .okx import *
-from .fixes import init_fixes
-from .gate import *
+from .xt import *

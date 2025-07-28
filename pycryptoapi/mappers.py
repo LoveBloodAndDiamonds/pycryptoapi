@@ -10,6 +10,7 @@ from .enums import Exchange
 from .gate import GateSocketManager, GateClient, GateAdapter
 from .mexc import MexcClient, MexcAdapter, MexcSocketManager
 from .okx import OkxClient, OkxAdapter, OkxSocketManager
+from .xt import XtClient, XtAdapter, XtSocketManager
 
 # Маппинг клиентов бирж
 CLIENTS_MAPPER: Dict[Exchange, Type[AbstractClient]] = {
@@ -19,6 +20,7 @@ CLIENTS_MAPPER: Dict[Exchange, Type[AbstractClient]] = {
     Exchange.MEXC: MexcClient,
     Exchange.OKX: OkxClient,
     Exchange.GATE: GateClient,
+    Exchange.XT: XtClient,
 }
 
 # Маппинг менеджеров сокетов бирж
@@ -29,6 +31,7 @@ SOCKETS_MAPPER: Dict[Exchange, Type[AbstractSocketManager]] = {
     Exchange.MEXC: MexcSocketManager,
     Exchange.OKX: OkxSocketManager,
     Exchange.GATE: GateSocketManager,
+    Exchange.XT: XtSocketManager,
 }
 
 # Маппинг адаптеров бирж
@@ -39,4 +42,5 @@ ADAPTERS_MAPPER: Dict[Exchange, Type[AbstractAdapter]] = {
     Exchange.MEXC: MexcAdapter,
     Exchange.OKX: OkxAdapter,
     Exchange.GATE: GateAdapter,
+    Exchange.XT: XtAdapter,
 }

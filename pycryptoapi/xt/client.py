@@ -1,18 +1,18 @@
 __all__ = ["XtClient"]
 
-from typing import Any, Optional
+from typing import Any, Optional, List
 
 from ..abstract import AbstractClient
 
 
 class XtClient(AbstractClient):
-    _BASE_SPOT_URL: str = "https://dapi.xt.com"
+    _BASE_SPOT_URL: str = "https://sapi.xt.com"
     _BASE_FUTURES_URL: str = "https://fapi.xt.com"
 
-    async def ticker(self, symbol: Optional[str] = None) -> Any:
+    async def ticker(self, symbol: Optional[str] = None, symbols: Optional[List[str]] = None) -> Any:
         """Возвращает JSON, в котором содержится информация о изменении цены и объеме монет за 24ч."""
         url = f"{self._BASE_SPOT_URL}/v4/public/ticker/24h"
-        params = self.filter_params({'symbol': symbol})
+        params = self.filter_params({'symbol': symbol, 'symbols': symbols})
         return await self._make_request(method="GET", url=url, params=params)
 
     async def futures_ticker(self) -> Any:

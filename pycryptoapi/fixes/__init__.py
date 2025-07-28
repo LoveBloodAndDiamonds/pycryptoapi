@@ -1,11 +1,13 @@
 __all__ = ["init_fixes", "okx_perpetual_ticker_daily_fix", "okx_perpetual_aggtrade_fix",
-           "mexc_perpetual_ticker_daily_fix", "mexc_perpetual_open_interest_fix", "mexc_perpetual_aggtrade_fix", ]
+           "mexc_perpetual_ticker_daily_fix", "mexc_perpetual_open_interest_fix", "mexc_perpetual_aggtrade_fix",
+           "xt_perpetual_aggtrade_fix"]
 
 from pycryptoapi.enums import Exchange, MarketType
 
 from .mexc_perpetual_fix import init_mexc_perpetual_fix, mexc_perpetual_ticker_daily_fix, \
     mexc_perpetual_open_interest_fix, mexc_perpetual_aggtrade_fix
 from .okx_perpetual_fix import okx_perpetual_aggtrade_fix, init_okx_perpetual_fix, okx_perpetual_ticker_daily_fix
+from .xt_perpetual_fix import xt_perpetual_aggtrade_fix, init_xt_perpetual_fix
 
 
 async def init_fixes(exchange: Exchange | list[Exchange], market_type: MarketType | list[MarketType]):
@@ -27,3 +29,5 @@ async def init_fixes(exchange: Exchange | list[Exchange], market_type: MarketTyp
                 await init_okx_perpetual_fix()
             if e == Exchange.MEXC and m == MarketType.FUTURES:
                 await init_mexc_perpetual_fix()
+            if e == Exchange.XT and m == MarketType.FUTURES:
+                await init_xt_perpetual_fix()

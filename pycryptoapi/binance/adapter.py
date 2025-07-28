@@ -47,7 +47,7 @@ class BinanceAdapter(AbstractAdapter):
         :param only_usdt: Если True, возвращаются данные только для тикеров, оканчивающихся на 'USDT'.
         :return: Словарь с тикерами и их статистикой за 24 часа.
         """
-        if raw_data:
+        if only_usdt:
             tickers_data = {}
             for item in raw_data:
                 symbol = item["symbol"]

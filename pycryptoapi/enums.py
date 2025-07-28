@@ -26,6 +26,7 @@ class Exchange(StrEnum):
     OKX = "OKX"
     MEXC = "MEXC"
     GATE = "GATE"
+    XT = "XT"
 
     def __add__(self, market_type: "MarketType") -> Tuple["Exchange", "MarketType"]:
         return self, market_type
