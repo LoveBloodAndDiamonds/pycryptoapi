@@ -19,9 +19,9 @@ async def test_okx_funding_rate():
         # Печать результата с использованием prettyprint
         pprint(result)
 
-        # r = a.open_interest(result)
+        r = a.open_interest(result)
 
-        # pprint(r)
+        pprint(r)
 
         # for item in result:
             # if item["name"] == "BTC_USDT":

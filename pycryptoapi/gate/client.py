@@ -1,5 +1,6 @@
 __all__ = ["GateClient"]
 
+import time
 from typing import Any, Optional, Dict
 
 from typing_extensions import Literal
@@ -70,4 +71,8 @@ class GateClient(AbstractClient):
         """
         url = f"{self._BASE_URL}/futures/{settle}/contract_stats"
         params = {"contract": symbol}
-        return await self._make_request(method="GET", url=url, params=params)
+        result = await self._make_request(method="GET", url=url, params=params)
+        result = result[-1]
+        result["symbol"] = symbol  # Patch
+        result["time"] = time.time()
+        return result
