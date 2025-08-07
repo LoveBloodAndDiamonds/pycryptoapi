@@ -74,5 +74,5 @@ class GateClient(AbstractClient):
         result = await self._make_request(method="GET", url=url, params=params)
         result = result[-1]
         result["symbol"] = symbol  # Patch
-        result["time"] = time.time()
+        result["time"] = time.time() * 1000
         return result
