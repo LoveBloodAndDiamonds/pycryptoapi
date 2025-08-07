@@ -3,6 +3,7 @@ __all__ = ["AbstractClient", "BaseClient", ]
 import asyncio
 import logging
 from abc import ABC, abstractmethod
+from itertools import cycle
 from typing import Any, Dict, Optional, Literal, Self
 
 import aiohttp
@@ -35,11 +36,13 @@ class BaseClient(ABC, ClientMixin):
             logger: logging.Logger | Logger = loguru.logger,
             max_retries: Optional[int] = 3,
             retry_delay: Optional[int | float] = 0.1,
+            proxies: Optional[list[str]] = None,
     ) -> None:
         self._session: aiohttp.ClientSession = session
         self._logger: logging.Logger | Logger = logger
         self._max_retries: int = max(max_retries, 1)
         self._retry_delay: int | float = max(retry_delay, 0)
+        self._proxies_cycle: cycle | None = cycle(proxies) if proxies else None
 
     @classmethod
     async def create(
@@ -48,6 +51,7 @@ class BaseClient(ABC, ClientMixin):
             logger: logging.Logger | Logger = loguru.logger,
             max_retries: Optional[int] = 3,
             retry_delay: Optional[int | float] = 0.1,
+            proxies: Optional[list[str]] = None,
     ) -> Self:
         """
         Создает инстанцию клиента.
@@ -59,6 +63,7 @@ class BaseClient(ABC, ClientMixin):
             logger=logger,
             max_retries=max_retries,
             retry_delay=retry_delay,
+            proxies=proxies
         )
 
     async def close(self) -> None:
@@ -95,7 +100,8 @@ class BaseClient(ABC, ClientMixin):
                         url=url,
                         params=params,
                         json=data if method in {"POST", "PUT"} else None,  # Передача тела запроса
-                        headers=headers
+                        headers=headers,
+                        proxy=next(self._proxies_cycle) if self._proxies_cycle else None,
                 ) as response:
                     return await self._handle_response(response=response)
 
