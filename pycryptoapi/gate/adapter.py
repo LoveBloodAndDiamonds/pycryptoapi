@@ -1,10 +1,11 @@
 __all__ = ["GateAdapter", ]
 
-from typing import Any, List, Dict
+from typing import Any, List, Dict, Union
 
 from ..abstract import AbstractAdapter
 from ..exceptions import AdapterException
-from ..types import TickerDailyItem, KlineDict, AggTradeDict, LiquidationDict, OpenInterestDict, DepthDict
+from ..types import TickerDailyItem, KlineDict, AggTradeDict, LiquidationDict, OpenInterestDict, DepthDict, \
+    OpenInterestItem
 
 
 class GateAdapter(AbstractAdapter):
@@ -174,15 +175,24 @@ class GateAdapter(AbstractAdapter):
             raise AdapterException(f"Error processing Gate aggTrade({raw_msg}): {e}")
 
     @staticmethod
-    def open_interest(raw_data: Dict[str, Any], only_usdt: bool = True) -> OpenInterestDict:
+    def open_interest(raw_data: Union[Dict[str, Any], List[Dict[str, Any]]]) -> OpenInterestDict:
         """
-        Преобразует сырые данные открытого интереса для фьючерсных тикеров в унифицированный вид.
+        Преобразует сырые данные открытого интереса в унифицированный вид.
 
-        :param raw_data: Сырые данные открытого интереса.
-        :param only_usdt: Если True, возвращаются данные только для тикеров, оканчивающихся на 'USDT'.
-        :return: Cловарь с тикерами и их ставкой финансирования.
+        :param raw_data: Сырые данные открытого интереса по тикеру. Можно передать список данных.
+        :return: Cловарь с фьючерсными тикерами и их открытым интересом.
         """
-        raise NotImplementedError()
+        if isinstance(raw_data, dict):
+            return {raw_data["symbol"]: OpenInterestItem(
+                t=raw_data["time"],
+                v=raw_data["open_interest"])}
+        elif isinstance(raw_data, list):
+            result = {}
+            for item in raw_data:
+                result[item["symbol"]] = OpenInterestItem(t=item["time"], v=item["open_interest"])
+            return result
+        else:
+            raise ValueError(f"Wrong raw_data type: {type(raw_data)}, excepted: list or dict")
 
     @staticmethod
     def liquidation_message(raw_msg: Any) -> List[LiquidationDict]:

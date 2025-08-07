@@ -58,5 +58,16 @@ class GateClient(AbstractClient):
     async def funding_rate(self) -> Dict[str, Any]:
         raise NotImplementedError()
 
-    async def open_interest(self, symbol: Optional[str] = None) -> JsonLike:
-        raise NotImplementedError()
+    # 200r/10s per endpoint
+    async def open_interest(self, symbol: str, settle: Literal["btc", "usdt"] = "usdt") -> JsonLike:
+        """
+        Получает данные об открытом интересе для фьючерсных контрактов.
+
+        :param symbol: Торговая пара, например 'BTCUSDT'.
+        :param settle: Тип расчета контракта (по умолчанию 'usdt', возможны значения: 'btc', 'usdt').
+        :return: JSON-ответ с информацией об открытом интересе.
+        :raises Exception: Если запрос не выполнен успешно.
+        """
+        url = f"{self._BASE_URL}/futures/{settle}/contract_stats"
+        params = {"contract": symbol}
+        return await self._make_request(method="GET", url=url, params=params)
