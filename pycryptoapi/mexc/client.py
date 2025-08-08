@@ -78,3 +78,6 @@ class MexcClient(AbstractClient):
         NOTE! Mexc exchange are not allow to get open interest via API now (5feb2025).
         """
         return await self.futures_ticker()
+
+    async def futures_last_price(self) -> Any:
+        return await self.futures_ticker()

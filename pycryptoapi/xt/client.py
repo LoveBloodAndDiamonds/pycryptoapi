@@ -39,3 +39,6 @@ class XtClient(AbstractClient):
     async def depth(self, *args, **kwargs) -> Any:
         """Возаращает JSON, в котором содержится информация о стакане на спотовом рынке."""
         raise NotImplementedError()
+
+    async def futures_last_price(self, *args, **kwargs) -> Any:
+        raise NotImplementedError()

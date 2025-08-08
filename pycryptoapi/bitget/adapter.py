@@ -115,32 +115,6 @@ class BitgetAdapter(AbstractAdapter):
         :param only_usdt: Если True, возвращает только данные для тикеров, оканчивающихся на "USDT".
         :return: Cловарь с фьючерсными тикерами и их открытым интересом.
         """
-        # {'code': '00000',
-        #     'data': [{'askPr': '108821.1',
-        #        'askSz': '11.0513',
-        #        'baseVolume': '141491.5099',
-        #        'bidPr': '108821',
-        #        'bidSz': '1.4616',
-        #        'change24h': '0.00746',
-        #        'changeUtc24h': '0.0144',
-        #        'deliveryStartTime': None,
-        #        'deliveryStatus': '',
-        #        'deliveryTime': None,
-        #        'fundingRate': '0.000023',
-        #        'high24h': '109966',
-        #        'holdingAmount': '49203.8842',
-        #        'indexPrice': '108872.714460795874789',
-        #        'lastPr': '108821',
-        #        'low24h': '106741.3',
-        #        'markPrice': '108821',
-        #        'open24h': '108015.5',
-        #        'openUtc': '107275.7',
-        #        'quoteVolume': '15361104773.27924',
-        #        'symbol': 'BTCUSDT',
-        #        'ts': '1748089641516',
-        #        'usdtVolume': '15361104773.27924'},
-        #         { ... }
-        #  }
         try:
             result: dict[str, OpenInterestItem] = {}
             if only_usdt:
@@ -231,3 +205,23 @@ class BitgetAdapter(AbstractAdapter):
             return AbstractAdapter._parse_and_sort_depth(data["asks"], data["bids"])
         except Exception as e:
             raise AdapterException(f"BybitAdapter error: {e}")
+
+    @staticmethod
+    def futures_last_price(
+            raw_data: Union[Dict[str, Any], List[Dict[str, Any]]], only_usdt: bool = True
+    ) -> Dict[str, float]:
+        """
+
+        """
+        try:
+            result: dict[str, float] = {}
+            if only_usdt:
+                for i in raw_data["data"]:
+                    symbol = i["symbol"]
+                    if symbol.endswith("USDT"):
+                        result[symbol] = float(i["lastPr"])
+            else:
+                result = {i["symbol"]: float(i["lastPr"]) for i in raw_data["data"]}
+            return result
+        except Exception as e:
+            raise AdapterException(f"Error adapting bitget open interest data: {e}")

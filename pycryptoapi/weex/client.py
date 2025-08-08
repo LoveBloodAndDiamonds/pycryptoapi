@@ -38,3 +38,6 @@ class WeexClient(AbstractClient):
 
     async def depth(self, symbol: str, limit: Optional[int] = None) -> Any:
         raise NotImplementedError()
+
+    async def futures_last_price(self, *args, **kwargs) -> Any:
+        raise NotImplementedError()

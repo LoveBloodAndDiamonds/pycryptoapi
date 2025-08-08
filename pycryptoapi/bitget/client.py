@@ -96,3 +96,6 @@ class BitgetClient(AbstractClient):
         url = f"{self._BASE_URL}/api/v2/mix/market/orderbook"
         params = {"symbol": symbol, "productType": product_type, "limit": limit}
         return await self._make_request(method="GET", url=url, params=params)
+
+    async def futures_last_price(self, product_type: str = "USDT-FUTURES") -> Any:
+        return await self.futures_ticker(product_type)

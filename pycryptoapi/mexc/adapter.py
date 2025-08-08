@@ -257,3 +257,10 @@ class MexcAdapter(AbstractAdapter):
             return AbstractAdapter._parse_and_sort_depth(raw_data["asks"], raw_data["bids"])
         except Exception as e:
             raise AdapterException(f"BybitAdapter error: {e}")
+
+    @staticmethod
+    def futures_last_price(raw_data: Dict[str, Any]) -> Dict[str, float]:
+        """
+
+        """
+        return {item["symbol"]: float(item["lastPrice"]) for item in raw_data["data"]}

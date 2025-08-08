@@ -152,3 +152,11 @@ class AbstractAdapter(ABC):
             return DepthDict(asks=asks, bids=bids)
         except Exception as e:
             raise AdapterException(f"Error parsing orderbook: {e}")
+
+    @staticmethod
+    @abstractmethod
+    def futures_last_price(raw_data: Any) -> Any:
+        """
+
+        """
+        pass

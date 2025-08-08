@@ -174,3 +174,9 @@ class AbstractClient(BaseClient, ABC):
     async def depth(self, *args, **kwargs) -> Any:
         """Возаращает JSON, в котором содержится информация о стакане на спотовом рынке."""
         pass
+
+    @abstractmethod
+    async def futures_last_price(self, *args, **kwargs) -> Any:
+        """Возвращает JSON, в котором содержится информация о последней цене на тикерах
+        фьючерсного рынка."""
+        pass

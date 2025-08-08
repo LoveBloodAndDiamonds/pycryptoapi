@@ -20,13 +20,19 @@ from pycryptoapi.mexc import MexcClient
 async def test_mexc_futures_tickers():
     async with aiohttp.ClientSession() as session:
         client = MexcClient(session)
-        raw_data = await client.futures_ticker()
+        raw_data = await client.futures_last_price()
+        r = MexcAdapter.futures_last_price(raw_data)
 
-        for item in raw_data["data"]:
-            lp = item["lastPrice"]
-            holdVol = item["holdVol"]
-            coinsHoldVol = holdVol / lp
-            print(item["symbol"], coinsHoldVol, holdVol)
+        from pprint import pp
+
+
+        pp(r)
+
+        # for item in raw_data["data"]:
+        #     lp = item["lastPrice"]
+        #     holdVol = item["holdVol"]
+        #     coinsHoldVol = holdVol / lp
+        #     print(item["symbol"], coinsHoldVol, holdVol)
 
         # futures_tickers = MexcAdapter.futures_tickers(raw_data)
         # print("Processed futures tickers:", futures_tickers)
@@ -80,6 +86,6 @@ async def test_mexc_futures_ticker_24h():
 
 # Запуск тестов
 # asyncio.run(test_mexc_tickers())
-# asyncio.run(test_mexc_futures_tickers())
-asyncio.run(test_mexc_ticker_24h())
+asyncio.run(test_mexc_futures_tickers())
+# asyncio.run(test_mexc_ticker_24h())
 # asyncio.run(test_mexc_futures_ticker_24h())

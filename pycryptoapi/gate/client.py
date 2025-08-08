@@ -76,3 +76,6 @@ class GateClient(AbstractClient):
         result["symbol"] = symbol  # Patch
         result["time"] = time.time() * 1000
         return result
+
+    async def futures_last_price(self) -> Any:
+        return await self.futures_ticker()

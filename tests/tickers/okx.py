@@ -16,7 +16,12 @@ async def test_okx_tickers(session: ClientSession):
 async def test_okx_futures_tickers(session: ClientSession):
     client = OkxClient(session)
     raw_data = await client.futures_ticker()
-    futures_tickers = OkxAdapter.futures_tickers(raw_data)
+
+    # from pprint import pp
+
+    # pp(raw_data)
+
+    futures_tickers = OkxAdapter.futures_last_price(raw_data)
     print("OKX futures tickers:", futures_tickers)
     print("Total OKX futures tickers:", len(futures_tickers))
 
@@ -43,8 +48,8 @@ async def test_okx_futures_ticker_24h(session: ClientSession):
 # To run all the tests for OKX
 async def test_okx(session: ClientSession):
     # await test_okx_tickers(session)
-    # await test_okx_futures_tickers(session)
-    await test_okx_ticker_24h(session)
+    await test_okx_futures_tickers(session)
+    # await test_okx_ticker_24h(session)
     # await test_okx_futures_ticker_24h(session)
 
 

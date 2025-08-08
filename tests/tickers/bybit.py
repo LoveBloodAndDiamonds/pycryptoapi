@@ -20,13 +20,13 @@ async def test_bybit_tickers():
 async def test_bybit_futures_tickers():
     async with aiohttp.ClientSession() as session:
         client = BybitClient(session)
-        raw_data = await client.futures_ticker()
+        raw_data = await client.futures_last_price()
 
         from pprint import pp
         pp(raw_data)
 
         # Преобразуем данные через адаптер
-        futures_tickers = BybitAdapter.futures_tickers(raw_data)
+        futures_tickers = BybitAdapter.futures_last_price(raw_data)
         print("Processed futures tickers:", futures_tickers)
         print("Number of futures tickers:", len(futures_tickers))
 
@@ -57,6 +57,6 @@ async def test_bybit_futures_ticker_24h():
 
 # Запуск тестов
 # asyncio.run(test_bybit_tickers())
-# asyncio.run(test_bybit_futures_tickers())
-asyncio.run(test_bybit_ticker_24h())
+asyncio.run(test_bybit_futures_tickers())
+# asyncio.run(test_bybit_ticker_24h())
 # asyncio.run(test_bybit_futures_ticker_24h())

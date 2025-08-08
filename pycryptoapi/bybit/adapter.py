@@ -228,3 +228,16 @@ class BybitAdapter(AbstractAdapter):
             return AbstractAdapter._parse_and_sort_depth(result["a"], result["b"])
         except Exception as e:
             raise AdapterException(f"BybitAdapter error: {e}")
+
+    @staticmethod
+    def futures_last_price(raw_data: Dict[str, Any]) -> Dict[str, float]:
+        # Обработка данных от Bybit
+        try:
+            result: dict[str, float] = {}
+            for item in raw_data["result"]["list"]:
+                result[item["symbol"]] = float(item["lastPrice"])
+            return result
+        except KeyError as e:
+            raise AdapterException(f"Missing key in Bybit open intrest data: {e}")
+        except (TypeError, ValueError) as e:
+            raise AdapterException(f"Invalid data format in Bybit open intrest data: {e}")

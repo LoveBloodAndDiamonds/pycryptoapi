@@ -244,3 +244,10 @@ class OkxAdapter(AbstractAdapter):
             return AbstractAdapter._parse_and_sort_depth(asks, bids)
         except Exception as e:
             raise AdapterException(f"BybitAdapter error: {e}")
+
+    @staticmethod
+    def futures_last_price(raw_data: Union[List[Dict], Dict], **kwargs) -> Dict[str, float]:
+        """
+
+        """
+        return {item["instId"]: float(item["last"]) for item in raw_data["data"]}

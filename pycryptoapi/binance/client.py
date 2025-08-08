@@ -215,3 +215,10 @@ class BinanceClient(AbstractClient):
         url = f"{self._BASE_FUTURES_URL}/fapi/v1/depth"
         params = {"symbol": symbol, "limit": limit}
         return await self._make_request(method="GET", url=url, params=params)
+
+    async def futures_last_price(self, symbol: Optional[str] = None) -> Any:
+        """
+
+        """
+        return await self.futures_ticker(symbol)
+    

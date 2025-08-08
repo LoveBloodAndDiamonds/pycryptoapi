@@ -168,3 +168,6 @@ class BybitClient(AbstractClient):
         Получает данные ордербука для фьючерсов.
         """
         return await self.depth(symbol=symbol, limit=limit, _category="linear")
+
+    async def futures_last_price(self) -> Any:
+        return await self.futures_ticker()

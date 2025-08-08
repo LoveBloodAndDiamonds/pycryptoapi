@@ -74,3 +74,6 @@ class OkxClient(AbstractClient):
         url = f"{self._BASE_URL}/api/v5/market/books"
         params = {"instId": symbol, "sz": limit}
         return await self._make_request(method="GET", url=url, params=params)
+
+    async def futures_last_price(self, *args, **kwargs) -> Any:
+        return await self.futures_ticker()
