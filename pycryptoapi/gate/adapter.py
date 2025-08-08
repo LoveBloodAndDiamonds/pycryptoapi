@@ -185,11 +185,14 @@ class GateAdapter(AbstractAdapter):
         if isinstance(raw_data, dict):
             return {raw_data["symbol"]: OpenInterestItem(
                 t=raw_data["time"],
-                v=raw_data["open_interest"])}
+                v=raw_data["open_interest_usd"] / raw_data["mark_price"])}
         elif isinstance(raw_data, list):
             result = {}
             for item in raw_data:
-                result[item["symbol"]] = OpenInterestItem(t=item["time"], v=item["open_interest"])
+                result[item["symbol"]] = OpenInterestItem(
+                    t=item["time"],
+                    v=item["open_interest_usd"] / item["mark_price"]
+                )
             return result
         else:
             raise ValueError(f"Wrong raw_data type: {type(raw_data)}, excepted: list or dict")

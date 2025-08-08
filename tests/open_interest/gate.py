@@ -14,7 +14,7 @@ async def test_okx_funding_rate():
         a = GateAdapter()
 
         # Пример вызова функции funding_rate
-        result = await client.open_interest("ETH_USDT")
+        result = await client.open_interest("SKL_USDT")
 
         # Печать результата с использованием prettyprint
         pprint(result)
