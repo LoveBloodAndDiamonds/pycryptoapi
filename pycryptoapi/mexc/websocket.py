@@ -1,11 +1,16 @@
 __all__ = ["MexcWebsocket", "MexcSocketManager", ]
 
 import json
+import time
 from typing import Optional, Union, List, Literal, Callable, Awaitable, Dict, Tuple
+
+from websockets.asyncio.client import ClientConnection
+import orjson
 
 from ..abstract import AbstractWebsocket, AbstractSocketManager
 from ..enums import MarketType, Timeframe, Exchange
 from ..exceptions import MarketException, TimeframeException
+from .spot_proto import PushDataV3ApiWrapper
 
 
 class MexcWebsocket(AbstractWebsocket):
@@ -13,7 +18,7 @@ class MexcWebsocket(AbstractWebsocket):
     @property
     def _connection_uri(self) -> str:
         if self._market_type == MarketType.SPOT:
-            return "wss://wbs.mexc.com/ws"
+            return "wss://wbs-api.mexc.com/ws"
         elif self._market_type == MarketType.FUTURES:
             return "wss://contract.mexc.com/edge"
         else:
@@ -23,7 +28,7 @@ class MexcWebsocket(AbstractWebsocket):
     def _subscribe_message(self) -> Union[str, List[str]]:
 
         if self._market_type == MarketType.SPOT:
-            if self._topic == "spot@public.kline.v3.api":
+            if self._topic == "spot@public.kline.v3.api.pb":
                 if not self._timeframe:
                     raise TimeframeException()
                 params: List[str] = [f"{self._topic}@{t}@{self._timeframe}" for t in self._tickers]
@@ -59,7 +64,43 @@ class MexcWebsocket(AbstractWebsocket):
 
     @property
     def _ping_message(self) -> Optional[str]:
+        if self._market_type == MarketType.SPOT:
+            return json.dumps({"method": "PING"})
         return json.dumps({"method": "ping"})
+
+    async def _handler(self, conn: ClientConnection) -> None:
+        """
+        Принимает управление над активным подключением.
+
+        Параметры:
+            conn (ClientConnection): Активное WebSocket соединение.
+        """
+        # Слушаем входящие сообщения
+        while self._is_active:
+            try:
+                message = await conn.recv()
+                self._last_message_time = time.time()
+                self._logger.trace(f"{self} Received message: {message}")
+                if self._market_type == MarketType.FUTURES:
+                    await self._queue.put(orjson.loads(message))
+                else:
+                    try:
+                        if isinstance(message, bytes):
+                            wrapper = PushDataV3ApiWrapper()  # noqa
+                            wrapper.ParseFromString(message)
+                            await self._queue.put(wrapper)
+                        else:
+                            self._logger.debug(f"{self} pb recieved string: {message}")
+                    except Exception as e:
+                        self._logger.info(f"{self} pb error: {e}")
+            except orjson.JSONDecodeError:
+                if message not in ["ping", "pong"]:
+                    self._logger.error(f"{self} orjson.JSONDecodeError whilte handling message: {message}")
+                else:
+                    self._logger.debug(f"{self} Received ping message: {message}")
+            except Exception as e:
+                self._logger.error(f"{self} Error({type(e)}) while handling message: {e}")
+                break
 
 
 class MexcSocketManager(AbstractSocketManager):
@@ -73,7 +114,7 @@ class MexcSocketManager(AbstractSocketManager):
             **kwargs
     ) -> MexcWebsocket:
         if market_type == MarketType.SPOT:
-            topic: str = "spot@public.deals.v3.api"
+            topic: str = "spot@public.aggre.deals.v3.api.pb@100ms"  # can be 10 ms
         elif market_type == MarketType.FUTURES:
             topic: str = "sub.deal"
         else:
@@ -96,7 +137,7 @@ class MexcSocketManager(AbstractSocketManager):
             **kwargs
     ) -> MexcWebsocket:
         if market_type == MarketType.SPOT:
-            topic: str = "spot@public.kline.v3.api"
+            topic: str = "spot@public.kline.v3.api.pb"
         elif market_type == MarketType.FUTURES:
             topic: str = "sub.kline"
         else:
@@ -119,7 +160,7 @@ class MexcSocketManager(AbstractSocketManager):
             **kwargs
     ) -> MexcWebsocket:
         if market_type == MarketType.SPOT:
-            topic: str = "spot@public.miniTickers.v3.api"
+            topic: str = "spot@public.miniTickers.v3.api.pb"
         elif market_type == MarketType.FUTURES:
             topic: str = "sub.tickers"
         else:

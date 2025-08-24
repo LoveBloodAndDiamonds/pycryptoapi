@@ -143,24 +143,8 @@ class MexcAdapter(AbstractAdapter):
         :raises AdapterException: Если сообщение имеет неверную структуру или данные невозможно преобразовать.
         """
         try:
-            # Обработка спота
-            if "d" in raw_msg and "k" in raw_msg["d"]:
-                data = raw_msg["d"]["k"]
-                return [KlineDict(
-                    s=raw_msg["s"],
-                    t=int(data["t"]),
-                    o=float(data["o"]),
-                    h=float(data["h"]),
-                    l=float(data["l"]),
-                    c=float(data["c"]),
-                    v=float(data["v"]),
-                    T=int(data["T"]),
-                    x=None,
-                    i=data["i"]
-                )]
-
             # Обработка фьючерсов
-            elif "symbol" in raw_msg and "data" in raw_msg:
+            if isinstance(raw_msg, dict):
                 data = raw_msg["data"]
                 return [KlineDict(
                     s=data["symbol"].replace("_", ""),
@@ -173,6 +157,21 @@ class MexcAdapter(AbstractAdapter):
                     T=None,  # Добавляем 60 сек, так как таймфрейм 1 мин
                     x=None,
                     i=data["interval"]
+                )]
+            # Обработка спота (protobuf)
+            else:
+                kline = raw_msg.publicSpotKline
+                return [KlineDict(
+                    s=raw_msg.symbol,
+                    t=kline.windowStart,
+                    o=float(kline.openingPrice),
+                    h=float(kline.highestPrice),
+                    l=float(kline.lowestPrice),
+                    c=float(kline.closingPrice),
+                    v=float(kline.volume),
+                    T=kline.windowEnd,
+                    x=None,
+                    i=kline.interval
                 )]
 
             raise AdapterException("Unsupported message format or missing data.")
@@ -191,20 +190,6 @@ class MexcAdapter(AbstractAdapter):
         :raises: AdapterException, если возникла ошибка при обработке данных.
         """
         try:
-            # Проверяем первый формат (spot@public.deals.v3.api)
-            if isinstance(raw_msg, dict) and "d" in raw_msg and "deals" in raw_msg["d"]:
-                trades = raw_msg["d"]["deals"]
-
-                return [
-                    AggTradeDict(
-                        t=int(trade["t"]),
-                        s=raw_msg["s"],
-                        S="BUY" if trade["S"] == 1 else "SELL",
-                        p=float(trade["p"]),
-                        v=float(trade["v"])
-                    ) for trade in trades
-                ]
-
             # Проверяем второй формат (push.deal)
             if isinstance(raw_msg, dict) and "symbol" in raw_msg and "data" in raw_msg:
                 trade = raw_msg["data"]
@@ -218,7 +203,18 @@ class MexcAdapter(AbstractAdapter):
                     )
                 ]
 
-            raise AdapterException("Unknown format")
+            # Protobuf со спота
+            else:
+                return [
+                    AggTradeDict(
+                        t=trade.time,
+                        s=raw_msg.symbol,
+                        S="BUY" if trade.tradeType == 1 else "SELL",
+                        p=float(trade.price),
+                        v=float(trade.quantity)
+                    ) for trade in raw_msg.publicAggreDeals.deals
+                ]
+
         except (KeyError, ValueError, TypeError) as e:
             raise AdapterException(f"Error processing MEXC aggTrade({raw_msg}): {e}")
 

@@ -10,6 +10,7 @@ dependencies = [
     "aiohttp (>=3.11.11,<4.0.0)",
     "websockets (>=14.2,<15.0)",
     "orjson (>=3.10.15,<4.0.0)",
+    "protobuf (>=6.32.0,<7.0.0)",
 ]
 
 [tool.poetry.dependencies]

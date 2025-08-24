@@ -3,7 +3,7 @@ __all__ = ["GateClient"]
 import time
 from typing import Any, Optional, Dict
 
-from typing_extensions import Literal
+from typing import Literal
 
 from ..abstract import AbstractClient
 from ..types import JsonLike
