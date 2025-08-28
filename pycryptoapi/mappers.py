@@ -11,6 +11,7 @@ from .gate import GateSocketManager, GateClient, GateAdapter
 from .mexc import MexcClient, MexcAdapter, MexcSocketManager
 from .okx import OkxClient, OkxAdapter, OkxSocketManager
 from .xt import XtClient, XtAdapter, XtSocketManager
+from .bitunix import BitunixClient, BitunixAdapter, BitunixSocketManager
 
 # Маппинг клиентов бирж
 CLIENTS_MAPPER: Dict[Exchange, Type[AbstractClient]] = {
@@ -21,6 +22,7 @@ CLIENTS_MAPPER: Dict[Exchange, Type[AbstractClient]] = {
     Exchange.OKX: OkxClient,
     Exchange.GATE: GateClient,
     Exchange.XT: XtClient,
+    Exchange.BITUNIX: BitunixClient,
 }
 
 # Маппинг менеджеров сокетов бирж
@@ -32,6 +34,7 @@ SOCKETS_MAPPER: Dict[Exchange, Type[AbstractSocketManager]] = {
     Exchange.OKX: OkxSocketManager,
     Exchange.GATE: GateSocketManager,
     Exchange.XT: XtSocketManager,
+    Exchange.BITUNIX: BitunixSocketManager,
 }
 
 # Маппинг адаптеров бирж
@@ -43,4 +46,5 @@ ADAPTERS_MAPPER: Dict[Exchange, Type[AbstractAdapter]] = {
     Exchange.OKX: OkxAdapter,
     Exchange.GATE: GateAdapter,
     Exchange.XT: XtAdapter,
+    Exchange.BITUNIX: BitunixAdapter,
 }

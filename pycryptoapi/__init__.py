@@ -7,6 +7,7 @@ __all__ = [
     "OkxAdapter", "OkxClient", "OkxSocketManager", "OkxWebsocket",
     "GateClient", "GateSocketManager", "GateWebsocket", "GateAdapter",
     "XtClient",  "XtSocketManager", "XtWebsocket", "XtAdapter",
+    "BitunixAdapter", "BitunixClient", "BitunixSocketManager", "BitunixWebsocket",
     "ADAPTERS_MAPPER", "CLIENTS_MAPPER", "SOCKETS_MAPPER",
     "CoinmarketcapAdapter", "CoinmarketcapClient",
     "DeribitClient",
@@ -27,3 +28,4 @@ from .mappers import *
 from .mexc import *
 from .okx import *
 from .xt import *
+from .bitunix import *
