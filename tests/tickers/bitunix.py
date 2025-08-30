@@ -18,6 +18,10 @@ async def main() -> None:
 
     pp(tickers_24["BTCUSDT"])
 
+    print(len(tickers_24))
+
+    print(tickers_list)
+
     await client.close()
 
 
