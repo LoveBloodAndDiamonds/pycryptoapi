@@ -3,8 +3,6 @@ from ..abstract import AbstractClient
 
 
 class WeexClient(AbstractClient):
-    # _BASE_SPOT_URL = "https://api-spot.weex.com"
-    # _BASE_FUTURES_URL = "https://api-contract.weex.com"
 
     _BASE_SPOT_URL = "https://api.weex.com"
     _BASE_FUTURES_URL = "https://api.weex.com"

@@ -157,3 +157,7 @@ class XtAdapter(AbstractAdapter):
     @staticmethod
     def depth(raw_data: Any) -> DepthDict:
         raise NotImplementedError("Not implemented yet...")
+
+    @staticmethod
+    def futures_last_price(raw_data: Any) -> Any:
+        raise NotImplementedError("Not implemented yet...")
