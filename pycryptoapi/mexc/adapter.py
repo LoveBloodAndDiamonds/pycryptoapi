@@ -192,7 +192,6 @@ class MexcAdapter(AbstractAdapter):
         try:
             # Проверяем второй формат (push.deal)
             if isinstance(raw_msg, dict) and "symbol" in raw_msg and "data" in raw_msg:
-                trade = raw_msg["data"]
                 return [
                     AggTradeDict(
                         t=int(trade["t"]),
@@ -200,7 +199,7 @@ class MexcAdapter(AbstractAdapter):
                         S="BUY" if trade["T"] == 1 else "SELL",
                         p=float(trade["p"]),
                         v=float(trade["v"])
-                    )
+                    ) for trade in raw_msg["data"]
                 ]
 
             # Protobuf со спота
