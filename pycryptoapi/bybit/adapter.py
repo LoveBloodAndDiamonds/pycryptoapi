@@ -123,7 +123,7 @@ class BybitAdapter(AbstractAdapter):
             )]
         except KeyError as e:
             raise AdapterException(f"Missing key in Bybit kline message: {e}")
-        except (TypeError, ValueError) as e:
+        except Exception as e:
             raise AdapterException(f"Invalid data format in Bybit kline message: {e}")
 
     @staticmethod
