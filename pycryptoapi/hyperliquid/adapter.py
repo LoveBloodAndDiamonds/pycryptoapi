@@ -15,7 +15,9 @@ class HyperliquidAdapter(AbstractAdapter):
         raw_data = data[1] из metaAndAssetCtxs (список метрик).
         """
         try:
-            return {i: float(item["markPx"]) for i, item in enumerate(raw_data)}
+            universe = raw_data[0]["universe"]
+            stats = raw_data[1]
+            return {asset["name"]: float(stat["markPx"]) for asset, stat in zip(universe, stats)}
         except Exception as e:
             raise AdapterException(f"Error adapting futures last price: {e}")
 
