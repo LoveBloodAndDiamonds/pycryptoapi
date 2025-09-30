@@ -51,7 +51,7 @@ class HyperliquidAdapter(AbstractAdapter):
             stats = raw_data[1]
 
             return {
-                asset["name"]: {"t": int(time.time()), "v": float(stat["openInterest"])}
+                asset["name"]: {"t": int(time.time() * 1000), "v": float(stat["openInterest"])}
                 for asset, stat in zip(universe, stats)
             }
         except Exception as e:
