@@ -63,7 +63,18 @@ class HyperliquidAdapter(AbstractAdapter):
 
     @staticmethod
     def aggtrades_message(raw_msg: Any) -> List[AggTradeDict]:
-        raise NotImplementedError()
+        try:
+            return [
+                AggTradeDict(
+                    t=item["time"],
+                    s=item["coin"],
+                    S="BUY" if item["side"] == "B" else "SELL",
+                    p=float(item["px"]),
+                    v=float(item["sz"]),
+                ) for item in raw_msg.get("data", [])
+            ]
+        except Exception as e:
+            raise AdapterException(f"Error adapting aggtrades message: {e}")
 
     @staticmethod
     def futures_ticker_24h(raw_data: Any, only_usdt: bool = True) -> Dict[str, TickerDailyItem]:
