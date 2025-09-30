@@ -185,13 +185,13 @@ class GateAdapter(AbstractAdapter):
         if isinstance(raw_data, dict):
             return {raw_data["symbol"]: OpenInterestItem(
                 t=raw_data["time"],
-                v=raw_data["open_interest_usd"] / raw_data["mark_price"])}
+                v=raw_data["open_interest_usd"] / raw_data["mark_price"] if raw_data["mark_price"] != 0 else 0)}
         elif isinstance(raw_data, list):
             result = {}
             for item in raw_data:
                 result[item["symbol"]] = OpenInterestItem(
                     t=item["time"],
-                    v=item["open_interest_usd"] / item["mark_price"]
+                    v=item["open_interest_usd"] / item["mark_price"] if item["mark_price"] != 0 else 0
                 )
             return result
         else:
