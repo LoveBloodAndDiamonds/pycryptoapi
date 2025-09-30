@@ -4,15 +4,22 @@ from pycryptoapi.hyperliquid import HyperliquidClient, HyperliquidAdapter
 
 
 async def main() -> None:
+    adapter = HyperliquidAdapter()
     client = await HyperliquidClient.create()
 
-    tickers = await client.ticker()
+    raw_data = await client.futures_ticker()
 
     from pprint import pp
 
-    pp(tickers["tokens"])
+    # tickers24 = adapter.futures_ticker_24h(raw_data)
 
-    pp(tickers.keys())
+    # pp(tickers24)
+
+    open_interest = adapter.futures_tickers(raw_data)
+
+    pp(open_interest)
+
+    print(len(open_interest))
 
     await client.close()
 
