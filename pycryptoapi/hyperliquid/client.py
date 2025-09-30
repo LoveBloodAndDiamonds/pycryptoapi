@@ -12,7 +12,7 @@ class HyperliquidClient(AbstractClient):
     }
 
     async def futures_last_price(self, *args, **kwargs) -> Any:
-        raise NotImplementedError()
+        return await self.futures_ticker()
 
     async def depth(self, *args, **kwargs) -> Any:
         raise NotImplementedError()
@@ -24,10 +24,10 @@ class HyperliquidClient(AbstractClient):
         raise NotImplementedError()
 
     async def open_interest(self, *args, **kwargs) -> Any:
-        raise NotImplementedError()
+        return await self.futures_ticker()
 
     async def funding_rate(self, *args, **kwargs) -> Any:
-        raise NotImplementedError()
+        return await self.futures_ticker()
 
     async def futures_ticker(self) -> Dict:
         """https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals#retrieve-perpetuals-asset-contexts-includes-mark-price-current-funding-open-interest-etc"""
