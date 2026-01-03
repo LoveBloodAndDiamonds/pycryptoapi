@@ -2,18 +2,19 @@ __all__ = ["CLIENTS_MAPPER", "SOCKETS_MAPPER", "ADAPTERS_MAPPER"]
 
 from typing import Dict, Type
 
-from .abstract import AbstractClient, AbstractAdapter, AbstractSocketManager
-from .binance import BinanceClient, BinanceAdapter, BinanceSocketManager
-from .bitget import BitgetClient, BitgetAdapter, BitgetSocketManager
-from .bybit import BybitClient, BybitAdapter, BybitSocketManager
+from .abstract import AbstractAdapter, AbstractClient, AbstractSocketManager
+from .binance import BinanceAdapter, BinanceClient, BinanceSocketManager
+from .bingx import BingxAdapter, BingxClient, BingxSocketManager
+from .bitget import BitgetAdapter, BitgetClient, BitgetSocketManager
+from .bitunix import BitunixAdapter, BitunixClient, BitunixSocketManager
+from .bybit import BybitAdapter, BybitClient, BybitSocketManager
 from .enums import Exchange
-from .gate import GateSocketManager, GateClient, GateAdapter
-from .mexc import MexcClient, MexcAdapter, MexcSocketManager
-from .okx import OkxClient, OkxAdapter, OkxSocketManager
-from .xt import XtClient, XtAdapter, XtSocketManager
-from .bitunix import BitunixClient, BitunixAdapter, BitunixSocketManager
-from .kcex import KcexAdapter, KcexClient, KcexSocketManager
+from .gate import GateAdapter, GateClient, GateSocketManager
 from .hyperliquid import HyperliquidAdapter, HyperliquidClient, HyperliquidSocketManager
+from .kcex import KcexAdapter, KcexClient, KcexSocketManager
+from .mexc import MexcAdapter, MexcClient, MexcSocketManager
+from .okx import OkxAdapter, OkxClient, OkxSocketManager
+from .xt import XtAdapter, XtClient, XtSocketManager
 
 # Маппинг клиентов бирж
 CLIENTS_MAPPER: Dict[Exchange, Type[AbstractClient]] = {
@@ -27,6 +28,7 @@ CLIENTS_MAPPER: Dict[Exchange, Type[AbstractClient]] = {
     Exchange.BITUNIX: BitunixClient,
     Exchange.KCEX: KcexClient,
     Exchange.HYPERLIQUID: HyperliquidClient,
+    Exchange.BINGX: BingxClient,
 }
 
 # Маппинг менеджеров сокетов бирж
@@ -41,6 +43,7 @@ SOCKETS_MAPPER: Dict[Exchange, Type[AbstractSocketManager]] = {
     Exchange.BITUNIX: BitunixSocketManager,
     Exchange.KCEX: KcexSocketManager,
     Exchange.HYPERLIQUID: HyperliquidSocketManager,
+    Exchange.BINGX: BingxSocketManager,
 }
 
 # Маппинг адаптеров бирж
@@ -55,4 +58,5 @@ ADAPTERS_MAPPER: Dict[Exchange, Type[AbstractAdapter]] = {
     Exchange.BITUNIX: BitunixAdapter,
     Exchange.KCEX: KcexAdapter,
     Exchange.HYPERLIQUID: HyperliquidAdapter,
+    Exchange.BINGX: BingxAdapter,
 }

@@ -1,16 +1,12 @@
-__all__ = [
-    "MarketType",
-    "Exchange",
-    "Timeframe",
-    "Side"
-]
+__all__ = ["MarketType", "Exchange", "Timeframe", "Side"]
 
 from enum import StrEnum
-from typing import Tuple, Dict
+from typing import Dict, Tuple
 
 
 class MarketType(StrEnum):
     """Перечисление типов криптовалютных рынков."""
+
     FUTURES = "FUTURES"
     SPOT = "SPOT"
 
@@ -20,6 +16,7 @@ class MarketType(StrEnum):
 
 class Exchange(StrEnum):
     """Перечисление бирж."""
+
     BINANCE = "BINANCE"
     BYBIT = "BYBIT"
     BITGET = "BITGET"
@@ -30,6 +27,7 @@ class Exchange(StrEnum):
     BITUNIX = "BITUNIX"
     KCEX = "KCEX"
     HYPERLIQUID = "HYPERLIQUID"
+    BINGX = "BINGX"
 
     def __add__(self, market_type: "MarketType") -> Tuple["Exchange", "MarketType"]:
         return self, market_type
@@ -37,6 +35,7 @@ class Exchange(StrEnum):
 
 class Timeframe(StrEnum):
     """Перечисление таймфреймов."""
+
     MIN_1 = "1m"
     MIN_3 = "3m"
     MIN_5 = "5m"
@@ -61,33 +60,96 @@ class Timeframe(StrEnum):
     def mapping(self) -> Dict[Exchange, Dict["Timeframe", str]]:
         return {
             Exchange.BINANCE: {
-                Timeframe.MIN_1: "1m", Timeframe.MIN_3: "3m", Timeframe.MIN_5: "5m", Timeframe.MIN_15: "15m",
-                Timeframe.MIN_30: "30m", Timeframe.HOUR_1: "1h", Timeframe.HOUR_2: "2h", Timeframe.HOUR_4: "4h",
-                Timeframe.HOUR_6: "6h", Timeframe.HOUR_8: "8h", Timeframe.HOUR_12: "12h", Timeframe.DAY_1: "1d",
-                Timeframe.DAY_3: "3d", Timeframe.WEEK_1: "1w", Timeframe.MONTH_1: "1M"
+                Timeframe.MIN_1: "1m",
+                Timeframe.MIN_3: "3m",
+                Timeframe.MIN_5: "5m",
+                Timeframe.MIN_15: "15m",
+                Timeframe.MIN_30: "30m",
+                Timeframe.HOUR_1: "1h",
+                Timeframe.HOUR_2: "2h",
+                Timeframe.HOUR_4: "4h",
+                Timeframe.HOUR_6: "6h",
+                Timeframe.HOUR_8: "8h",
+                Timeframe.HOUR_12: "12h",
+                Timeframe.DAY_1: "1d",
+                Timeframe.DAY_3: "3d",
+                Timeframe.WEEK_1: "1w",
+                Timeframe.MONTH_1: "1M",
             },
             Exchange.BITGET: {
-                Timeframe.MIN_1: "1m", Timeframe.MIN_5: "5m", Timeframe.MIN_15: "15m", Timeframe.MIN_30: "30m",
-                Timeframe.HOUR_1: "1h", Timeframe.HOUR_4: "4h", Timeframe.HOUR_6: "6h", Timeframe.HOUR_12: "12h",
-                Timeframe.DAY_1: "1d", Timeframe.DAY_3: "3d", Timeframe.WEEK_1: "1w", Timeframe.MONTH_1: "1M"
+                Timeframe.MIN_1: "1m",
+                Timeframe.MIN_5: "5m",
+                Timeframe.MIN_15: "15m",
+                Timeframe.MIN_30: "30m",
+                Timeframe.HOUR_1: "1h",
+                Timeframe.HOUR_4: "4h",
+                Timeframe.HOUR_6: "6h",
+                Timeframe.HOUR_12: "12h",
+                Timeframe.DAY_1: "1d",
+                Timeframe.DAY_3: "3d",
+                Timeframe.WEEK_1: "1w",
+                Timeframe.MONTH_1: "1M",
             },
             Exchange.BYBIT: {
-                Timeframe.MIN_1: "1", Timeframe.MIN_3: "3", Timeframe.MIN_5: "5", Timeframe.MIN_15: "15",
-                Timeframe.MIN_30: "30", Timeframe.HOUR_1: "60", Timeframe.HOUR_2: "120", Timeframe.HOUR_4: "240",
-                Timeframe.HOUR_6: "360", Timeframe.HOUR_12: "720", Timeframe.DAY_1: "D", Timeframe.WEEK_1: "W",
-                Timeframe.MONTH_1: "M"
+                Timeframe.MIN_1: "1",
+                Timeframe.MIN_3: "3",
+                Timeframe.MIN_5: "5",
+                Timeframe.MIN_15: "15",
+                Timeframe.MIN_30: "30",
+                Timeframe.HOUR_1: "60",
+                Timeframe.HOUR_2: "120",
+                Timeframe.HOUR_4: "240",
+                Timeframe.HOUR_6: "360",
+                Timeframe.HOUR_12: "720",
+                Timeframe.DAY_1: "D",
+                Timeframe.WEEK_1: "W",
+                Timeframe.MONTH_1: "M",
             },
             Exchange.MEXC: {
-                Timeframe.MIN_1: "Min1", Timeframe.MIN_5: "Min5", Timeframe.MIN_15: "Min15", Timeframe.MIN_30: "Min30",
-                Timeframe.HOUR_1: "Min60", Timeframe.HOUR_4: "Hour4", Timeframe.HOUR_8: "Hour8",
-                Timeframe.DAY_1: "Day1", Timeframe.WEEK_1: "Week1", Timeframe.MONTH_1: "Month1"
+                Timeframe.MIN_1: "Min1",
+                Timeframe.MIN_5: "Min5",
+                Timeframe.MIN_15: "Min15",
+                Timeframe.MIN_30: "Min30",
+                Timeframe.HOUR_1: "Min60",
+                Timeframe.HOUR_4: "Hour4",
+                Timeframe.HOUR_8: "Hour8",
+                Timeframe.DAY_1: "Day1",
+                Timeframe.WEEK_1: "Week1",
+                Timeframe.MONTH_1: "Month1",
             },
             Exchange.OKX: {
-                Timeframe.MIN_1: "1m", Timeframe.MIN_3: "3m", Timeframe.MIN_5: "5m", Timeframe.MIN_15: "15m",
-                Timeframe.MIN_30: "30m", Timeframe.HOUR_1: "1H", Timeframe.HOUR_2: "2H", Timeframe.HOUR_4: "4H",
-                Timeframe.HOUR_6: "6H", Timeframe.HOUR_12: "12H", Timeframe.DAY_1: "1D", Timeframe.DAY_3: "3D",
-                Timeframe.WEEK_1: "1W", Timeframe.MONTH_1: "1M"
-            }
+                Timeframe.MIN_1: "1m",
+                Timeframe.MIN_3: "3m",
+                Timeframe.MIN_5: "5m",
+                Timeframe.MIN_15: "15m",
+                Timeframe.MIN_30: "30m",
+                Timeframe.HOUR_1: "1H",
+                Timeframe.HOUR_2: "2H",
+                Timeframe.HOUR_4: "4H",
+                Timeframe.HOUR_6: "6H",
+                Timeframe.HOUR_12: "12H",
+                Timeframe.DAY_1: "1D",
+                Timeframe.DAY_3: "3D",
+                Timeframe.WEEK_1: "1W",
+                Timeframe.MONTH_1: "1M",
+            },
+            Exchange.BINGX: {
+                Timeframe.MIN_1: "1m",
+                Timeframe.MIN_3: "3m",
+                Timeframe.MIN_5: "5m",
+                Timeframe.MIN_15: "15m",
+                Timeframe.MIN_30: "30m",
+                Timeframe.HOUR_1: "1h",
+                Timeframe.HOUR_2: "2h",
+                Timeframe.HOUR_4: "4h",
+                Timeframe.HOUR_6: "6h",
+                Timeframe.HOUR_8: "8h",
+                Timeframe.HOUR_12: "12h",
+                Timeframe.DAY_1: "1d",
+                Timeframe.DAY_3: "3d",
+                Timeframe.WEEK_1: "1w",
+                Timeframe.MONTH_1: "1M",
+            },
         }
 
     def to_exchange_format(self, exchange: Exchange) -> str:
@@ -95,20 +157,30 @@ class Timeframe(StrEnum):
         try:
             return self.mapping[exchange][self]  # noqa
         except KeyError:
-            raise ValueError(f"Timeframe {self.value} is not supported for exchange {exchange.value}")
+            raise ValueError(
+                f"Timeframe {self.value} is not supported for exchange {exchange.value}"
+            )
 
     @property
     def to_seconds(self) -> int:
         """Возвращает количество секунд для таймфрейма."""
-        unit_map = {"m": 60, "h": 3600, "d": 86400, "w": 604800, "M": 2592000}  # Условно 30 дней в месяце
+        unit_map = {
+            "m": 60,
+            "h": 3600,
+            "d": 86400,
+            "w": 604800,
+            "M": 2592000,
+        }  # Условно 30 дней в месяце
         value, unit = int(self.value[:-1]), self.value[-1]
         return value * unit_map[unit]
 
 
 class Side(StrEnum):
     """Перечисление сторон позиций."""
+
     BUY = "BUY"
     SELL = "SELL"
+
 
 # BITMEX: str = "BITMEX"
 # BINGX: str = "BINGX"
