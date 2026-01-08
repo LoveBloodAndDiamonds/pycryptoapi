@@ -46,7 +46,7 @@ class BingxWebsocket(AbstractWebsocket):
             except OSError:
                 message = message.decode("utf-8")
         if message == "Ping":
-            return "ping"
+            return "Pong"
         return orjson.loads(message)
 
     async def _handler(self, conn: ClientConnection) -> None:
@@ -57,7 +57,7 @@ class BingxWebsocket(AbstractWebsocket):
                 self._logger.trace(f"{self} Received message: {message}")
 
                 decoded = self._decode_message(message)
-                if decoded == "ping":
+                if decoded == "Pong":
                     await conn.send("Pong")
                     self._logger.debug(f"{self} Pong sent.")
                     continue
