@@ -189,7 +189,7 @@ class BingxAdapter(AbstractAdapter):
     @staticmethod
     def aggtrades_message(raw_msg: Any) -> List[AggTradeDict]:
         try:
-            trades = raw_msg.get("data", [])
+            trades = raw_msg.get("data") or []
             return [
                 AggTradeDict(
                     t=int(trade["T"]),
